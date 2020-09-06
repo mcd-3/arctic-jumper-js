@@ -30,7 +30,7 @@ class Game {
      */
     boot() {
         let bootLogo = new Image();
-        bootLogo.src = `${imagesDir}boot.png`;
+        bootLogo.src = `${imagesDir}logo.png`;
 
         bootLogo.onload = () => {
             let bootSfx = new Audio(`${audioDir}logo_short.mp3`);
