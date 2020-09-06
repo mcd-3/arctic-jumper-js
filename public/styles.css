@@ -1,0 +1,10 @@
+html, body, div, canvas {
+    margin: 0px;
+    padding: 0px;
+}
+
+canvas {
+    display: block;
+    box-sizing: border-box;
+    background-color: #000000;
+}

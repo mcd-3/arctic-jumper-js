@@ -1,0 +1,14 @@
+{
+  "name": "arctic-jumper",
+  "version": "1.0.0",
+  "description": "Arctic Jumper: a game where you jump over things!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Matthew Carvalho-Dagenais",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^10.0.0"
+  }
+}
