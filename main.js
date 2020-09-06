@@ -9,7 +9,7 @@ const height = 540;
 let main;
 
 // Change me to "production" when not debugging
-process.env.NODE_ENV = "developer"
+process.env.NODE_ENV = "production"
 
 app.on('ready', () => {
     main = new BrowserWindow({width, height, resizable: false});
