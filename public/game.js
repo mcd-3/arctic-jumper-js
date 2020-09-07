@@ -3,14 +3,14 @@
  * 
  * Contains all game functionality and logic
  */
-
 let assetsDir = "./assets/";
 let audioDir = `${assetsDir}audio/`;
-let imagesDir = `${assetsDir}images/`
-let framerate = 1000/60;
+let imagesDir = `${assetsDir}images/`;
 
 const canvas = document.getElementById("mainCanvas");
 const ctx = canvas.getContext("2d");
+
+let bootCompleteFlag = false;
 
 class Game {
 
@@ -20,6 +20,7 @@ class Game {
 
         // game variables
         this.bootTime = 7500;
+        this.isMenuMode = false;
     }
 
     /**
@@ -39,23 +40,27 @@ class Game {
             
             // Fade the logo in
             function fadeIn() {
-                ctx.globalAlpha += 0.02;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(bootLogo, 0, 0);
-    
-                if (ctx.globalAlpha < 1.0) {
-                    requestAnimationFrame(fadeIn);    
+                if (!bootCompleteFlag) {
+                    ctx.globalAlpha += 0.02;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(bootLogo, 0, 0);
+        
+                    if (ctx.globalAlpha < 1.0) {
+                        requestAnimationFrame(fadeIn);    
+                    }
                 }
             }
 
             // Fade the logo out
             function fadeOut() {
-                ctx.globalAlpha -= 0.05;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(bootLogo, 0, 0);
-    
-                if (ctx.globalAlpha > 0) {
-                    requestAnimationFrame(fadeOut);    
+                if (!bootCompleteFlag) {
+                    ctx.globalAlpha -= 0.05;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(bootLogo, 0, 0);
+        
+                    if (ctx.globalAlpha > 0) {
+                        requestAnimationFrame(fadeOut);    
+                    }
                 }
             }
 
@@ -97,6 +102,51 @@ class Game {
         
     }
 
+    // FIXME: We should only request animation frame in the UPDATE function
+    // FIXME: Also the Background object should have a draw function
+    /**
+     * Loads background layer 1 (the furthest back layer)
+     */
+    loadBgl1() {
+        console.log("made it")
+        let img = new Image();
+        img.src = `${imagesDir}bgl1.png`;
+        let bg = new Background(canvas, 0, 0, 1, 0, 30, canvas.width, canvas.height, img);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        bg.image.onload = () => {
+            console.log("over here")
+            setInterval(() => {
+                console.log("here")
+                // draw additional image1
+                if (bg.x > 0) {
+                    ctx.drawImage(bg.image, -bg.imgW + bg.x, bg.y, bg.imgW, bg.imgH);
+                }
+                // draw additional image2
+                if (bg.x - bg.imgW > 0) {
+                    ctx.drawImage(bg.image, -bg.imgW * 2 + bg.x, bg.y, bg.imgW, bg.imgH);
+                }
+                ctx.drawImage(bg.image, bg.x, bg.y, bg.imgW, bg.imgH);
+                // amount to move
+                bg.x += bg.dx;
+            },
+            bg.speed
+        )};
+    }
+
+    /**
+     * Loads background layer 2 (the middle layer)
+     */
+    loadBgl2() {
+
+    }
+
+    /**
+     * Loads the foreground (the layer closest to the screen)
+     */
+    loadFgl() {
+
+    }
+
     /**
      * Halts execution of a thread for a given amount of time
      * 
@@ -121,8 +171,10 @@ async function gameLoop() {
         requestAnimationFrame(game.boot);
     });
     await game.awaitBootFinish().then(() => {
-        console.log("game booted!");
+        bootCompleteFlag = true;
     });
+
+    game.loadBgl1();
 }
 
 gameLoop();

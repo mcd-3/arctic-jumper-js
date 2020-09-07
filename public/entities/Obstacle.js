@@ -1,5 +1,9 @@
 class Obstacle extends Entity {
-    constructor(x, y) {
-        super(x, y)
+    constructor(canvas, x, y) {
+        super(canvas, x, y)
+    }
+
+    draw() {
+
     }
 }
