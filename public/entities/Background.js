@@ -17,7 +17,11 @@ class Background extends Entity {
         let img = new Image();
         img.onload = () => {
             if (!this.intervalSet) {
-                setInterval(() => {
+                setInterval(() => { 
+                    // Prevent images from stopping to wrap
+                    if (this.x > (this.canvas.width - 1)) {
+                        this.x = 0;
+                    }
                     if (this.x > 0) {
                         this.ctx.drawImage(img, -this.imgW + this.x, this.y, this.imgW, this.imgH);
                     }
