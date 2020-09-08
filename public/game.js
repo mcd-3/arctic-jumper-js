@@ -9,6 +9,7 @@ let imagesDir = `${assetsDir}images/`;
 
 const bgl1 = document.getElementById("bgl1");
 const bgl2 = document.getElementById("bgl2");
+const fgl1 = document.getElementById("fgl1");
 const bgl1Ctx = bgl1.getContext("2d");
 
 let bootCompleteFlag = false;
@@ -104,6 +105,15 @@ class Game {
     }
 
     /**
+     * Makes all layers visible
+     */
+    showLayers() {
+        bgl1.style.display = "block";
+        bgl2.style.display = "block";
+        fgl1.style.display = "block";
+    }
+
+    /**
      * Loads background layer 1 (the furthest back layer)
      * 
      * @returns {Background}
@@ -116,14 +126,14 @@ class Game {
      * Loads background layer 2 (the middle layer)
      */
     initBgl2() {
-        return new Background({canvas: bgl2}, 0, 0, -1, 0, 30, bgl2.width, bgl2.height, "bgl2.png");
+        return new Background({canvas: bgl2}, 0, 0, 1, 0, 20, bgl2.width, bgl2.height, "bgl2.png");
     }
 
     /**
      * Loads the foreground (the layer closest to the screen)
      */
-    loadFgl() {
-
+    initFgl1() {
+        return new Background({canvas: fgl1}, 0, 0, 1, 0, 7, fgl1.width, fgl1.height, "fgl1.png");
     }
 
     /**
@@ -143,6 +153,8 @@ class Game {
  */
 async function gameLoop() {
     let game = new Game(bgl1, bgl1Ctx);
+    bgl2.style.display = "none";
+    fgl1.style.display = "none";
 
     // Boot game
     await game.sleep(800).then(() => {
@@ -157,11 +169,14 @@ async function gameLoop() {
     // Init layers
     let canvasBgl1 = game.initBgl1();
     let canvasBgl2 = game.initBgl2();
+    let canvasFgl1 = game.initFgl1();
+    game.showLayers();
 
     // This is the game loop
     function loop() {
         canvasBgl1.draw();
         canvasBgl2.draw();
+        canvasFgl1.draw();
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
