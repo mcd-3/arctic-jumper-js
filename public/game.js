@@ -7,8 +7,9 @@ let assetsDir = "./assets/";
 let audioDir = `${assetsDir}audio/`;
 let imagesDir = `${assetsDir}images/`;
 
-const canvas = document.getElementById("mainCanvas");
-const ctx = canvas.getContext("2d");
+const bgl1 = document.getElementById("bgl1");
+const bgl2 = document.getElementById("bgl2");
+const bgl1Ctx = bgl1.getContext("2d");
 
 let bootCompleteFlag = false;
 
@@ -36,16 +37,16 @@ class Game {
         bootLogo.onload = () => {
             let bootSfx = new Audio(`${audioDir}logo_short.mp3`);
             bootSfx.play();
-            ctx.globalAlpha = 0;
+            bgl1Ctx.globalAlpha = 0;
             
             // Fade the logo in
             function fadeIn() {
                 if (!bootCompleteFlag) {
-                    ctx.globalAlpha += 0.02;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(bootLogo, 0, 0);
+                    bgl1Ctx.globalAlpha += 0.02;
+                    bgl1Ctx.clearRect(0, 0, bgl1.width, bgl1.height);
+                    bgl1Ctx.drawImage(bootLogo, 0, 0);
         
-                    if (ctx.globalAlpha < 1.0) {
+                    if (bgl1Ctx.globalAlpha < 1.0) {
                         requestAnimationFrame(fadeIn);    
                     }
                 }
@@ -54,11 +55,11 @@ class Game {
             // Fade the logo out
             function fadeOut() {
                 if (!bootCompleteFlag) {
-                    ctx.globalAlpha -= 0.05;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(bootLogo, 0, 0);
+                    bgl1Ctx.globalAlpha -= 0.05;
+                    bgl1Ctx.clearRect(0, 0, bgl1.width, bgl1.height);
+                    bgl1Ctx.drawImage(bootLogo, 0, 0);
         
-                    if (ctx.globalAlpha > 0) {
+                    if (bgl1Ctx.globalAlpha > 0) {
                         requestAnimationFrame(fadeOut);    
                     }
                 }
@@ -108,14 +109,14 @@ class Game {
      * @returns {Background}
      */
     initBgl1() {
-        return new Background({canvas}, 0, 0, 1, 0, 30, canvas.width, canvas.height, "bgl1.png");
+        return new Background({canvas: bgl1}, 0, 0, 1, 0, 30, bgl1.width, bgl1.height, "bgl1.png");
     }
 
     /**
      * Loads background layer 2 (the middle layer)
      */
-    loadBgl2() {
-
+    initBgl2() {
+        return new Background({canvas: bgl2}, 0, 0, -1, 0, 30, bgl2.width, bgl2.height, "bgl2.png");
     }
 
     /**
@@ -141,7 +142,7 @@ class Game {
  * Loops through game logic to play the game
  */
 async function gameLoop() {
-    let game = new Game(canvas, ctx);
+    let game = new Game(bgl1, bgl1Ctx);
 
     // Boot game
     await game.sleep(800).then(() => {
@@ -151,14 +152,16 @@ async function gameLoop() {
     await game.awaitBootFinish().then(() => {
         bootCompleteFlag = true;
     });
-    ctx.globalAlpha = 1;
+    bgl1Ctx.globalAlpha = 1;
 
     // Init layers
-    let bgl1 = game.initBgl1();
+    let canvasBgl1 = game.initBgl1();
+    let canvasBgl2 = game.initBgl2();
 
     // This is the game loop
     function loop() {
-        bgl1.draw();
+        canvasBgl1.draw();
+        canvasBgl2.draw();
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);

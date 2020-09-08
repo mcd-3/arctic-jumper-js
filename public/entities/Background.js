@@ -17,7 +17,6 @@ class Background extends Entity {
         let img = new Image();
         img.onload = () => {
             if (!this.intervalSet) {
-                console.log("interval")
                 setInterval(() => {
                     if (this.x > 0) {
                         this.ctx.drawImage(img, -this.imgW + this.x, this.y, this.imgW, this.imgH);
