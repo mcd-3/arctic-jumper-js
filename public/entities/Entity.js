@@ -1,9 +1,10 @@
 class Entity {
-    constructor(canvas, x, y) {
+    constructor(canvasObj, x, y) {
         if (new.target == Entity) {
             throw new TypeError("Cannot instantiate an abstract class");
         }
-        this.canvas = canvas;
+        this.canvas = canvasObj.canvas;
+        this.ctx = canvasObj.canvas.getContext("2d");
         this.x = x;
         this.y = y;
     }

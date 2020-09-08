@@ -1,6 +1,6 @@
 class Player extends Entity {
-    constructor(canvas, x, y) {
-        super(canvas, x, y)
+    constructor(canvasObj, x, y) {
+        super(canvasObj, x, y)
     }
 
     draw() {

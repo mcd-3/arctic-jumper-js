@@ -102,35 +102,13 @@ class Game {
         
     }
 
-    // FIXME: We should only request animation frame in the UPDATE function
-    // FIXME: Also the Background object should have a draw function
     /**
      * Loads background layer 1 (the furthest back layer)
+     * 
+     * @returns {Background}
      */
-    loadBgl1() {
-        console.log("made it")
-        let img = new Image();
-        img.src = `${imagesDir}bgl1.png`;
-        let bg = new Background(canvas, 0, 0, 1, 0, 30, canvas.width, canvas.height, img);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        bg.image.onload = () => {
-            console.log("over here")
-            setInterval(() => {
-                console.log("here")
-                // draw additional image1
-                if (bg.x > 0) {
-                    ctx.drawImage(bg.image, -bg.imgW + bg.x, bg.y, bg.imgW, bg.imgH);
-                }
-                // draw additional image2
-                if (bg.x - bg.imgW > 0) {
-                    ctx.drawImage(bg.image, -bg.imgW * 2 + bg.x, bg.y, bg.imgW, bg.imgH);
-                }
-                ctx.drawImage(bg.image, bg.x, bg.y, bg.imgW, bg.imgH);
-                // amount to move
-                bg.x += bg.dx;
-            },
-            bg.speed
-        )};
+    initBgl1() {
+        return new Background({canvas}, 0, 0, 1, 0, 30, canvas.width, canvas.height, "bgl1.png");
     }
 
     /**
@@ -173,8 +151,17 @@ async function gameLoop() {
     await game.awaitBootFinish().then(() => {
         bootCompleteFlag = true;
     });
+    ctx.globalAlpha = 1;
 
-    game.loadBgl1();
+    // Init layers
+    let bgl1 = game.initBgl1();
+
+    // This is the game loop
+    function loop() {
+        bgl1.draw();
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
 }
 
 gameLoop();
