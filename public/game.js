@@ -10,6 +10,7 @@ let imagesDir = `${assetsDir}images/`;
 const bgl1 = document.getElementById("bgl1");
 const bgl2 = document.getElementById("bgl2");
 const fgl1 = document.getElementById("fgl1");
+const fgl2 = document.getElementById("fgl2");
 const bgl1Ctx = bgl1.getContext("2d");
 
 let bootCompleteFlag = false;
@@ -23,6 +24,9 @@ class Game {
         // game variables
         this.bootTime = 7500;
         this.isMenuMode = false;
+        this.bgl1Speed = 50;
+        this.bgl2Speed = 20;
+        this.fgl1Speed = 7;
     }
 
     /**
@@ -111,6 +115,7 @@ class Game {
         bgl1.style.display = "block";
         bgl2.style.display = "block";
         fgl1.style.display = "block";
+        fgl2.style.display = "block";
     }
 
     /**
@@ -119,21 +124,21 @@ class Game {
      * @returns {Background}
      */
     initBgl1() {
-        return new Background({canvas: bgl1}, 0, 0, 1, 0, 30, bgl1.width, bgl1.height, "bgl1.png");
+        return new Background({canvas: bgl1}, 0, 0, 1, 0, this.bgl1Speed, bgl1.width, bgl1.height, "bgl1.png");
     }
 
     /**
      * Loads background layer 2 (the middle layer)
      */
     initBgl2() {
-        return new Background({canvas: bgl2}, 0, 0, 1, 0, 20, bgl2.width, bgl2.height, "bgl2.png");
+        return new Background({canvas: bgl2}, 0, 0, 1, 0, this.bgl2Speed, bgl2.width, bgl2.height, "bgl2.png");
     }
 
     /**
      * Loads the foreground (the layer closest to the screen)
      */
     initFgl1() {
-        return new Background({canvas: fgl1}, 0, 0, 1, 0, 7, fgl1.width, fgl1.height, "fgl1.png");
+        return new Background({canvas: fgl1}, 0, 0, 1, 0, this.fgl1Speed, fgl1.width, fgl1.height, "fgl1.png");
     }
 
     /**
@@ -177,6 +182,7 @@ async function gameLoop() {
         canvasBgl1.draw();
         canvasBgl2.draw();
         canvasFgl1.draw();
+
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);

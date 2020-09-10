@@ -18,6 +18,7 @@ class Background extends Entity {
         img.onload = () => {
             if (!this.intervalSet) {
                 setInterval(() => { 
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                     // Prevent images from stopping to wrap
                     if (this.x > (this.canvas.width - 1)) {
                         this.x = 0;
