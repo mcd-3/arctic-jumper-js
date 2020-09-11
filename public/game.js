@@ -177,6 +177,10 @@ async function gameLoop() {
     let canvasFgl1 = game.initFgl1();
     game.showLayers();
 
+    // Play the game music
+    let gameMusic = new Audio(`${audioDir}steviaSphere_Dolphin.mp3`);
+    gameMusic.play();
+
     // This is the game loop
     function loop() {
         canvasBgl1.draw();
