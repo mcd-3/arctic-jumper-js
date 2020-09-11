@@ -26,7 +26,7 @@ class Game {
         this.isMenuMode = false;
         this.bgl1Speed = 50;
         this.bgl2Speed = 20;
-        this.fgl1Speed = 7;
+        this.fgl1Speed = 3;
     }
 
     /**
@@ -179,6 +179,7 @@ async function gameLoop() {
 
     // Play the game music
     let gameMusic = new Audio(`${audioDir}steviaSphere_Dolphin.mp3`);
+    gameMusic.loop = true;
     gameMusic.play();
 
     // This is the game loop
