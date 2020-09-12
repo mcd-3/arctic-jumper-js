@@ -5,6 +5,7 @@ html, body, div, canvas {
 
 body {
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 canvas {
