@@ -140,24 +140,6 @@ class Game {
         
     }
 
-    //FIXME: Make this a class
-    dropTitle() {
-        function drop() {
-            fgl2Ctx.globalAlpha += 0.02;
-            fgl2Ctx.clearRect(0, 0, bgl1.width, bgl1.height);
-            fgl2Ctx.drawImage(bootLogo, 0, 0);
-
-            if (bgl1Ctx.globalAlpha < 1.0) {
-                requestAnimationFrame(fadeIn);    
-            }
-        }
-        requestAnimationFrame(drop);
-    }
-
-    liftTitle() {
-
-    }
-
     /**
      * Makes all layers visible
      */
