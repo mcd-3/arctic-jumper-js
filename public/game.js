@@ -44,6 +44,10 @@ class Game {
 
         // game objects
         this.titleCard = null;
+        this.bgl1 = null;
+        this.bgl2 = null;
+        this.fgl1 = null;
+        this.fgl2 = null;
 
         // game variables
         this.bootTime = 7500;
@@ -181,23 +185,35 @@ class Game {
      * @returns {Background}
      */
     initBgl1() {
-        return new Background({canvas: bgl1}, 0, 0, 1, 0, this.bgl1Speed, bgl1.width, bgl1.height, "bgl1.png");
+        this.bgl1 = new Background({canvas: bgl1}, 0, 0, 1, 0, this.bgl1Speed, bgl1.width, bgl1.height, "bgl1.png");
+        return this.bgl1;
     }
 
     /**
      * Loads background layer 2 (the middle layer)
+     * 
+     * @returns {Background}
      */
     initBgl2() {
-        return new Background({canvas: bgl2}, 0, 0, 1, 0, this.bgl2Speed, bgl2.width, bgl2.height, "bgl2.png");
+        this.bgl2 = new Background({canvas: bgl2}, 0, 0, 1, 0, this.bgl2Speed, bgl2.width, bgl2.height, "bgl2.png");
+        return this.bgl2;
     }
 
     /**
      * Loads the foreground (the layer closest to the screen)
+     * 
+     * @returns {Background}
      */
     initFgl1() {
-        return new Background({canvas: fgl1}, 0, 0, 1, 0, this.fgl1Speed, fgl1.width, fgl1.height, "fgl1.png");
+        this.fgl1 = new Background({canvas: fgl1}, 0, 0, 1, 0, this.fgl1Speed, fgl1.width, fgl1.height, "fgl1.png");
+        return this.fgl1;
     }
 
+    /**
+     * Loads the title card
+     * 
+     * @returns {TitleCard}
+     */
     initTitleCard() {
         this.titleCard = new TitleCard({canvas: fgl2}, 0, 0, 256, 128, "title.png");
         return this.titleCard;
@@ -235,9 +251,9 @@ async function gameLoop() {
     });
 
     // Init layers, audio, and starting sprites
-    let canvasBgl1 = game.initBgl1();
-    let canvasBgl2 = game.initBgl2();
-    let canvasFgl1 = game.initFgl1();
+    game.initBgl1();
+    game.initBgl2();
+    game.initFgl1();
     game.initTitleCard();
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5)
@@ -247,9 +263,9 @@ async function gameLoop() {
     // This is the game loop
     function loop() {
 
-        canvasBgl1.draw();
-        canvasBgl2.draw();
-        canvasFgl1.draw();
+        game.bgl1.draw();
+        game.bgl2.draw();
+        game.fgl1.draw();
         fgl2Ctx.clearRect(0, 0, 920, 540);
 
         if (game.modes.menu) { // Main Menu Mode
@@ -262,7 +278,7 @@ async function gameLoop() {
                 }
             }
         } else if (game.modes.play) { // Gameplay Mode
-            
+
         }
 
         requestAnimationFrame(loop);
