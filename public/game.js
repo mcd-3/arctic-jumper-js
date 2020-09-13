@@ -16,6 +16,8 @@ const bgl1Ctx = bgl1.getContext("2d");
 const fgl2Ctx = fgl2.getContext("2d");
 
 let bootCompleteFlag = false;
+let titleDoneFlag = false;
+let gameStartingFlag = false;
 
 // This is the game object
 let game;
@@ -23,10 +25,13 @@ let game;
 // Press space
 document.addEventListener('keydown', (e) => {
     if (e.keyCode == spaceBarKeyCode) {
-        if (bootCompleteFlag) {
-            if (game.isMenuMode) {
-                alert("Hello World!");
+        if (game.modes.menu) {
+            if (titleDoneFlag) {
+                game.titleCard.setCoordinates(330, 60, 330, -138, true);
+                gameStartingFlag = true;
             }
+        } else if (game.modes.play) {
+            alert("play");
         }
     }
 });
@@ -37,12 +42,32 @@ class Game {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // game objects
+        this.titleCard = null;
+
         // game variables
         this.bootTime = 7500;
-        this.isMenuMode = true;
         this.bgl1Speed = 50;
         this.bgl2Speed = 20;
         this.fgl1Speed = 3;
+        this.modes = {
+            'boot': false,
+            'menu': false,
+            'play': false,
+            'death': false
+        };
+    }
+
+    /**
+     * Set the game mode
+     * 
+     * @param {string} mode 
+     */
+    setMode(mode) {
+        Object.keys(this.modes).forEach(value => this.modes[value] = false);
+        if (this.modes[mode] != undefined) {
+            this.modes[mode] = true;
+        }
     }
 
     /**
@@ -173,6 +198,11 @@ class Game {
         return new Background({canvas: fgl1}, 0, 0, 1, 0, this.fgl1Speed, fgl1.width, fgl1.height, "fgl1.png");
     }
 
+    initTitleCard() {
+        this.titleCard = new TitleCard({canvas: fgl2}, 0, 0, 256, 128, "title.png");
+        return this.titleCard;
+    }
+
     /**
      * Halts execution of a thread for a given amount of time
      * 
@@ -194,6 +224,8 @@ async function gameLoop() {
     fgl1.style.display = "none";
 
     // Boot game
+    game.setMode("boot");
+    console.table(game.modes);
     await game.sleep(800).then(() => {
         requestAnimationFrame(game.boot);
     });
@@ -206,10 +238,11 @@ async function gameLoop() {
     let canvasBgl1 = game.initBgl1();
     let canvasBgl2 = game.initBgl2();
     let canvasFgl1 = game.initFgl1();
-    let title = new TitleCard({canvas: fgl2}, 0, 0, 256, 128, "title.png");
+    game.initTitleCard();
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5)
-    title.setCoordinates(330, -138, 330, 60, false);
+    game.titleCard.setCoordinates(330, -138, 330, 60, false);
+    game.setMode("menu");
 
     // This is the game loop
     function loop() {
@@ -217,9 +250,20 @@ async function gameLoop() {
         canvasBgl1.draw();
         canvasBgl2.draw();
         canvasFgl1.draw();
+        fgl2Ctx.clearRect(0, 0, 920, 540);
 
-        fgl2.getContext("2d").clearRect(0, 0, 920, 540);
-        title.draw();
+        if (game.modes.menu) { // Main Menu Mode
+            game.titleCard.draw();
+            titleDoneFlag = game.titleCard.isDoneDrawing;
+
+            if (gameStartingFlag) {
+                if (game.titleCard.isDoneDrawing) {
+                    game.setMode("play");
+                }
+            }
+        } else if (game.modes.play) { // Gameplay Mode
+            
+        }
 
         requestAnimationFrame(loop);
     }

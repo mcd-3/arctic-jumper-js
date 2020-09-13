@@ -14,6 +14,7 @@ class TitleCard extends Entity {
         this.dx = 1;
         this.dy = 1;
         this.eraseOnDestination = true;
+        this.isDoneDrawing = true;
     }
 
     /**
@@ -36,6 +37,7 @@ class TitleCard extends Entity {
         this.dx = (fromX < toX) ? 1 : -1;
         this.dy = (fromY < toY) ? 1 : -1;
         this.eraseOnDestination = eraseOnDestination;
+        this.isDoneDrawing = false;
     }
 
     /**
@@ -55,8 +57,7 @@ class TitleCard extends Entity {
      * @param {Image} img 
      */
     onImageLoaded(img) {
-        if ((this.currentX >= this.toX && this.currentY >= this.toY) || 
-        (this.currentX <= this.toX && this.currentY <= this.toY)) {
+        if (this.currentX != this.toX || this.currentY != this.toY) {
             this.ctx.drawImage(img, this.currentX, this.currentY);
 
             if (this.currentX != this.toX) {
@@ -66,6 +67,7 @@ class TitleCard extends Entity {
                 this.currentY += this.dy;
             }
         } else {
+            this.isDoneDrawing = true;
             if (!this.eraseOnDestination) {
                 this.ctx.drawImage(img, this.currentX, this.currentY);
             }
