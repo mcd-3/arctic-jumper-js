@@ -11,6 +11,11 @@ The following music tracks are used in this project. All rights reserved and all
 **Hosted On**: https://hypeddit.com/track/apeqq7 </br>
 **License**: Creative Commons Attribution 3.0 - http://bit.ly/RFP_CClicense </br>
 </br></br>
+**Song**: Polar Bears</br>
+**Artist**: Stevia Sphere </br>
+**Hosted On**: https://hypeddit.com/track/o8lsjo </br>
+**License**: Creative Commons Attribution 3.0 - http://bit.ly/RFP_CClicense </br>
+</br></br>
 **SFX**: Electrical Sweep</br>
 **Author**: Sweeper</br>
 **Hosted On**: http://soundbible.com/1795-Electrical-Sweep.html</br>

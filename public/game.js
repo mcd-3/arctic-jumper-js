@@ -34,6 +34,13 @@ document.addEventListener('keydown', (e) => {
             if (titleDoneFlag) {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 gameStartingFlag = true;
+                let playSounds = new Promise(resolve => {
+                    game.playSFX(`${audioDir}magicIdea01.mp3`, 1);
+                    resolve(true);
+                }).then(value => {
+                    game.stopTrack();
+                    game.playTrack(`${audioDir}steviaSphere_PolarBears.mp3`, true, 0.5);
+                });
             }
         } else if (game.modes.play) {
             alert("play");
@@ -65,6 +72,9 @@ class Game {
             'play': false,
             'death': false
         };
+
+        // game audio
+        this.playingTrack = null;
     }
 
     /**
@@ -138,19 +148,47 @@ class Game {
     }
 
     /**
-     * Play a music track
+     * Play a music track. Not to be used for SFX
      * 
-     * @param {strong} track 
+     * @param {string} track 
      * @param {boolean} isLoop 
      * @param {float} volume 
      * @returns {Audio}
      */
     playTrack(track, isLoop, volume) {
-        let gameMusic = new Audio(track);
-        gameMusic.loop = isLoop;
-        gameMusic.volume = volume;
-        gameMusic.play();
-        return gameMusic;
+        if (this.playingTrack != null) {
+            this.stopTrack();
+        }
+        this.playingTrack = new Audio(track);
+        this.playingTrack.loop = isLoop;
+        this.playingTrack.volume = volume;
+        this.playingTrack.play();
+        return this.playingTrack;
+    }
+
+    /**
+     * Stops a music track if it is playing
+     */
+    stopTrack() {
+        if (this.playingTrack != null) {
+            this.playingTrack.pause();
+            this.playingTrack.currentTime = 0;
+            this.playingTrack = null;
+        }
+    }
+
+    /**
+     * Plays a sound effect. Not to be used for music tracks
+     * 
+     * @param {string} sfx 
+     * @param {float} volume 
+     * @returns {Audio}
+     */
+    playSFX(sfx, volume) {
+        let gameSfx = new Audio(sfx);
+        gameSfx.volume = volume;
+        gameSfx.play();
+        return gameSfx;
     }
 
     /**
@@ -261,7 +299,7 @@ async function gameLoop() {
     game.initFgl1();
     game.initTitleCard();
     game.showLayers();
-    game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5)
+    game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
