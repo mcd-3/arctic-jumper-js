@@ -3,6 +3,8 @@
  * 
  * Contains all game functionality and logic
  */
+
+// Asset directories
 const assetsDir = "./assets/";
 const audioDir = `${assetsDir}audio/`;
 const imagesDir = `${assetsDir}images/`;
@@ -11,6 +13,7 @@ const imagesDir = `${assetsDir}images/`;
 const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
 
+// HTML elements
 const spaceBarKeyCode = "Space";
 const bgl1 = document.getElementById("bgl1");
 const bgl2 = document.getElementById("bgl2");
@@ -27,7 +30,7 @@ let gameStartingFlag = false;
 // This is the game object
 let game;
 
-// Press space
+// Event for pressing space
 document.addEventListener('keydown', (e) => {
     if (e.code == spaceBarKeyCode) {
         if (game.modes.menu) {
@@ -48,9 +51,20 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+/**
+ * The base game object.
+ * It contains all game logic, variables, audio, text, and sequences.
+ */
 class Game {
 
+    /**
+     * Initializes the game
+     * 
+     * @param {Canvas} canvas Boot canvas 
+     * @param {CanvasRenderingContext2D} ctx Boot canvas context 
+     */
     constructor(canvas, ctx) {
+        // Emulate a dark intro screen seen in most games
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -75,6 +89,10 @@ class Game {
 
         // game audio
         this.playingTrack = null;
+
+        // game strings
+        this.madeByText = new UIText({canvas: fgl2}, 20, (540-30), authorStr, 30, 1.45);
+        this.startText = new UIText({canvas: fgl2}, 334, 210, startStr, 24, 1.15);
     }
 
     /**
@@ -303,10 +321,6 @@ async function gameLoop() {
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
-    //TODO: Remove this
-    let madeByText = new UIText({canvas: fgl2}, 20, (540-30), authorStr, 30, 1.45);
-    let startText = new UIText({canvas: fgl2}, 334, 210, startStr, 24, 1.15);
-
     // This is the game loop
     function loop() {
 
@@ -318,10 +332,10 @@ async function gameLoop() {
         if (game.modes.menu) { // Main Menu Mode
             game.titleCard.draw();
             titleDoneFlag = game.titleCard.isDoneDrawing;
-            madeByText.draw();
+            game.madeByText.draw();
 
             if (titleDoneFlag) {
-                startText.draw();
+                game.startText.draw();
             }
 
             if (gameStartingFlag) {
