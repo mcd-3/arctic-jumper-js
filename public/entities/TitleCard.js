@@ -34,8 +34,8 @@ class TitleCard extends Entity {
         this.currentX = fromX;
         this.currentY = fromY;
         this.coordinatesSet = true;
-        this.dx = (fromX < toX) ? 1 : -1;
-        this.dy = (fromY < toY) ? 1 : -1;
+        this.dx = (fromX < toX) ? 2 : -2;
+        this.dy = (fromY < toY) ? 2 : -2;
         this.eraseOnDestination = eraseOnDestination;
         this.isDoneDrawing = false;
     }
