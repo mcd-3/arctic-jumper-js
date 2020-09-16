@@ -7,7 +7,11 @@ const assetsDir = "./assets/";
 const audioDir = `${assetsDir}audio/`;
 const imagesDir = `${assetsDir}images/`;
 
-const spaceBarKeyCode = 32;
+// Text strings
+const authorStr = "Made by: Matthew C-D";
+const startStr = "-- Press Space to Start --";
+
+const spaceBarKeyCode = "Space";
 const bgl1 = document.getElementById("bgl1");
 const bgl2 = document.getElementById("bgl2");
 const fgl1 = document.getElementById("fgl1");
@@ -15,6 +19,7 @@ const fgl2 = document.getElementById("fgl2");
 const bgl1Ctx = bgl1.getContext("2d");
 const fgl2Ctx = fgl2.getContext("2d");
 
+// Program flags
 let bootCompleteFlag = false;
 let titleDoneFlag = false;
 let gameStartingFlag = false;
@@ -24,7 +29,7 @@ let game;
 
 // Press space
 document.addEventListener('keydown', (e) => {
-    if (e.keyCode == spaceBarKeyCode) {
+    if (e.code == spaceBarKeyCode) {
         if (game.modes.menu) {
             if (titleDoneFlag) {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
@@ -260,6 +265,10 @@ async function gameLoop() {
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
+    //TODO: Remove this
+    let madeByText = new UIText({canvas: fgl2}, 20, (540-30), authorStr, 30, 1.45);
+    let startText = new UIText({canvas: fgl2}, 334, 210, startStr, 24, 1.15);
+
     // This is the game loop
     function loop() {
 
@@ -271,6 +280,11 @@ async function gameLoop() {
         if (game.modes.menu) { // Main Menu Mode
             game.titleCard.draw();
             titleDoneFlag = game.titleCard.isDoneDrawing;
+            madeByText.draw();
+
+            if (titleDoneFlag) {
+                startText.draw();
+            }
 
             if (gameStartingFlag) {
                 if (game.titleCard.isDoneDrawing) {

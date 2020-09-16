@@ -17,3 +17,9 @@ canvas {
 #bgl2, #fgl2 {
     background-color: rgba(255, 0, 0, 0);;
 }
+
+/* Load custom fonts*/
+@font-face {
+    font-family: 'dpcomic';
+    src: url('assets/fonts/dpcomic.regular.ttf');
+}
