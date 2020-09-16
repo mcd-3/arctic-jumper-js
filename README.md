@@ -15,3 +15,8 @@ The following music tracks are used in this project. All rights reserved and all
 **Author**: Sweeper</br>
 **Hosted On**: http://soundbible.com/1795-Electrical-Sweep.html</br>
 **License**: Public Domain</br>
+</br></br>
+**SFX**: Magic Idea 01</br>
+**Author**: unknown</br>
+**Hosted On**: http://freesoundeffect.net/sound/magic-idea-01-sound-effect</br>
+**License**: Royalty Free</br>
