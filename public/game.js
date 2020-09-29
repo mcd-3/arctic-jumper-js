@@ -34,7 +34,7 @@ let game;
 document.addEventListener('keydown', (e) => {
     if (e.code == spaceBarKeyCode) {
         if (game.modes.menu) {
-            if (titleDoneFlag) {
+            if (titleDoneFlag) { // Play music, get rid of title card
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
@@ -74,6 +74,7 @@ class Game {
         this.bgl2 = null;
         this.fgl1 = null;
         this.fgl2 = null;
+        this.player = null;
 
         // game variables
         this.bootTime = 7500;
@@ -281,6 +282,13 @@ class Game {
     }
 
     /**
+     * 
+     */
+    initPlayer() {
+        this.player = new Player({canvas: fgl2}, 760, 340, "guy.png");
+    }
+
+    /**
      * Halts execution of a thread for a given amount of time
      * 
      * @param {int} ms
@@ -302,7 +310,6 @@ async function gameLoop() {
 
     // Boot game
     game.setMode("boot");
-    console.table(game.modes);
     await game.sleep(800).then(() => {
         requestAnimationFrame(game.boot);
     });
@@ -316,6 +323,7 @@ async function gameLoop() {
     game.initBgl2();
     game.initFgl1();
     game.initTitleCard();
+    game.initPlayer();
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
@@ -330,6 +338,8 @@ async function gameLoop() {
         fgl2Ctx.clearRect(0, 0, 920, 540);
 
         if (game.modes.menu) { // Main Menu Mode
+
+            // Draw the title card moving downwards or stationary if it isn't finished yet
             game.titleCard.draw();
             titleDoneFlag = game.titleCard.isDoneDrawing;
             game.madeByText.draw();
@@ -338,13 +348,19 @@ async function gameLoop() {
                 game.startText.draw();
             }
 
+            // Start drawing in the player and moving card off-screen
             if (gameStartingFlag) {
+                game.player.moveToStartPos();
                 if (game.titleCard.isDoneDrawing) {
                     game.setMode("play");
                 }
             }
         } else if (game.modes.play) { // Gameplay Mode
-
+            if (game.player.isAtStartPos()) {
+                game.player.draw();
+            } else { // Make sure player gets to start position
+                game.player.moveToStartPos();
+            }
         }
 
         requestAnimationFrame(loop);
