@@ -1,6 +1,12 @@
+/* Page Styles */
 html, body, div, canvas {
     margin: 0px;
     padding: 0px;
+}
+
+html, body { 
+    width:100%; 
+    height:100%; 
 }
 
 body {
@@ -8,10 +14,44 @@ body {
     overflow-x: hidden;
 }
 
+/* Canvas Styles */
+#canvasContainer {
+    position: relative; height: 100%
+}
+
 canvas {
-    display: block;
+    width: 100%;
     box-sizing: border-box;
     background-color: #000000;
+
+}
+
+#bgl1 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+}
+
+#bgl2 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+#fgl1 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+}
+
+#fgl2 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
 }
 
 #bgl2, #fgl2 {

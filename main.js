@@ -24,7 +24,16 @@ app.on('ready', () => {
 
 const mainMenuTemplate = [{
         label: "File",
-        submenu: [{
+        submenu: [
+            {
+              label: "Fullscreen",
+              accelerator: process.platform == "darwin" ? "Command+F" : "Ctrl+F",
+              click() {
+                let window = BrowserWindow.getFocusedWindow();
+                window.setFullScreen(!window.isFullScreen())
+              }
+            },
+            {
                 label: "Quit",
                 accelerator: process.platform == "darwin" ? "Command+Q" : "Ctrl+Q",
                 click() {

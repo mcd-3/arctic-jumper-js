@@ -6,16 +6,12 @@
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div style="position: relative;">
-        <canvas id="bgl1" width="920" height="540"
-          style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
-        <canvas id="bgl2" width="920" height="265"
-          style="position: absolute; left: 0; margin-top: 275px; z-index: 1;"></canvas>
-        <canvas id="fgl1" width="920" height="154"
-          style="position: absolute; left: 0; margin-top: 386px; z-index: 2;"></canvas>
-        <canvas id="fgl2" width="920" height="540"
-          style="position: absolute; left: 0; top: 0; z-index: 2;"></canvas>
-       </div>
+    <div id="canvasContainer">
+      <canvas id="bgl1" width="920" height="540"></canvas>
+      <canvas id="bgl2" width="920" height="265"></canvas>
+      <canvas id="fgl1" width="920" height="154"></canvas>
+      <canvas id="fgl2" width="920" height="540"></canvas>
+    </div>
 
     <!-- All scripts needed to make the game work -->
     <script src="entities/Entity.js"></script>
