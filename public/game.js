@@ -46,7 +46,8 @@ document.addEventListener('keydown', (e) => {
                 });
             }
         } else if (game.modes.play) {
-            alert("play");
+            game.player.jump();
+            //alert("play");
         }
     }
 });
@@ -357,7 +358,8 @@ async function gameLoop() {
             }
         } else if (game.modes.play) { // Gameplay Mode
             if (game.player.isAtStartPos()) {
-                game.player.draw();
+                game.player.updatePos();
+                // game.player.draw();
             } else { // Make sure player gets to start position
                 game.player.moveToStartPos();
             }
