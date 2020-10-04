@@ -34,6 +34,25 @@ class Hitbox {
      * @param {Hitbox} otherHitbox 
      */
     isOverlapping(otherHitbox) {
-        
+        let isOvrlp = false;
+
+        if ((this.bl <= otherHitbox.ul) && (
+            (this.bl >= otherHitbox.bl && this.bl <= otherHitbox.br) ||
+            (this.br >= otherHitbox.bl && this.br <= otherHitbox.br)
+        )) {
+            isOvrlp = true;
+        }
+
+        return isOvrlp;
+    }
+
+    /**
+     * Draws a hitbox to the specified canvas.
+     * This is a debug function: it should not be used other than for tests
+     * 
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    debugDrawHitbox(ctx) {
+        ctx.fillRect(ul, br, (ur - ul), (br - bl));
     }
 }
