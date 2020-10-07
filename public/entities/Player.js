@@ -8,9 +8,9 @@ class Player extends Entity {
         this.originalX = this.x;
 
         this.jumpConfig = {
-            INIT_JUMP_FORCE: 7,
+            INIT_JUMP_FORCE: 8,
             INIT_JUMP_DIRECTION: 1,
-            JUMP_FRAME_WAIT: 3,
+            JUMP_FRAME_WAIT: 2,
             JUMP_ZERO_WAIT: 5,
             START_Y: this.y
         }

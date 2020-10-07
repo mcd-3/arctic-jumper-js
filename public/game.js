@@ -45,7 +45,6 @@ document.addEventListener('keydown', (e) => {
             }
         } else if (game.modes.play) {
             game.player.jump();
-            //alert("play");
         }
     }
 });
@@ -221,7 +220,7 @@ class Game {
     }
 
     /**
-     * Goes to the main menu
+     * Starts main menu mode
      */
     menu() {
             // Draw the title card moving downwards or stationary if it isn't finished yet
@@ -243,17 +242,30 @@ class Game {
     }
 
     /**
-     * Start a new game
+     * Plays the game in play mode
      */
-    start() {
+    play() {
+        if (this.player.isAtStartPos()) {
+            this.framesUntilNewSpawn--;
 
-    }
+            for (let i = 0; i < this.enemyBuffer.length; i++) {
+                this.enemyBuffer[i].slideTowardsPlayer();
 
-    /**
-     * Updates the game logic every frame
-     */
-    update() {
-        
+                if (this.enemyBuffer[i].isOutOfBounds()) {
+                    this.despawnEnemy(i);
+                } else {
+                    this.enemyBuffer[i].draw();
+                }
+            }
+
+            if (this.framesUntilNewSpawn <= 0) {
+                this.spawnEnemy();
+            }
+
+            this.player.updatePos();
+        } else { // Make sure player gets to start position
+            this.player.moveToStartPos();
+        }
     }
 
     /**
@@ -309,7 +321,7 @@ class Game {
                 this.framesUntilNewSpawn = 175;
                 break;
             case 3:
-                this.framesUntilNewSpawn = 210;
+                this.framesUntilNewSpawn = 200;
                 break;
             case 4:
                 this.framesUntilNewSpawn = 80;
@@ -335,7 +347,17 @@ class Game {
      * @returns {Background}
      */
     initBgl1() {
-        this.bgl1 = new Background({canvas: bgl1}, 0, 0, 1, 0, this.bgl1Speed, bgl1.width, bgl1.height, "bgl1.png");
+        this.bgl1 = new Background(
+            {canvas: bgl1},
+            0,
+            0,
+            1,
+            0,
+            this.bgl1Speed,
+            bgl1.width,
+            bgl1.height,
+            "bgl1.png"
+        );
         return this.bgl1;
     }
 
@@ -345,7 +367,17 @@ class Game {
      * @returns {Background}
      */
     initBgl2() {
-        this.bgl2 = new Background({canvas: bgl2}, 0, 0, 1, 0, this.bgl2Speed, bgl2.width, bgl2.height, "bgl2.png");
+        this.bgl2 = new Background(
+            {canvas: bgl2},
+            0,
+            0,
+            1,
+            0,
+            this.bgl2Speed,
+            bgl2.width,
+            bgl2.height, 
+            "bgl2.png"
+        );
         return this.bgl2;
     }
 
@@ -355,7 +387,17 @@ class Game {
      * @returns {Background}
      */
     initFgl1() {
-        this.fgl1 = new Background({canvas: fgl1}, 0, 0, 1, 0, this.fgl1Speed, fgl1.width, fgl1.height, "fgl1.png");
+        this.fgl1 = new Background(
+            {canvas: fgl1},
+            0, 
+            0,
+            1,
+            0,
+            this.fgl1Speed,
+            fgl1.width,
+            fgl1.height,
+            "fgl1.png"
+        );
         return this.fgl1;
     }
 
@@ -428,27 +470,7 @@ async function gameLoop() {
         if (game.modes.menu) { // Main Menu Mode
             game.menu();
         } else if (game.modes.play) { // Gameplay Mode
-            if (game.player.isAtStartPos()) {
-                game.player.updatePos();
-                game.framesUntilNewSpawn--;
-
-                for (let i = 0; i < game.enemyBuffer.length; i++) {
-                    game.enemyBuffer[i].slideTowardsPlayer();
-
-                    if (game.enemyBuffer[i].isOutOfBounds()) {
-                        game.despawnEnemy(i);
-                    } else {
-                        game.enemyBuffer[i].draw();
-                    }
-                }
-
-                if (game.framesUntilNewSpawn <= 0) {
-                    game.spawnEnemy();
-                }
-
-            } else { // Make sure player gets to start position
-                game.player.moveToStartPos();
-            }
+            game.play();
         }
 
         requestAnimationFrame(loop);
