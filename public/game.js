@@ -24,8 +24,6 @@ const fgl2Ctx = fgl2.getContext("2d");
 
 // Program flags
 let bootCompleteFlag = false;
-let titleDoneFlag = false;
-let gameStartingFlag = false;
 
 // This is the game object
 let game;
@@ -34,9 +32,9 @@ let game;
 document.addEventListener('keydown', (e) => {
     if (e.code == spaceBarKeyCode) {
         if (game.modes.menu) {
-            if (titleDoneFlag) { // Play music, get rid of title card
+            if (game.titleDoneFlag) { // Play music, get rid of title card
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
-                gameStartingFlag = true;
+                game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
                     game.playSFX(`${audioDir}magicIdea01.mp3`, 1);
                     resolve(true);
@@ -88,6 +86,17 @@ class Game {
             'play': false,
             'death': false
         };
+
+        // flags
+        this.titleDoneFlag = false;
+        this.gameStartingFlag = false;
+
+        // enemy variables
+        this.enemyBuffer = [];
+        this.enemyLimit = 3;
+        this.framesUntilNewSpawn = 35;
+        this.enemySpeed = 8;
+        this.enemySpawnPoint = -128;
 
         // game audio
         this.playingTrack = null;
@@ -215,7 +224,22 @@ class Game {
      * Goes to the main menu
      */
     menu() {
+            // Draw the title card moving downwards or stationary if it isn't finished yet
+            this.titleCard.draw();
+            this.titleDoneFlag = this.titleCard.isDoneDrawing;
+            this.madeByText.draw();
 
+            if (this.titleDoneFlag) {
+                this.startText.draw();
+            }
+
+            // Start drawing in the player and moving card off-screen
+            if (this.gameStartingFlag) {
+                this.player.moveToStartPos();
+                if (this.titleCard.isDoneDrawing) {
+                    this.setMode("play");
+                }
+            }
     }
 
     /**
@@ -240,6 +264,69 @@ class Game {
         bgl2.style.display = "block";
         fgl1.style.display = "block";
         fgl2.style.display = "block";
+    }
+
+    /**
+     * Spawns an enemy on the screen
+     */
+    spawnEnemy() {
+        let enemyTypes = 3;
+        let frameTimeTypes = 4;
+        let randomEnemy = Math.floor(Math.random() * Math.floor(enemyTypes)) + 1;
+        let randomFrameTime = Math.floor(Math.random() * Math.floor(frameTimeTypes)) + 1;
+
+        // Determine the enemy type;
+        let enemy = null;
+        switch(randomEnemy) {
+            case 1:
+                // canvasObj, x, y, slideSpeed, hitbox
+                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                break;
+            case 2:
+                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                //enemy = new Rock();
+                break;
+            case 3:
+                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                //enemy = new Snowman();
+                break;
+            default:
+                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                break;
+        }
+
+        // Don't spawn an enemy if the buffer is full
+        if (this.enemyBuffer.length < this.enemyLimit) {
+            this.enemyBuffer.push(enemy);
+        }
+
+        // Determine how many frame to wait until next spawn
+        switch(randomFrameTime) {
+            case 1:
+                this.framesUntilNewSpawn = 135;
+                break;
+            case 2:
+                this.framesUntilNewSpawn = 175;
+                break;
+            case 3:
+                this.framesUntilNewSpawn = 210;
+                break;
+            case 4:
+                this.framesUntilNewSpawn = 80;
+                break;
+            default:
+                this.framesUntilNewSpawn = 135;
+                break;
+        }
+    }
+
+    /**
+     * Despawns an enemy
+     * 
+     * @param {int} bufferIndex 
+     */
+    despawnEnemy(bufferIndex) {
+        this.enemyBuffer.splice(bufferIndex, 1);
     }
 
     /**
@@ -339,27 +426,26 @@ async function gameLoop() {
         fgl2Ctx.clearRect(0, 0, 920, 540);
 
         if (game.modes.menu) { // Main Menu Mode
-
-            // Draw the title card moving downwards or stationary if it isn't finished yet
-            game.titleCard.draw();
-            titleDoneFlag = game.titleCard.isDoneDrawing;
-            game.madeByText.draw();
-
-            if (titleDoneFlag) {
-                game.startText.draw();
-            }
-
-            // Start drawing in the player and moving card off-screen
-            if (gameStartingFlag) {
-                game.player.moveToStartPos();
-                if (game.titleCard.isDoneDrawing) {
-                    game.setMode("play");
-                }
-            }
+            game.menu();
         } else if (game.modes.play) { // Gameplay Mode
             if (game.player.isAtStartPos()) {
                 game.player.updatePos();
-                // game.player.draw();
+                game.framesUntilNewSpawn--;
+
+                for (let i = 0; i < game.enemyBuffer.length; i++) {
+                    game.enemyBuffer[i].slideTowardsPlayer();
+
+                    if (game.enemyBuffer[i].isOutOfBounds()) {
+                        game.despawnEnemy(i);
+                    } else {
+                        game.enemyBuffer[i].draw();
+                    }
+                }
+
+                if (game.framesUntilNewSpawn <= 0) {
+                    game.spawnEnemy();
+                }
+
             } else { // Make sure player gets to start position
                 game.player.moveToStartPos();
             }
