@@ -17,6 +17,7 @@ class Player extends Entity {
         this.jumpForce = this.jumpConfig.INIT_JUMP_FORCE; // subtract 1 until 0 each frame
         this.jumpDirection = this.jumpConfig.INIT_JUMP_DIRECTION; // 1 goes up, -1 goes down
         this.jumpWait = this.jumpConfig.JUMP_FRAME_WAIT; // wait time until we draw next frame
+        this.jumpHeightWait = this.jumpConfig.JUMP_ZERO_WAIT; // waits at the top of a jump for x frames
     }
 
     /**
@@ -63,14 +64,25 @@ class Player extends Entity {
 
             if (this.jumpWait == 0) { // check if we land on a jump frame
                 this.y -= (this.jumpForce * 8) * this.jumpDirection;
-                this.jumpForce--;
+
+                if (this.jumpForce > 0) {
+                    this.jumpForce--;
+                }
     
                 if (this.jumpForce == 0) {
                     if (this.jumpDirection < 1) {
                         this.isGrounded = true;
+                    } else {
+                        if (this.jumpHeightWait > 0) {
+                            this.jumpHeightWait--;
+                        } else {
+                            this.jumpHeightWait = this.jumpConfig.JUMP_ZERO_WAIT;
+                        }
                     }
-                    this.jumpDirection = (-this.jumpDirection);
-                    this.jumpForce = this.jumpConfig.INIT_JUMP_FORCE;
+                    if (this.jumpHeightWait <= 0) {
+                        this.jumpDirection = (-this.jumpDirection);
+                        this.jumpForce = this.jumpConfig.INIT_JUMP_FORCE;
+                    }
                 }
                 this.jumpWait = this.jumpConfig.JUMP_FRAME_WAIT;
             }
