@@ -15,12 +15,6 @@ const startStr = "-- Press Space to Start --";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
-const bgl1 = document.getElementById("bgl1");
-const bgl2 = document.getElementById("bgl2");
-const fgl1 = document.getElementById("fgl1");
-const fgl2 = document.getElementById("fgl2");
-const bgl1Ctx = bgl1.getContext("2d");
-const fgl2Ctx = fgl2.getContext("2d");
 
 // Program flags
 let bootCompleteFlag = false;
@@ -61,10 +55,15 @@ class Game {
      * @param {Canvas} canvas Boot canvas 
      * @param {CanvasRenderingContext2D} ctx Boot canvas context 
      */
-    constructor(canvas, ctx) {
+    constructor(bootCanvas, spriteCanvas) {
+        this.bootCanvas = bootCanvas;
+        this.bootCanvasCtx = this.bootCanvas.getContext("2d");
+        this.spriteCanvas = spriteCanvas;
+        this.spriteCanvasCtx = this.spriteCanvas.getContext("2d");
+
         // Emulate a dark intro screen seen in most games
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this.bootCanvasCtx.fillStyle = 'black';
+        this.bootCanvasCtx.fillRect(0, 0, this.bootCanvas.width, this.bootCanvas.height);
 
         // game objects
         this.titleCard = null;
@@ -101,8 +100,8 @@ class Game {
         this.playingTrack = null;
 
         // game strings
-        this.madeByText = new UIText({canvas: fgl2}, 20, (540-30), authorStr, 30, 1.45);
-        this.startText = new UIText({canvas: fgl2}, 334, 210, startStr, 24, 1.15);
+        this.madeByText = new UIText({canvas: this.spriteCanvas}, 20, (540-30), authorStr, 30, 1.45);
+        this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
     }
 
     /**
@@ -126,6 +125,9 @@ class Game {
     boot() {
         let bootLogo = new Image();
         bootLogo.src = `${imagesDir}boot.png`;
+
+        let bgl1 = document.getElementById("bgl1");
+        let bgl1Ctx = bgl1.getContext("2d");
 
         bootLogo.onload = () => {
             let bootSfx = new Audio(`${audioDir}logo_short.mp3`);
@@ -272,10 +274,10 @@ class Game {
      * Makes all layers visible
      */
     showLayers() {
-        bgl1.style.display = "block";
-        bgl2.style.display = "block";
-        fgl1.style.display = "block";
-        fgl2.style.display = "block";
+        this.bgl1.canvas.style.display = "block";
+        this.bgl2.canvas.style.display = "block";
+        this.fgl1.canvas.style.display = "block";
+        this.spriteCanvas.style.display = "block";
     }
 
     /**
@@ -292,18 +294,18 @@ class Game {
         switch(randomEnemy) {
             case 1:
                 // canvasObj, x, y, slideSpeed, hitbox
-                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
                 break;
             case 2:
-                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
                 //enemy = new Rock();
                 break;
             case 3:
-                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
                 //enemy = new Snowman();
                 break;
             default:
-                enemy = new Penguin({canvas: fgl2}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
                 break;
         }
 
@@ -346,16 +348,16 @@ class Game {
      * 
      * @returns {Background}
      */
-    initBgl1() {
+    initBgl1(layer) {
         this.bgl1 = new Background(
-            {canvas: bgl1},
+            {canvas: layer},
             0,
             0,
             1,
             0,
             this.bgl1Speed,
-            bgl1.width,
-            bgl1.height,
+            layer.width,
+            layer.height,
             "bgl1.png"
         );
         return this.bgl1;
@@ -366,16 +368,16 @@ class Game {
      * 
      * @returns {Background}
      */
-    initBgl2() {
+    initBgl2(layer) {
         this.bgl2 = new Background(
-            {canvas: bgl2},
+            {canvas: layer},
             0,
             0,
             1,
             0,
             this.bgl2Speed,
-            bgl2.width,
-            bgl2.height, 
+            layer.width,
+            layer.height, 
             "bgl2.png"
         );
         return this.bgl2;
@@ -386,16 +388,16 @@ class Game {
      * 
      * @returns {Background}
      */
-    initFgl1() {
+    initFgl1(layer) {
         this.fgl1 = new Background(
-            {canvas: fgl1},
+            {canvas: layer},
             0, 
             0,
             1,
             0,
             this.fgl1Speed,
-            fgl1.width,
-            fgl1.height,
+            layer.width,
+            layer.height,
             "fgl1.png"
         );
         return this.fgl1;
@@ -406,16 +408,17 @@ class Game {
      * 
      * @returns {TitleCard}
      */
-    initTitleCard() {
-        this.titleCard = new TitleCard({canvas: fgl2}, 0, 0, 256, 128, "title.png");
+    initTitleCard(layer) {
+        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, "title.png");
         return this.titleCard;
     }
 
     /**
      * 
      */
-    initPlayer() {
-        this.player = new Player({canvas: fgl2}, 760, 340, "guy.png");
+    initPlayer(layer) {
+        this.player = new Player({canvas: layer}, 760, 340, "guy.png");
+        return this.player;
     }
 
     /**
@@ -434,9 +437,9 @@ class Game {
  * Loops through game logic to play the game
  */
 async function gameLoop() {
-    game = new Game(bgl1, bgl1Ctx);
-    bgl2.style.display = "none";
-    fgl1.style.display = "none";
+    let bgl1 = document.getElementById("bgl1");
+    let fgl2 = document.getElementById("fgl2");
+    game = new Game(bgl1, fgl2);
 
     // Boot game
     game.setMode("boot");
@@ -445,15 +448,15 @@ async function gameLoop() {
     });
     await game.awaitBootFinish().then(() => {
         bootCompleteFlag = true;
-        bgl1Ctx.globalAlpha = 1;
+        bgl1.getContext("2d").globalAlpha = 1;
     });
 
     // Init layers, audio, and starting sprites
-    game.initBgl1();
-    game.initBgl2();
-    game.initFgl1();
-    game.initTitleCard();
-    game.initPlayer();
+    game.initBgl1(bgl1);
+    game.initBgl2(document.getElementById("bgl2"));
+    game.initFgl1(document.getElementById("fgl1"));
+    game.initTitleCard(fgl2);
+    game.initPlayer(fgl2);
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
@@ -465,7 +468,7 @@ async function gameLoop() {
         game.bgl1.draw();
         game.bgl2.draw();
         game.fgl1.draw();
-        fgl2Ctx.clearRect(0, 0, 920, 540);
+        game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
 
         if (game.modes.menu) { // Main Menu Mode
             game.menu();
