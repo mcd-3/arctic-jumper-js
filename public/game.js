@@ -257,6 +257,7 @@ class Game {
                     this.despawnEnemy(i);
                 } else {
                     this.enemyBuffer[i].draw();
+                    this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
                 }
             }
 
@@ -291,21 +292,28 @@ class Game {
 
         // Determine the enemy type;
         let enemy = null;
+
+        // TODO: Change these values once other enemies are imlpemented
+        let y = 395;
+        let x = this.enemySpawnPoint;
+        let penguinHitBox = new Hitbox(y + 50, y, x, x + 170);
+        console.table(penguinHitBox)
+
         switch(randomEnemy) {
             case 1:
                 // canvasObj, x, y, slideSpeed, hitbox
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, penguinHitBox);
                 break;
             case 2:
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, penguinHitBox);
                 //enemy = new Rock();
                 break;
             case 3:
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, penguinHitBox);
                 //enemy = new Snowman();
                 break;
             default:
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, null);
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, penguinHitBox);
                 break;
         }
 

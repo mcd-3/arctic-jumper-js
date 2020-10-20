@@ -10,6 +10,7 @@ class Obstacle extends Entity {
      */
     slideTowardsPlayer() {
         this.x += this.slideSpeed;
+        this.hitbox.updatePos(this.hitbox.u, this.hitbox.d, this.x, this.hitbox.r + this.slideSpeed);
     }
 
     /**
