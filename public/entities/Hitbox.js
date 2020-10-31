@@ -30,14 +30,13 @@ class Hitbox {
 
     /**
      * Checks to see if two hitboxes are overlapping
-     * FIXME: Might be bugged...
      * 
      * @param {Hitbox} otherHitbox 
      */
     isOverlapping(otherHitbox) {
         let isOvrlp = false;
 
-        if ((this.d <= otherHitbox.u) && (
+        if ((this.d >= otherHitbox.u) && (
             (this.l >= otherHitbox.l && this.l <= otherHitbox.r) ||
             (this.r >= otherHitbox.l && this.r <= otherHitbox.r)
         )) {

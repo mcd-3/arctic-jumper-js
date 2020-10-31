@@ -267,6 +267,14 @@ class Game {
 
             this.player.updatePos();
             this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+
+            // Check if hitboxes overlap
+            this.enemyBuffer.forEach(enemy => {
+                if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
+                    alert("OUCH!!!");
+                }
+            });
+
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
@@ -297,7 +305,7 @@ class Game {
         // TODO: Change these values once other enemies are imlpemented
         let y = 395;
         let x = this.enemySpawnPoint;
-        let penguinHitBox = new Hitbox(y - 50, y, x, x + 170);
+        let penguinHitBox = new Hitbox(y + 10, y + 60, x + 20, x + 150);
 
         switch(randomEnemy) {
             case 1:
