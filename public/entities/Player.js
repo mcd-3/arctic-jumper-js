@@ -3,12 +3,17 @@ class Player extends Entity {
         super(canvasObj, x, y);
         this.isGrounded = true;
         this.spriteSheetName = spriteSheetName;
-        //this.hitbox = new Hitbox(this.y, this.y - 100, this.x, this.x + 20);
-        this.hitbox = new Hitbox(0,0,0,0);
         this.isAtStart = false;
         this.fadeX = 1000;
         this.originalX = this.x;
 
+        // Health
+        this.hitpoints = 3;
+        this.invincibilityFrames = 75;
+        this.currentInvincibility = 0;
+
+        // Variables to control hitbox
+        this.hitbox = new Hitbox(0,0,0,0);
         this.hitboxConfig = {
             Y_MARGIN: 75,
             X_MARGIN: 20,
@@ -16,6 +21,7 @@ class Player extends Entity {
             WIDTH: 35
         }
 
+        // Variables to control jumping
         this.jumpConfig = {
             INIT_JUMP_FORCE: 8,
             INIT_JUMP_DIRECTION: 1,
@@ -102,7 +108,33 @@ class Player extends Entity {
             this.x + this.hitboxConfig.X_MARGIN,
             this.x + this.hitboxConfig.WIDTH + this.hitboxConfig.X_MARGIN
         );
+        this.updateInvincibility();
+
         this.draw();
+    }
+
+    /**
+     * Checks to see if the player is hurt
+     */
+    isHurt() {
+        return (this.currentInvincibility > 0);
+    }
+
+    /**
+     * Take damage
+     */
+    takeDamage() {
+        this.hitpoints--;
+        this.currentInvincibility = this.invincibilityFrames;
+    }
+
+    /**
+     * Updates the invincibility frames of the player
+     */
+    updateInvincibility() {
+        if (this.isHurt()) {
+            this.currentInvincibility--;
+        }
     }
 
     /**

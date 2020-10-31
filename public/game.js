@@ -271,7 +271,10 @@ class Game {
             // Check if hitboxes overlap
             this.enemyBuffer.forEach(enemy => {
                 if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
-                    alert("OUCH!!!");
+                    if (!this.player.isHurt()) {
+                        this.player.takeDamage();
+                        alert("OUCH!!!");
+                    }
                 }
             });
 
