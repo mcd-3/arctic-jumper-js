@@ -3,9 +3,18 @@ class Player extends Entity {
         super(canvasObj, x, y);
         this.isGrounded = true;
         this.spriteSheetName = spriteSheetName;
+        //this.hitbox = new Hitbox(this.y, this.y - 100, this.x, this.x + 20);
+        this.hitbox = new Hitbox(0,0,0,0);
         this.isAtStart = false;
         this.fadeX = 1000;
         this.originalX = this.x;
+
+        this.hitboxConfig = {
+            Y_MARGIN: 75,
+            X_MARGIN: 20,
+            HEIGHT: 50,
+            WIDTH: 35
+        }
 
         this.jumpConfig = {
             INIT_JUMP_FORCE: 8,
@@ -87,6 +96,12 @@ class Player extends Entity {
                 this.jumpWait = this.jumpConfig.JUMP_FRAME_WAIT;
             }
         }
+        this.hitbox.updatePos(
+            this.y + this.hitboxConfig.Y_MARGIN,
+            this.y + this.hitboxConfig.HEIGHT + this.hitboxConfig.Y_MARGIN,
+            this.x + this.hitboxConfig.X_MARGIN,
+            this.x + this.hitboxConfig.WIDTH + this.hitboxConfig.X_MARGIN
+        );
         this.draw();
     }
 

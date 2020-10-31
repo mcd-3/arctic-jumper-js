@@ -266,6 +266,7 @@ class Game {
             }
 
             this.player.updatePos();
+            this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
@@ -296,8 +297,7 @@ class Game {
         // TODO: Change these values once other enemies are imlpemented
         let y = 395;
         let x = this.enemySpawnPoint;
-        let penguinHitBox = new Hitbox(y + 50, y, x, x + 170);
-        console.table(penguinHitBox)
+        let penguinHitBox = new Hitbox(y - 50, y, x, x + 170);
 
         switch(randomEnemy) {
             case 1:
