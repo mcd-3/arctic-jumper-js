@@ -6,6 +6,9 @@ class UIText extends Entity {
         this.strokeSize = strokeSize;
     }
 
+    /**
+     * Draws the text to screen
+     */
     draw() {
         this.ctx.font = `${this.size}px dpcomic`;
         this.ctx.fillStyle = "#ffffff";
@@ -13,5 +16,14 @@ class UIText extends Entity {
         this.ctx.fillText(this.text, this.x, this.y);
         this.ctx.lineWidth = this.strokeSize;
         this.ctx.strokeText(this.text, this.x, this.y);
+    }
+
+    /**
+     * Sets the text to show
+     * 
+     * @param {string} str 
+     */
+    setText(str) {
+        this.text = str;
     }
 }

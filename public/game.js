@@ -12,6 +12,7 @@ const imagesDir = `${assetsDir}images/`;
 // Text strings
 const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
+const healthStr = "Health: ";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -39,6 +40,8 @@ document.addEventListener('keydown', (e) => {
             }
         } else if (game.modes.play) {
             game.player.jump();
+        } else if (game.modes.death) {
+            
         }
     }
 });
@@ -273,7 +276,12 @@ class Game {
                 if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
                     if (!this.player.isHurt()) {
                         this.player.takeDamage();
-                        alert("OUCH!!!");
+
+                        if (this.player.hitpoints > 0) {
+                            alert(`OUCH!!! You have ${this.player.hitpoints} left!`);
+                        } else {
+                            this.setMode("death");
+                        }
                     }
                 }
             });
@@ -493,6 +501,9 @@ async function gameLoop() {
             game.menu();
         } else if (game.modes.play) { // Gameplay Mode
             game.play();
+        } else if (game.modes.death) { // Player lost
+            alert("Game over!");
+            window.close();
         }
 
         requestAnimationFrame(loop);
