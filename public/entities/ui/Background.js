@@ -8,6 +8,7 @@ class Background extends Entity {
         this.imgH = imgH;
         this.imgName = imgName;
         this.intervalSet = false;
+        this.isStopped = false;
     }
 
     /**
@@ -32,13 +33,29 @@ class Background extends Entity {
                     }
                     this.ctx.drawImage(img, this.x, this.y, this.imgW, this.imgH);
                     
-                    this.x += this.dx;
-                    this.intervalSet = true;
+                    if (!this.isStopped) {
+                        this.x += this.dx;
+                        this.intervalSet = true;
+                    }
                 },
                 this.speed
                 )
             };
         }
         img.src = `assets/images/${this.imgName}`;
+    }
+
+    /**
+     * Stroop background scrolling
+     */
+    stop() {
+        this.isStopped = true;
+    }
+
+    /**
+     * Resume background scrolling
+     */
+    resume() {
+        this.isStopped = false;
     }
 }

@@ -8,7 +8,8 @@ class Player extends Entity {
         this.originalX = this.x;
 
         // Health
-        this.hitpoints = 3;
+        this.maxHitpoints = 3;
+        this.hitpoints = this.maxHitpoints;
         this.invincibilityFrames = 75;
         this.currentInvincibility = 0;
 
@@ -129,6 +130,13 @@ class Player extends Entity {
     }
 
     /**
+     * Restore health to max
+     */
+    restoreAllHealth() {
+        this.hitpoints = this.maxHitpoints;
+    }
+
+    /**
      * Updates the invincibility frames of the player
      */
     updateInvincibility() {
@@ -144,6 +152,16 @@ class Player extends Entity {
      */
     isAtStartPos() {
         return this.isAtStart;
+    }
+
+    /**
+     * Manually change the player's position
+     * 
+     * @param {int} x 
+     * @param {int} y 
+     */
+    changePosition(x, y) {
+
     }
 
     /**

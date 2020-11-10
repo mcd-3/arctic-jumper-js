@@ -42,7 +42,7 @@ document.addEventListener('keydown', (e) => {
         } else if (game.modes.play) {
             game.player.jump();
         } else if (game.modes.death) {
-            
+            game.restart();
         }
     }
 });
@@ -315,19 +315,53 @@ class Game {
         }
     }
 
+    /**
+     * Shows the "game over, play again" screen in death mode
+     */
     death() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height)
+        // update the HUD, so it doesn't vanish
+        this.hud1.setText(`${scoreStr} ${this.score}`);
+        this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
+
+        // keep objects drawn and stop backgrounds
+        this.enemyBuffer.forEach(enemy => {
+            enemy.draw();
+        });
+        this.player.draw();
+        this.bgl1.stop();
+        this.bgl2.stop();
+        this.fgl1.stop();
+
+        // show the death layer
+        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
         this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.4)";
         this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
-        
-        // This is ddebug stuff
-        //alert("Game over!");
-        this.sleep(5000).then(() => {
-            window.close();
-        });
     }
 
-        /**
+    /**
+     * Restart the game
+     */
+    restart() {
+        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
+        
+        // Clear all game variables
+        this.enemyBuffer = [];
+        this.player.restoreAllHealth();
+        this.score = 0;
+
+        // Update HUD, player, and backgrounds
+        this.hud1.setText(`${scoreStr} ${this.score}`);
+        this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
+        this.player.changePosition(760, 340);
+        this.player.draw();
+        this.bgl1.resume();
+        this.bgl2.resume();
+        this.fgl1.resume();
+
+        this.setMode("play");
+    }
+
+    /**
      * Spawns an enemy on the screen
      */
     spawnEnemy() {
@@ -547,7 +581,11 @@ async function gameLoop() {
     game.initFgl1(document.getElementById("fgl1"));
     game.initTitleCard(fgl2);
     game.initPlayer(fgl2);
-    game.initHuds(document.getElementById("hud1"), document.getElementById("hud2"), document.getElementById("hud3"));
+    game.initHuds(
+        document.getElementById("hud1"),
+        document.getElementById("hud2"),
+        document.getElementById("hud3")
+    );
     game.initDl(document.getElementById("dl"));
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
