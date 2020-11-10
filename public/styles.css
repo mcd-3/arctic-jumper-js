@@ -55,8 +55,38 @@ canvas {
     z-index: 2;
 }
 
+#hud1, #hud2 {
+    position: absolute;
+    width: 33%;
+    height: 10%;
+    top: 0;
+    z-index: 3;
+    background-color: rgba(255, 0, 0, 0);
+}
+
+#hud1 {
+    left: 0;
+}
+
+#hud2 {
+    right: 0;
+}
+
+#hud3 {
+    position: relative;
+    padding: 0,0,0,0;
+    margin-left: auto;
+    margin-right: auto;
+    top: 20%;
+    display: block;
+    width: 45%; 
+    height: 60%;
+    z-index: 3;
+    background-color: rgba(255, 0, 0, 0);
+}
+
 #bgl2, #fgl2 {
-    background-color: rgba(255, 0, 0, 0);;
+    background-color: rgba(255, 0, 0, 0);
 }
 
 /* Load custom fonts*/

@@ -13,6 +13,7 @@ const imagesDir = `${assetsDir}images/`;
 const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
 const healthStr = "Health: ";
+const scoreStr = "Score: ";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -74,6 +75,9 @@ class Game {
         this.bgl2 = null;
         this.fgl1 = null;
         this.fgl2 = null;
+        this.hud1 = null;
+        this.hud2 = null;
+        this.hud3 = null;
         this.player = null;
 
         // game variables
@@ -87,6 +91,7 @@ class Game {
             'play': false,
             'death': false
         };
+        this.score = 0;
 
         // flags
         this.titleDoneFlag = false;
@@ -105,6 +110,9 @@ class Game {
         // game strings
         this.madeByText = new UIText({canvas: this.spriteCanvas}, 20, (540-30), authorStr, 30, 1.45);
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
+        this.healthText = null;
+        this.scoreText = null;
+        this.gameOverText = null;
     }
 
     /**
@@ -251,6 +259,11 @@ class Game {
      */
     play() {
         if (this.player.isAtStartPos()) {
+
+            // Draw the HUD first
+            this.hud1.drawText();
+            this.hud2.drawText();
+
             this.framesUntilNewSpawn--;
 
             for (let i = 0; i < this.enemyBuffer.length; i++) {
@@ -276,6 +289,7 @@ class Game {
                 if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
                     if (!this.player.isHurt()) {
                         this.player.takeDamage();
+                        this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
 
                         if (this.player.hitpoints > 0) {
                             alert(`OUCH!!! You have ${this.player.hitpoints} left!`);
@@ -299,6 +313,9 @@ class Game {
         this.bgl2.canvas.style.display = "block";
         this.fgl1.canvas.style.display = "block";
         this.spriteCanvas.style.display = "block";
+        this.hud1.display = "block";
+        this.hud2.display = "block";
+
     }
 
     /**
@@ -431,6 +448,20 @@ class Game {
     }
 
     /**
+     * Initializes the HUD canvases
+     * 
+     * @param {Hud} hud1Layer 
+     * @param {Hud} hud2Layer 
+     * @param {Hud} hud3Layer 
+     */
+    initHuds(hud1Layer, hud2Layer, hud3Layer) { 
+        this.scoreText = new UIText({canvas: hud1Layer}, 18, 60, `${scoreStr} ${this.score}`, 54, 1.15);
+        this.healthText = new UIText({canvas: hud2Layer}, 122, 60, `${healthStr} ${this.player.hitpoints}`, 54, 1.15);
+        this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
+        this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
+    }
+
+    /**
      * Loads the title card
      * 
      * @returns {TitleCard}
@@ -484,6 +515,7 @@ async function gameLoop() {
     game.initFgl1(document.getElementById("fgl1"));
     game.initTitleCard(fgl2);
     game.initPlayer(fgl2);
+    game.initHuds(document.getElementById("hud1"), document.getElementById("hud2"), document.getElementById("hud3"));
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
