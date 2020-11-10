@@ -3,6 +3,7 @@ class Obstacle extends Entity {
         super(canvasObj, x, y);
         this.slideSpeed = slideSpeed;
         this.hitbox = hitbox;
+        this.passedByPlayer = false;
     }
 
     /**

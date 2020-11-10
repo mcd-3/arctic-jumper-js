@@ -284,8 +284,9 @@ class Game {
             this.player.updatePos();
             this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
 
-            // Check if hitboxes overlap
             this.enemyBuffer.forEach(enemy => {
+
+                // Check if hitboxes overlap
                 if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
                     if (!this.player.isHurt()) {
                         this.player.takeDamage();
@@ -297,6 +298,14 @@ class Game {
                             this.setMode("death");
                         }
                     }
+                }
+
+                // Check if a point has been scored
+                if (this.player.hitbox.r < enemy.hitbox.l && !enemy.passedByPlayer) {
+                    this.score++;
+                    enemy.passedByPlayer = true;
+                    this.playSFX(`${audioDir}collect.mp3`, 1);
+                    this.hud1.setText(`${scoreStr} ${this.score}`);
                 }
             });
 

@@ -33,3 +33,8 @@ The following music tracks are used in this project. All rights reserved and all
 **Hosted On**: http://soundbible.com/2069-Realistic-Punch.html</br>
 **License**: Creative Commons Attribution 3.0 - https://creativecommons.org/licenses/by/3.0/</br>
 **Changes**: No changes were made to this track </br>
+</br></br>
+**SFX**: Collect</br>
+**Author**: Christian DeTamble</br>
+**Hosted On**: http://therefactory.bplaced.net</br>
+**License**: Optional Attribution</br>
