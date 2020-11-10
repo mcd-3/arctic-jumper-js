@@ -291,8 +291,8 @@ class Game {
                         this.player.takeDamage();
                         this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
 
-                        if (this.player.hitpoints > 0) {
-                            alert(`OUCH!!! You have ${this.player.hitpoints} left!`);
+                        if (this.player.hitpoints > -1) {
+                            this.playSFX(`${audioDir}hit.mp3`, 1);
                         } else {
                             this.setMode("death");
                         }
