@@ -10,11 +10,13 @@
       <!-- These are the layers in which graphics will be loaded onto -->
       <!-- bgl#: Background layers. The lower the number, the farther back the graphic -->
       <!-- fgl#: Foreground layers. The lower the number, the farther back the graphic -->
+      <!-- dl: Death layer. used to hide elements except the highest-most HUD layer -->
       <!-- hud#: The HUD. Contains specific elements like health and score. 1 = score, 2 = health, 3 = death -->
       <canvas id="bgl1" width="920" height="540"></canvas>
       <canvas id="bgl2" width="920" height="250"></canvas>
       <canvas id="fgl1" width="920" height="154"></canvas>
       <canvas id="fgl2" width="920" height="540"></canvas>
+      <canvas id="dl" width="920" height="540"></canvas>
       <canvas id="hud1" width="350" height="100"></canvas>
       <canvas id="hud2" width="350" height="100"></canvas>
       <canvas id="hud3" width="310" height="540"></canvas>

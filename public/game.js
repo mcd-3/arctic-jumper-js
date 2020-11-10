@@ -75,6 +75,7 @@ class Game {
         this.bgl2 = null;
         this.fgl1 = null;
         this.fgl2 = null;
+        this.dl = null;
         this.hud1 = null;
         this.hud2 = null;
         this.hud3 = null;
@@ -314,20 +315,19 @@ class Game {
         }
     }
 
-    /**
-     * Makes all layers visible
-     */
-    showLayers() {
-        this.bgl1.canvas.style.display = "block";
-        this.bgl2.canvas.style.display = "block";
-        this.fgl1.canvas.style.display = "block";
-        this.spriteCanvas.style.display = "block";
-        this.hud1.display = "block";
-        this.hud2.display = "block";
-
+    death() {
+        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height)
+        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.4)";
+        this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
+        
+        // This is ddebug stuff
+        //alert("Game over!");
+        this.sleep(5000).then(() => {
+            window.close();
+        });
     }
 
-    /**
+        /**
      * Spawns an enemy on the screen
      */
     spawnEnemy() {
@@ -397,6 +397,18 @@ class Game {
     }
 
     /**
+     * Makes all layers visible
+     */
+    showLayers() {
+        this.bgl1.canvas.style.display = "block";
+        this.bgl2.canvas.style.display = "block";
+        this.fgl1.canvas.style.display = "block";
+        this.spriteCanvas.style.display = "block";
+        this.hud1.display = "block";
+        this.hud2.display = "block";
+    }
+
+    /**
      * Loads background layer 1 (the furthest back layer)
      * 
      * @returns {Background}
@@ -457,11 +469,22 @@ class Game {
     }
 
     /**
+     * Initializes the death layer.
+     * Unlike the other "init" functions, this only requires a canvas
+     * as the only purpose is to mute all other colours except HUD3
+     *  
+     * @param {Canvas} layer 
+     */
+    initDl(layer) {
+        this.dl = layer;
+    }
+
+    /**
      * Initializes the HUD canvases
      * 
-     * @param {Hud} hud1Layer 
-     * @param {Hud} hud2Layer 
-     * @param {Hud} hud3Layer 
+     * @param {HUD} hud1Layer 
+     * @param {HUD} hud2Layer 
+     * @param {HUD} hud3Layer 
      */
     initHuds(hud1Layer, hud2Layer, hud3Layer) { 
         this.scoreText = new UIText({canvas: hud1Layer}, 18, 60, `${scoreStr} ${this.score}`, 54, 1.15);
@@ -525,6 +548,7 @@ async function gameLoop() {
     game.initTitleCard(fgl2);
     game.initPlayer(fgl2);
     game.initHuds(document.getElementById("hud1"), document.getElementById("hud2"), document.getElementById("hud3"));
+    game.initDl(document.getElementById("dl"));
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
@@ -543,8 +567,7 @@ async function gameLoop() {
         } else if (game.modes.play) { // Gameplay Mode
             game.play();
         } else if (game.modes.death) { // Player lost
-            alert("Game over!");
-            window.close();
+            game.death();
         }
 
         requestAnimationFrame(loop);

@@ -61,7 +61,16 @@ canvas {
     height: 10%;
     top: 0;
     z-index: 3;
-    background-color: rgba(255, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#dl {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: rgba(0, 0, 0, 0);
+    /* background-color: rgba(40, 40, 40, 0.2); */
 }
 
 #hud1 {
@@ -81,12 +90,12 @@ canvas {
     display: block;
     width: 45%; 
     height: 60%;
-    z-index: 3;
-    background-color: rgba(255, 0, 0, 0);
+    z-index: 5;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 #bgl2, #fgl2 {
-    background-color: rgba(255, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
 }
 
 /* Load custom fonts*/
