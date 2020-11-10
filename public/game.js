@@ -14,6 +14,9 @@ const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
 const healthStr = "Health: ";
 const scoreStr = "Score: ";
+const gameOverStr = "Game Over!";
+const resumeStr = "-- Press Space to Play Again --";
+const newHighScoreStr = "New High Score!";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -332,10 +335,11 @@ class Game {
         this.bgl2.stop();
         this.fgl1.stop();
 
-        // show the death layer
+        // show the death layer + text
         this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
         this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.4)";
         this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
+        this.showGameOverText();
     }
 
     /**
@@ -343,6 +347,7 @@ class Game {
      */
     restart() {
         this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
+        this.hud3.clear();
         
         // Clear all game variables
         this.enemyBuffer = [];
@@ -443,6 +448,17 @@ class Game {
     }
 
     /**
+     * Show the game over screen with its respective text
+     */
+    showGameOverText() {
+        this.hud3.drawTexts([
+            new UIText({canvas: this.hud3.canvas}, 18, 60, `${gameOverStr}`, 54, 1.15),
+            new UIText({canvas: this.hud3.canvas}, 40, 140, `${scoreStr} ${this.score}`, 54, 1.15),
+            new UIText({canvas: this.hud3.canvas}, 10, 220, `${resumeStr}`, 32, 1.15),
+        ]);
+    }
+
+    /**
      * Loads background layer 1 (the furthest back layer)
      * 
      * @returns {Background}
@@ -525,6 +541,7 @@ class Game {
         this.healthText = new UIText({canvas: hud2Layer}, 122, 60, `${healthStr} ${this.player.hitpoints}`, 54, 1.15);
         this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
         this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
+        this.hud3 = new MultiHUD({canvas: hud3Layer}, true);
     }
 
     /**
