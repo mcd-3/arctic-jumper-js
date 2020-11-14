@@ -596,6 +596,21 @@ async function gameLoop() {
     let fgl2 = document.getElementById("fgl2");
     game = new Game(bgl1, fgl2);
 
+    // Initialize game layers
+    // We are preloading them, so if the user changes aspect ratio it will not bug out
+    game.initBgl1(bgl1);
+    game.initTitleCard(fgl2);
+    game.initPlayer(fgl2);
+    game.initBgl2(document.getElementById("bgl2"));
+    game.initFgl1(document.getElementById("fgl1"));
+    game.initHuds(
+        document.getElementById("hud1"),
+        document.getElementById("hud2"),
+        document.getElementById("hud3"),
+        document.getElementById("hud4")
+    );
+    game.initDl(document.getElementById("dl"));
+
     // Boot game
     game.setMode("boot");
     await game.sleep(800).then(() => {
@@ -606,19 +621,7 @@ async function gameLoop() {
         bgl1.getContext("2d").globalAlpha = 1;
     });
 
-    // Init layers, audio, and starting sprites
-    game.initBgl1(bgl1);
-    game.initBgl2(document.getElementById("bgl2"));
-    game.initFgl1(document.getElementById("fgl1"));
-    game.initTitleCard(fgl2);
-    game.initPlayer(fgl2);
-    game.initHuds(
-        document.getElementById("hud1"),
-        document.getElementById("hud2"),
-        document.getElementById("hud3"),
-        document.getElementById("hud4")
-    );
-    game.initDl(document.getElementById("dl"));
+    // Start the title sequence
     game.showLayers();
     game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
