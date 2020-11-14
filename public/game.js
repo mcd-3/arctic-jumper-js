@@ -299,13 +299,14 @@ class Game {
                         if (this.player.hitpoints > -1) {
                             this.playSFX(`${audioDir}hit.mp3`, 1);
                         } else {
+                            this.playSFX(`${audioDir}failBuzzer.mp3`, 1);
                             this.setMode("death");
                         }
                     }
                 }
 
                 // Check if a point has been scored
-                if (this.player.hitbox.r < enemy.hitbox.l && !enemy.passedByPlayer) {
+                if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                     this.score++;
                     enemy.passedByPlayer = true;
                     this.playSFX(`${audioDir}collect.mp3`, 1);

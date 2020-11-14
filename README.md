@@ -24,7 +24,7 @@ The following music tracks are used in this project. All rights reserved and all
 **License**: Public Domain</br>
 </br></br>
 **SFX**: Magic Idea 01</br>
-**Author**: unknown</br>
+**Author**: Unknown</br>
 **Hosted On**: http://freesoundeffect.net/sound/magic-idea-01-sound-effect</br>
 **License**: Royalty Free</br>
 </br></br>
@@ -38,3 +38,8 @@ The following music tracks are used in this project. All rights reserved and all
 **Author**: Christian DeTamble</br>
 **Hosted On**: http://therefactory.bplaced.net</br>
 **License**: Optional Attribution</br>
+</br></br>
+**SFX**: Fail Buzzer 3</br>
+**Author**: Unknown</br>
+**Hosted On**: https://www.soundjay.com/failure-sound-effect.html</br>
+**License**: Royalty Free</br>
