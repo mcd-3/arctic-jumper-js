@@ -1,6 +1,8 @@
 class Background extends Entity {
     constructor(canvasObj, x, y, dx, dy, speed, imgW, imgH, imgName) {
         super(canvasObj, x, y);
+        let scaler = new CanvasDPIHelper();
+        this.ctx = scaler.scale(this.canvas);
         this.dx = dx;
         this.dy = dy;
         this.speed = speed;

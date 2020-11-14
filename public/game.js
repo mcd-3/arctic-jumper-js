@@ -64,10 +64,11 @@ class Game {
      * @param {CanvasRenderingContext2D} ctx Boot canvas context 
      */
     constructor(bootCanvas, spriteCanvas) {
+        let scaler = new CanvasDPIHelper();
         this.bootCanvas = bootCanvas;
         this.bootCanvasCtx = this.bootCanvas.getContext("2d");
         this.spriteCanvas = spriteCanvas;
-        this.spriteCanvasCtx = this.spriteCanvas.getContext("2d");
+        this.spriteCanvasCtx = scaler.scale(this.spriteCanvas);//this.spriteCanvas.getContext("2d");
 
         // Emulate a dark intro screen seen in most games
         this.bootCanvasCtx.fillStyle = 'black';

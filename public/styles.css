@@ -24,8 +24,6 @@ body {
 canvas {
     width: 100%;
     box-sizing: border-box;
-    background-color: #000000;
-
 }
 
 #bgl1 {
@@ -33,6 +31,7 @@ canvas {
     left: 0;
     top: 0;
     z-index: 0;
+    background-color: #000000;
 }
 
 #bgl2 {
@@ -43,7 +42,6 @@ canvas {
 }
 
 #fgl1 {
-    display: none;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -54,7 +52,7 @@ canvas {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 2;
+    z-index: 3;
 }
 
 #hud1, #hud2 {
@@ -62,7 +60,7 @@ canvas {
     width: 33%;
     height: 10%;
     top: 0;
-    z-index: 3;
+    z-index: 4;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -70,7 +68,7 @@ canvas {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 4;
+    z-index: 5;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -88,7 +86,7 @@ canvas {
     height: 10%;
     left: 0;
     bottom: 0;
-    z-index: 3;
+    z-index: 4;
     background-color: rgba(0, 0, 0, 0); 
 }
 
@@ -101,7 +99,7 @@ canvas {
     display: block;
     width: 45%; 
     height: 60%;
-    z-index: 5;
+    z-index: 6;
     background-color: rgba(0, 0, 0, 0);
 }
 
