@@ -16,6 +16,15 @@ class HUD {
     }
 
     /**
+     * Changes the color of the text
+     * 
+     * @param {string} color 
+     */
+    changeColor(color) {
+        this.uiText.setColor(color);
+    }
+
+    /**
      * Changes the text displayed on the HUD
      * 
      * @param {string} str 

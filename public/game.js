@@ -272,6 +272,10 @@ class Game {
     play() {
         if (this.player.isAtStartPos()) {
 
+            if (this.player.hitpoints < 1) {
+                this.hud2.changeColor("#ff0000");
+            }
+
             // Draw the HUD first
             this.hud1.drawText();
             this.hud2.drawText();
@@ -364,6 +368,7 @@ class Game {
     restart() {
         this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
         this.hud3.clear();
+        this.hud2.changeColor("#ffffff");
         
         // Clear all game variables
         this.enemyBuffer = [];
@@ -475,7 +480,7 @@ class Game {
             new UIText({canvas: this.hud3.canvas}, 250, 220, `${resumeStr}`, 32, 1.15),
         ];
         if (this.newHighScoreFlag) {
-            textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 280, `${newHighScoreStr}`, 48, 1.15))
+            textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 280, `${newHighScoreStr}`, 48, 1.15, "yellow"))
         }
         this.hud3.drawTexts(textArray);
     }
