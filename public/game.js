@@ -14,6 +14,7 @@ const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
 const healthStr = "Health: ";
 const scoreStr = "Score: ";
+const highScoreStr = "High Score: ";
 const gameOverStr = "Game Over!";
 const resumeStr = "-- Press Space to Play Again --";
 const newHighScoreStr = "New High Score!";
@@ -82,6 +83,7 @@ class Game {
         this.hud1 = null;
         this.hud2 = null;
         this.hud3 = null;
+        this.hud4 = null;
         this.player = null;
 
         // game variables
@@ -111,12 +113,16 @@ class Game {
         // game audio
         this.playingTrack = null;
 
+        // game storage
+        this.storage = new ScoreStorageHelper();
+
         // game strings
         this.madeByText = new UIText({canvas: this.spriteCanvas}, 20, (540-30), authorStr, 30, 1.45);
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
         this.healthText = null;
         this.scoreText = null;
         this.gameOverText = null;
+        this.highScoreText = null;
     }
 
     /**
@@ -267,6 +273,7 @@ class Game {
             // Draw the HUD first
             this.hud1.drawText();
             this.hud2.drawText();
+            this.hud4.drawText();
 
             this.framesUntilNewSpawn--;
 
@@ -326,6 +333,8 @@ class Game {
         // update the HUD, so it doesn't vanish
         this.hud1.setText(`${scoreStr} ${this.score}`);
         this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
+        this.hud4.setText(`${highScoreStr} ${this.storage.getHighScore()}`);
+        this.storage.addHighScore(this.score);
 
         // keep objects drawn and stop backgrounds
         this.enemyBuffer.forEach(enemy => {
@@ -446,6 +455,7 @@ class Game {
         this.spriteCanvas.style.display = "block";
         this.hud1.display = "block";
         this.hud2.display = "block";
+        this.hud4.display = "block";
     }
 
     /**
@@ -537,12 +547,14 @@ class Game {
      * @param {HUD} hud2Layer 
      * @param {HUD} hud3Layer 
      */
-    initHuds(hud1Layer, hud2Layer, hud3Layer) { 
+    initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer) { 
         this.scoreText = new UIText({canvas: hud1Layer}, 18, 60, `${scoreStr} ${this.score}`, 54, 1.15);
         this.healthText = new UIText({canvas: hud2Layer}, 122, 60, `${healthStr} ${this.player.hitpoints}`, 54, 1.15);
+        this.highScoreText = new UIText({canvas: hud4Layer}, 18, 60, `${highScoreStr} ${this.storage.getHighScore()}`, 54, 1.15);
         this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
         this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
         this.hud3 = new MultiHUD({canvas: hud3Layer}, true);
+        this.hud4 = new HUD({canvas: hud4Layer}, this.highScoreText, true);
     }
 
     /**
@@ -602,7 +614,8 @@ async function gameLoop() {
     game.initHuds(
         document.getElementById("hud1"),
         document.getElementById("hud2"),
-        document.getElementById("hud3")
+        document.getElementById("hud3"),
+        document.getElementById("hud4")
     );
     game.initDl(document.getElementById("dl"));
     game.showLayers();

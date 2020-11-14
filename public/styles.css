@@ -81,6 +81,16 @@ canvas {
     right: 0;
 }
 
+#hud4 {
+    position: absolute;
+    width: 33%;
+    height: 10%;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0); 
+}
+
 #hud3 {
     position: relative;
     padding: 0,0,0,0;
