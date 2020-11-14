@@ -1,7 +1,8 @@
 class MultiHUD {
     constructor(canvasObj, displayed) {
+        let scaler = new CanvasDPIHelper();
         this.canvas = canvasObj.canvas;
-        this.ctx = canvasObj.canvas.getContext("2d");
+        this.ctx = scaler.scale(this.canvas);//canvasObj.canvas.getContext("2d");
         this.displayed = displayed;
     }
 

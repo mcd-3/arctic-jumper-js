@@ -548,9 +548,9 @@ class Game {
      * @param {HUD} hud3Layer 
      */
     initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer) { 
-        this.scoreText = new UIText({canvas: hud1Layer}, 18, 60, `${scoreStr} ${this.score}`, 54, 1.15);
-        this.healthText = new UIText({canvas: hud2Layer}, 122, 60, `${healthStr} ${this.player.hitpoints}`, 54, 1.15);
-        this.highScoreText = new UIText({canvas: hud4Layer}, 18, 60, `${highScoreStr} ${this.storage.getHighScore()}`, 54, 1.15);
+        this.scoreText = new UIText({canvas: hud1Layer}, 18, 40, `${scoreStr} ${this.score}`, 36, 1.15);
+        this.healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
+        this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
         this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
         this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
         this.hud3 = new MultiHUD({canvas: hud3Layer}, true);

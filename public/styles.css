@@ -16,7 +16,9 @@ body {
 
 /* Canvas Styles */
 #canvasContainer {
-    position: relative; height: 100%
+    position: relative; 
+    height: 100%;
+    width: 100%;
 }
 
 canvas {
@@ -70,7 +72,6 @@ canvas {
     top: 0;
     z-index: 4;
     background-color: rgba(0, 0, 0, 0);
-    /* background-color: rgba(40, 40, 40, 0.2); */
 }
 
 #hud1 {
