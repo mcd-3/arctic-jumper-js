@@ -12,7 +12,7 @@ class MultiHUD {
     drawTexts(uiTextArray) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         uiTextArray.forEach( str => {
-            str.draw();
+            str.draw(true);
         });
     }
 

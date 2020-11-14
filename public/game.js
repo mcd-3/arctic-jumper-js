@@ -103,6 +103,7 @@ class Game {
         // flags
         this.titleDoneFlag = false;
         this.gameStartingFlag = false;
+        this.newHighScoreFlag = false;
 
         // enemy variables
         this.enemyBuffer = [];
@@ -304,9 +305,14 @@ class Game {
                         this.player.takeDamage();
                         this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
 
+                        // Check if game over
                         if (this.player.hitpoints > -1) {
                             this.playSFX(`${audioDir}hit.mp3`, 1);
                         } else {
+                            if (this.score > this.storage.getHighScore()) {
+                                this.storage.addHighScore(this.score);
+                                this.newHighScoreFlag = true;
+                            }
                             this.playSFX(`${audioDir}failBuzzer.mp3`, 1);
                             this.setMode("death");
                         }
@@ -335,7 +341,6 @@ class Game {
         this.hud1.setText(`${scoreStr} ${this.score}`);
         this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
         this.hud4.setText(`${highScoreStr} ${this.storage.getHighScore()}`);
-        this.storage.addHighScore(this.score);
 
         // keep objects drawn and stop backgrounds
         this.enemyBuffer.forEach(enemy => {
@@ -364,6 +369,7 @@ class Game {
         this.enemyBuffer = [];
         this.player.restoreAllHealth();
         this.score = 0;
+        this.newHighScoreFlag = false;
 
         // Update HUD, player, and backgrounds
         this.hud1.setText(`${scoreStr} ${this.score}`);
@@ -463,11 +469,15 @@ class Game {
      * Show the game over screen with its respective text
      */
     showGameOverText() {
-        this.hud3.drawTexts([
-            new UIText({canvas: this.hud3.canvas}, 18, 60, `${gameOverStr}`, 54, 1.15),
-            new UIText({canvas: this.hud3.canvas}, 40, 140, `${scoreStr} ${this.score}`, 54, 1.15),
-            new UIText({canvas: this.hud3.canvas}, 10, 220, `${resumeStr}`, 32, 1.15),
-        ]);
+        let textArray = [
+            new UIText({canvas: this.hud3.canvas}, 250, 60, `${gameOverStr}`, 54, 1.15),
+            new UIText({canvas: this.hud3.canvas}, 250, 140, `${scoreStr} ${this.score}`, 54, 1.15),
+            new UIText({canvas: this.hud3.canvas}, 250, 220, `${resumeStr}`, 32, 1.15),
+        ];
+        if (this.newHighScoreFlag) {
+            textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 280, `${newHighScoreStr}`, 48, 1.15))
+        }
+        this.hud3.drawTexts(textArray);
     }
 
     /**
@@ -595,6 +605,7 @@ async function gameLoop() {
     let bgl1 = document.getElementById("bgl1");
     let fgl2 = document.getElementById("fgl2");
     game = new Game(bgl1, fgl2);
+    game.storage.deleteHighScore();
 
     // Initialize game layers
     // We are preloading them, so if the user changes aspect ratio it will not bug out

@@ -9,13 +9,19 @@ class UIText extends Entity {
     /**
      * Draws the text to screen
      */
-    draw() {
+    draw(isCentered = false) {
         this.ctx.font = `${this.size}px dpcomic`;
         this.ctx.fillStyle = "#ffffff";
         this.ctx.strokeStyle = "#000000";
+
+        if (isCentered) {
+            this.ctx.textAlign = "center";
+        }
+        
         this.ctx.fillText(this.text, this.x, this.y);
         this.ctx.lineWidth = this.strokeSize;
         this.ctx.strokeText(this.text, this.x, this.y);
+        
     }
 
     /**
