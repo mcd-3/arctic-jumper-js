@@ -1,6 +1,11 @@
 class CanvasDPIHelper {
     constructor() {}
 
+    /**
+     * Scales a canvas to fit the device's pixel ratio
+     * 
+     * @param {Canvas} canvas 
+     */
     scale(canvas) {
         let dpr = window.devicePixelRatio || 1;
         let rect = canvas.getBoundingClientRect();
