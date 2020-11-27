@@ -587,7 +587,7 @@ class Game {
      * 
      */
     initPlayer(layer) {
-        this.player = new Player({canvas: layer}, 760, 340, "guy.png");
+        this.player = new Player({canvas: layer}, 760, 340, "player-fat.png");
         return this.player;
     }
 
