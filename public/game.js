@@ -4,11 +4,6 @@
  * Contains all game functionality and logic
  */
 
-// Asset directories
-// const assetsDir = "./assets/";
-// const audioDir = `${assetsDir}audio/`;
-// const imagesDir = `${assetsDir}images/`;
-
 // Text strings
 const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
@@ -36,11 +31,11 @@ document.addEventListener('keydown', (e) => {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
-                    game.playSFX(`${game.pathStorage.getAudioLocation()}magicIdea01.mp3`, 1);
+                    game.playSFX(game.assetsFetcher.getStartGameSFXLocation(), 1);
                     resolve(true);
                 }).then(value => {
                     game.stopTrack();
-                    game.playTrack(`${game.pathStorage.getAudioLocation()}steviaSphere_PolarBears.mp3`, true, 0.5);
+                    game.playTrack(game.assetsFetcher.getMainSongLocation(), true, 0.5);
                 });
             }
         } else if (game.modes.play) {
@@ -121,8 +116,8 @@ class Game {
 
         // game storage
         this.storage = new ScoreStorageHelper();
-        this.pathStorage = new PathStorageHelper();
-        this.pathStorage.initPaths();
+        this.assetsFetcher = new AssetLocationFetcher();
+        new PathStorageHelper().initPaths();
 
         // game strings
         this.madeByText = new UIText({canvas: this.spriteCanvas}, 20, (540-30), authorStr, 30, 1.45);
@@ -153,13 +148,13 @@ class Game {
      */
     boot() {
         let bootLogo = new Image();
-        bootLogo.src = `${game.pathStorage.getImagesLocation()}boot.png`;
+        bootLogo.src = game.assetsFetcher.getBootImageLocation();
 
         let bgl1 = document.getElementById("bgl1");
         let bgl1Ctx = bgl1.getContext("2d");
 
         bootLogo.onload = () => {
-            let bootSfx = new Audio(`${game.pathStorage.getAudioLocation()}logo_short.mp3`);
+            let bootSfx = new Audio(game.assetsFetcher.getBootGameSFXLocation());
             bootSfx.play();
             bgl1Ctx.globalAlpha = 0;
             
@@ -317,13 +312,13 @@ class Game {
 
                         // Check if game over
                         if (this.player.hitpoints > -1) {
-                            this.playSFX(`${this.pathStorage.getAudioLocation()}hit.mp3`, 1);
+                            this.playSFX(this.assetsFetcher.getHitSFXLocation(), 1);
                         } else {
                             if (this.score > this.storage.getHighScore()) {
                                 this.storage.addHighScore(this.score);
                                 this.newHighScoreFlag = true;
                             }
-                            this.playSFX(`${this.pathStorage.getAudioLocation()}failBuzzer.mp3`, 1);
+                            this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), 1);
                             this.startGameOverTimer();
                             this.setMode("death");
                         }
@@ -334,7 +329,7 @@ class Game {
                 if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                     this.score++;
                     enemy.passedByPlayer = true;
-                    this.playSFX(`${this.pathStorage.getAudioLocation()}collect.mp3`, 1);
+                    this.playSFX(this.assetsFetcher.getScoreSFXLocation(), 1);
                     this.hud1.setText(`${scoreStr} ${this.score}`);
                 }
             });
@@ -523,7 +518,7 @@ class Game {
             this.bgl1Speed,
             layer.width,
             layer.height,
-            "bgl1.png"
+            this.assetsFetcher.getBGL1ImageLocation()
         );
         return this.bgl1;
     }
@@ -543,7 +538,7 @@ class Game {
             this.bgl2Speed,
             layer.width,
             layer.height, 
-            "bgl2.png"
+            this.assetsFetcher.getBGL2ImageLocation()
         );
         return this.bgl2;
     }
@@ -563,7 +558,7 @@ class Game {
             this.fgl1Speed,
             layer.width,
             layer.height,
-            "fgl1.png"
+            this.assetsFetcher.getFGL1ImageLocation()
         );
         return this.fgl1;
     }
@@ -602,7 +597,7 @@ class Game {
      * @returns {TitleCard}
      */
     initTitleCard(layer) {
-        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, "title.png");
+        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, this.assetsFetcher.getTitleImageLocation());
         return this.titleCard;
     }
 
@@ -610,7 +605,7 @@ class Game {
      * 
      */
     initPlayer(layer) {
-        this.player = new Player({canvas: layer}, 760, 340, "player-fat.png");
+        this.player = new Player({canvas: layer}, 760, 340, this.assetsFetcher.getPlayerImageLocation());
         return this.player;
     }
 
@@ -673,7 +668,7 @@ async function gameLoop() {
 
     // Start the title sequence
     game.showLayers();
-    game.playTrack(`${game.pathStorage.getAudioLocation()}steviaSphere_Dolphin.mp3`, true, 0.5);
+    game.playTrack(game.assetsFetcher.getTitleScreenSongLocation(), true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 

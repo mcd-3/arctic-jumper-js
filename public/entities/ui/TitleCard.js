@@ -1,9 +1,9 @@
 class TitleCard extends Entity {
-    constructor(canvasObj, x, y, imgW, imgH, imgName) {
+    constructor(canvasObj, x, y, imgW, imgH, imgPath) {
         super(canvasObj, x, y);
         this.imgW = imgW;
         this.imgH = imgH;
-        this.imgName = imgName;
+        this.imgPath = imgPath;
         this.coordinatesSet = false;
         this.fromX = 0;
         this.fromY = 0;
@@ -46,7 +46,7 @@ class TitleCard extends Entity {
     draw() {
         if (this.coordinatesSet) {
             let img = new Image();
-            img.src = `${this.imagePath}${this.imgName}`;
+            img.src = this.imgPath;
             img.onload = this.onImageLoaded(img);
         }
     }

@@ -3,6 +3,7 @@ class PathStorageHelper {
         this.assetPathLocation = "arcticJumperPathAsset";
         this.audioPathLocation = "arcticJumperPathAudio";
         this.imagePathLocation = "arcticJumperPathImage";
+        this.fontPathLocation = "arcticJumperPathFont"
     }
 
     /**
@@ -19,25 +20,20 @@ class PathStorageHelper {
      * 
      * @returns {string}
      */
-    getAssetsLocation() {
-        return localStorage.getItem(this.assetPathLocation);
-    }
+    getAssetsLocation = () => localStorage.getItem(this.assetPathLocation);
+    
 
     /**
      * Get the path of the audio directory
      * 
      * @returns {string}
      */
-    getAudioLocation() {
-        return localStorage.getItem(this.audioPathLocation);
-    }
+    getAudioLocation = () => localStorage.getItem(this.audioPathLocation);
 
     /**
      * Get the path of the image directory
      * 
      * @returns {string}
      */
-    getImagesLocation() {
-        return localStorage.getItem(this.imagePathLocation);
-    }
+    getImagesLocation = () => localStorage.getItem(this.imagePathLocation);
 }

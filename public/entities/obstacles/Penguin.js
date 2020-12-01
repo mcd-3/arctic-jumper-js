@@ -1,7 +1,6 @@
 class Penguin extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox = null) {
         super(canvasObj, x, y, slideSpeed, hitbox);
-        this.spriteSheetName = 'penguin.png';
         this.spriteWidth = 164;
     }
 
@@ -10,7 +9,7 @@ class Penguin extends Obstacle {
      */
     draw() {
         let img = new Image();
-        img.src = `${this.imagePath}${this.spriteSheetName}`;
+        img.src = this.assetFetcher.getPenguinImageLocation();
         img.onload = this.onImageLoaded(img);
     }
 

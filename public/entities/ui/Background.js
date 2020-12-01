@@ -1,5 +1,5 @@
 class Background extends Entity {
-    constructor(canvasObj, x, y, dx, dy, speed, imgW, imgH, imgName) {
+    constructor(canvasObj, x, y, dx, dy, speed, imgW, imgH, imgPath) {
         super(canvasObj, x, y);
         let scaler = new CanvasDPIHelper();
         this.ctx = scaler.scale(this.canvas);
@@ -8,7 +8,7 @@ class Background extends Entity {
         this.speed = speed;
         this.imgW = imgW;
         this.imgH = imgH;
-        this.imgName = imgName;
+        this.imgPath = imgPath;
         this.intervalSet = false;
         this.isStopped = false;
     }
@@ -44,7 +44,7 @@ class Background extends Entity {
                 )
             };
         }
-        img.src = `${this.imagePath}${this.imgName}`;
+        img.src = this.imgPath;
     }
 
     /**

@@ -1,7 +1,6 @@
 class Rock extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox) {
         super(canvasObj, x, y, slideSpeed, hitbox);
-        this.spriteSheetName = 'rock.png';
         this.spriteWidth = 64;
     }
 
@@ -10,7 +9,7 @@ class Rock extends Obstacle {
      */
     draw() {
         let img = new Image();
-        img.src = `${this.imagePath}${this.spriteSheetName}`;
+        img.src = this.assetFetcher.getRockImageLocation();
         img.onload = this.onImageLoaded(img);
     }
 

@@ -5,6 +5,7 @@ class Obstacle extends Entity {
         this.hitbox = hitbox;
         this.passedByPlayer = false;
         this.imagePath = new PathStorageHelper().getImagesLocation();
+        this.assetFetcher = new AssetLocationFetcher();
     }
 
     /**

@@ -1,8 +1,8 @@
 class Player extends Entity {
-    constructor(canvasObj, x, y, spriteSheetName) {
+    constructor(canvasObj, x, y, spriteSheetPath) {
         super(canvasObj, x, y);
         this.isGrounded = true;
-        this.spriteSheetName = spriteSheetName;
+        this.spriteSheetPath = spriteSheetPath;
         this.isAtStart = false;
         this.fadeX = 1000;
         this.originalX = this.x;
@@ -53,7 +53,7 @@ class Player extends Entity {
      */
     draw() {
         let img = new Image();
-        img.src = `${this.imagePath}${this.spriteSheetName}`;
+        img.src = this.spriteSheetPath;
         img.onload = this.onImageLoaded(img);
     }
 
