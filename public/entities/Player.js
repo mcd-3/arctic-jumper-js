@@ -27,7 +27,7 @@ class Player extends Entity {
             INIT_JUMP_FORCE: 8,
             INIT_JUMP_DIRECTION: 1,
             JUMP_FRAME_WAIT: 2,
-            JUMP_ZERO_WAIT: 5,
+            JUMP_ZERO_WAIT: 4,
             START_Y: this.y
         }
         this.jumpForce = this.jumpConfig.INIT_JUMP_FORCE; // subtract 1 until 0 each frame
@@ -79,7 +79,11 @@ class Player extends Entity {
             }
 
             if (this.jumpWait == 0) { // check if we land on a jump frame
-                this.y -= (this.jumpForce * 8) * this.jumpDirection;
+                if (this.jumpDirection > 0) {
+                    this.y -= (this.jumpForce * 8) * this.jumpDirection;
+                } else {
+                    this.y += (this.jumpConfig.INIT_JUMP_FORCE * 9) - (this.jumpForce * 8);
+                }
 
                 if (this.jumpForce > 0) {
                     this.jumpForce--;
