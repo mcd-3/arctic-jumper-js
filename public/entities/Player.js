@@ -16,10 +16,10 @@ class Player extends Entity {
         // Variables to control hitbox
         this.hitbox = new Hitbox(0,0,0,0);
         this.hitboxConfig = {
-            Y_MARGIN: 75,
-            X_MARGIN: 20,
-            HEIGHT: 50,
-            WIDTH: 35
+            Y_MARGIN: 58,
+            X_MARGIN: 2,
+            HEIGHT: 70,
+            WIDTH: 68
         }
 
         // Variables to control jumping
