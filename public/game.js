@@ -273,7 +273,7 @@ class Game {
     play() {
         if (this.player.isAtStartPos()) {
 
-            if (this.player.hitpoints < 1) {
+            if (this.player.hitpoints < 2) {
                 this.hud2.changeColor("#ff0000");
             }
 
@@ -311,7 +311,7 @@ class Game {
                         this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
 
                         // Check if game over
-                        if (this.player.hitpoints > -1) {
+                        if (this.player.hitpoints > 0) {
                             this.playSFX(this.assetsFetcher.getHitSFXLocation(), 1);
                         } else {
                             if (this.score > this.storage.getHighScore()) {
@@ -320,6 +320,8 @@ class Game {
                             }
                             this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), 1);
                             this.startGameOverTimer();
+                            this.hud2.changeColor("#585858");
+                            this.hud2.drawText();
                             this.setMode("death");
                         }
                     }
