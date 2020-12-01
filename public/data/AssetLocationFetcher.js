@@ -6,6 +6,7 @@ class AssetLocationFetcher {
         this.startSfx = "magicIdea01.mp3";
         this.bootSfx = "logo_short.mp3";
         this.scoreSfx = "collect.mp3";
+        this.jumpSfx = "jump.wav";
         this.hitSfx = "hit.mp3";
         this.gameOverSfx = "failBuzzer.mp3";
         this.titleScreenSong = "steviaSphere_Dolphin.mp3";
@@ -46,6 +47,13 @@ class AssetLocationFetcher {
      * @returns {string}
      */
     getScoreSFXLocation = () => `${this.paths.getAudioLocation()}${this.scoreSfx}`;
+
+    /**
+     * Get the "jump" sound effect location
+     * 
+     * @returns {string}
+     */
+    getJumpSFXLocation = () => `${this.paths.getAudioLocation()}${this.jumpSfx}`;
 
     /**
      * Get the "hit" sound effect location

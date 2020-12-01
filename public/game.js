@@ -39,6 +39,9 @@ document.addEventListener('keydown', (e) => {
                 });
             }
         } else if (game.modes.play) {
+            if (game.player.isGrounded) {
+                game.playSFX(game.assetsFetcher.getJumpSFXLocation(), 1);
+            }
             game.player.jump();
         } else if (game.modes.death) {
             if (game.gameOverTimerDone) {
@@ -291,7 +294,7 @@ class Game {
                     this.despawnEnemy(i);
                 } else {
                     this.enemyBuffer[i].draw();
-                    this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+                    //this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
                 }
             }
 
@@ -300,7 +303,7 @@ class Game {
             }
 
             this.player.updatePos();
-            this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+            //this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
 
             this.enemyBuffer.forEach(enemy => {
 
@@ -641,7 +644,7 @@ async function gameLoop() {
     let bgl1 = document.getElementById("bgl1");
     let fgl2 = document.getElementById("fgl2");
     game = new Game(bgl1, fgl2);
-    game.storage.deleteHighScore();
+    //game.storage.deleteHighScore();
 
     // Initialize game layers
     // We are preloading them, so if the user changes aspect ratio it will not bug out
