@@ -1,5 +1,5 @@
 class Obstacle extends Entity {
-    constructor(canvasObj, x, y, slideSpeed, hitbox) {
+    constructor(canvasObj, x, y, slideSpeed, hitbox = null) {
         super(canvasObj, x, y);
         this.slideSpeed = slideSpeed;
         this.hitbox = hitbox;
@@ -11,7 +11,9 @@ class Obstacle extends Entity {
      */
     slideTowardsPlayer() {
         this.x += this.slideSpeed;
-        this.hitbox.updatePos(this.hitbox.u, this.hitbox.d, this.hitbox.l + this.slideSpeed, this.hitbox.r + this.slideSpeed);
+        if (this.hitbox != null) {
+            this.hitbox.updatePos(this.hitbox.u, this.hitbox.d, this.hitbox.l + this.slideSpeed, this.hitbox.r + this.slideSpeed);
+        }
     }
 
     /**
@@ -19,5 +21,14 @@ class Obstacle extends Entity {
      */
     isOutOfBounds() {
         return (this.x > this.canvas.width);
+    }
+
+    /**
+     * Change the hitbox, if needed
+     * 
+     * @param {Hitbox} hitbox
+     */
+    setHitbox(hitbox) {
+        this.hitbox = hitbox
     }
 }

@@ -110,7 +110,8 @@ class Game {
         this.enemyLimit = 3;
         this.framesUntilNewSpawn = 35;
         this.enemySpeed = 8;
-        this.enemySpawnPoint = -128;
+        this.enemySpawnPointX = -128;
+        this.enemySpawnPointY = 395;
 
         // game audio
         this.playingTrack = null;
@@ -399,30 +400,37 @@ class Game {
 
         // Determine the enemy type;
         let enemy = null;
-
-        // TODO: Change these values once other enemies are imlpemented
-        // Also, move these so we dont declare the hitboxes everytime we spawn
-        let y = 395;
-        let x = this.enemySpawnPoint;
-        let penguinHitBox = new Hitbox(y + 25, y + 70, x + 20, x + (164 - 20));
-        let snowManHitBox = new Hitbox(y + 55, y - 60, x + 12, x + 60);
-        let rockHitBox =  new Hitbox(y + 62, y + 10, x + 4, x + 60);
-
         switch(randomEnemy) {
             case 1:
-                // canvasObj, x, y, slideSpeed, hitbox
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, penguinHitBox);
+                let spawnPenguinY = this.enemySpawnPointY;
+                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPointX, spawnPenguinY, this.enemySpeed);
+                enemy.setHitbox(new Hitbox(
+                    spawnPenguinY + 25,
+                    spawnPenguinY + 70,
+                    this.enemySpawnPointX + 20,
+                    this.enemySpawnPointX + (enemy.getWidth() - 20)
+                ));
                 break;
             case 2:
-                enemy = new Rock({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, rockHitBox);
-                //enemy = new Rock();
+                let spawnRockY = this.enemySpawnPointY + 10;
+                enemy = new Rock({canvas: game.spriteCanvas}, this.enemySpawnPointX, spawnRockY, this.enemySpeed);
+                enemy.setHitbox(new Hitbox(
+                    spawnRockY + 10,
+                    spawnRockY + 62,
+                    this.enemySpawnPointX + 4,
+                    this.enemySpawnPointX + (enemy.getWidth() - 4)
+                ));
                 break;
             case 3:
-                enemy = new Snowman({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395 - 72, this.enemySpeed, snowManHitBox);
-                //enemy = new Snowman();
-                break;
             default:
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPoint, 395, this.enemySpeed, penguinHitBox);
+                let spawnSnowmanY = this.enemySpawnPointY - 55;
+                enemy = new Snowman({canvas: game.spriteCanvas}, this.enemySpawnPointX, spawnSnowmanY, this.enemySpeed);
+                enemy.setHitbox(new Hitbox(
+                    spawnSnowmanY + 10,
+                    spawnSnowmanY + 124,
+                    this.enemySpawnPointX + 12,
+                    this.enemySpawnPointX + (enemy.getWidth() - 12)
+                ));
                 break;
         }
 

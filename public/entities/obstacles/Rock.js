@@ -1,7 +1,8 @@
 class Rock extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox) {
         super(canvasObj, x, y, slideSpeed, hitbox);
-        this.spriteSheetName = 'rock.png'
+        this.spriteSheetName = 'rock.png';
+        this.spriteWidth = 64;
     }
 
     /**
@@ -20,5 +21,14 @@ class Rock extends Obstacle {
      */
     onImageLoaded(img) {
         this.ctx.drawImage(img, this.x, this.y);
+    }
+    
+    /**
+     * Returns the width of the sprite
+     * 
+     * @returns {int}
+     */
+    getWidth() {
+        return this.spriteWidth;
     }
 }

@@ -2,6 +2,7 @@ class Snowman extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox) {
         super(canvasObj, x, y, slideSpeed, hitbox);
         this.spriteSheetName = 'snowman.png';
+        this.spriteWidth = 72;
     }
 
     /**
@@ -20,5 +21,14 @@ class Snowman extends Obstacle {
      */
     onImageLoaded(img) {
         this.ctx.drawImage(img, this.x, this.y);
+    }
+
+    /**
+     * Returns the width of the sprite
+     * 
+     * @returns {int}
+     */
+    getWidth() {
+        return this.spriteWidth;
     }
 }

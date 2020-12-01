@@ -1,5 +1,5 @@
 class Penguin extends Obstacle {
-    constructor(canvasObj, x, y, slideSpeed, hitbox) {
+    constructor(canvasObj, x, y, slideSpeed, hitbox = null) {
         super(canvasObj, x, y, slideSpeed, hitbox);
         this.spriteSheetName = 'penguin.png';
         this.spriteWidth = 164;
