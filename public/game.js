@@ -616,7 +616,7 @@ class Game {
      * they are holding down the jump button, it won't immediately start again
      */
     startGameOverTimer() {
-        let waitTime = 2000;
+        let waitTime = 1000;
         this.sleep(waitTime).then(() => {
             this.gameOverTimerDone = true;
         });
