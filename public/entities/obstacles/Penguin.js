@@ -1,7 +1,8 @@
 class Penguin extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox) {
         super(canvasObj, x, y, slideSpeed, hitbox);
-        this.spriteSheetName = 'penguin.png'
+        this.spriteSheetName = 'penguin.png';
+        this.spriteWidth = 164;
     }
 
     /**
@@ -20,5 +21,14 @@ class Penguin extends Obstacle {
      */
     onImageLoaded(img) {
         this.ctx.drawImage(img, this.x, this.y);
+    }
+
+    /**
+     * Returns the width of the sprite
+     * 
+     * @returns {int}
+     */
+    getWidth() {
+        return this.spriteWidth;
     }
 }
