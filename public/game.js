@@ -46,7 +46,9 @@ document.addEventListener('keydown', (e) => {
         } else if (game.modes.play) {
             game.player.jump();
         } else if (game.modes.death) {
-            game.restart();
+            if (game.gameOverTimerDone) {
+                game.restart();
+            }
         }
     }
 });
@@ -104,6 +106,7 @@ class Game {
         this.titleDoneFlag = false;
         this.gameStartingFlag = false;
         this.newHighScoreFlag = false;
+        this.gameOverTimerDone = false;
 
         // enemy variables
         this.enemyBuffer = [];
@@ -319,6 +322,7 @@ class Game {
                                 this.newHighScoreFlag = true;
                             }
                             this.playSFX(`${audioDir}failBuzzer.mp3`, 1);
+                            this.startGameOverTimer();
                             this.setMode("death");
                         }
                     }
@@ -376,6 +380,7 @@ class Game {
         this.player.restoreAllHealth();
         this.score = 0;
         this.newHighScoreFlag = false;
+        this.gameOverTimerDone = false;
 
         // Update HUD, player, and backgrounds
         this.hud1.setText(`${scoreStr} ${this.score}`);
@@ -488,11 +493,16 @@ class Game {
         let textArray = [
             new UIText({canvas: this.hud3.canvas}, 250, 60, `${gameOverStr}`, 54, 1.15),
             new UIText({canvas: this.hud3.canvas}, 250, 140, `${scoreStr} ${this.score}`, 54, 1.15),
-            new UIText({canvas: this.hud3.canvas}, 250, 220, `${resumeStr}`, 32, 1.15),
         ];
+
+        if (this.gameOverTimerDone) {
+            textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 220, `${resumeStr}`, 32, 1.15));
+        }
+
         if (this.newHighScoreFlag) {
             textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 280, `${newHighScoreStr}`, 48, 1.15, "yellow"))
         }
+
         this.hud3.drawTexts(textArray);
     }
 
@@ -600,6 +610,17 @@ class Game {
     initPlayer(layer) {
         this.player = new Player({canvas: layer}, 760, 340, "player-fat.png");
         return this.player;
+    }
+
+    /**
+     * Gives a bit of buffer time when the player game overs, so that if 
+     * they are holding down the jump button, it won't immediately start again
+     */
+    startGameOverTimer() {
+        let waitTime = 2000;
+        this.sleep(waitTime).then(() => {
+            this.gameOverTimerDone = true;
+        });
     }
 
     /**
