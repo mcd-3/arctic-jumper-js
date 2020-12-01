@@ -10,7 +10,7 @@ class Penguin extends Obstacle {
      */
     draw() {
         let img = new Image();
-        img.src = `assets/images/${this.spriteSheetName}`;
+        img.src = `${this.imagePath}${this.spriteSheetName}`;
         img.onload = this.onImageLoaded(img);
     }
 

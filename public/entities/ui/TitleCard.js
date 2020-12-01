@@ -46,7 +46,7 @@ class TitleCard extends Entity {
     draw() {
         if (this.coordinatesSet) {
             let img = new Image();
-            img.src = `assets/images/${this.imgName}`;
+            img.src = `${this.imagePath}${this.imgName}`;
             img.onload = this.onImageLoaded(img);
         }
     }

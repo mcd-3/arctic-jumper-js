@@ -4,6 +4,7 @@ class Obstacle extends Entity {
         this.slideSpeed = slideSpeed;
         this.hitbox = hitbox;
         this.passedByPlayer = false;
+        this.imagePath = new PathStorageHelper().getImagesLocation();
     }
 
     /**

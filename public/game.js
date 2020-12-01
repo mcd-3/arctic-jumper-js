@@ -5,9 +5,9 @@
  */
 
 // Asset directories
-const assetsDir = "./assets/";
-const audioDir = `${assetsDir}audio/`;
-const imagesDir = `${assetsDir}images/`;
+// const assetsDir = "./assets/";
+// const audioDir = `${assetsDir}audio/`;
+// const imagesDir = `${assetsDir}images/`;
 
 // Text strings
 const authorStr = "Made by: Matthew C-D";
@@ -36,11 +36,11 @@ document.addEventListener('keydown', (e) => {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
-                    game.playSFX(`${audioDir}magicIdea01.mp3`, 1);
+                    game.playSFX(`${game.pathStorage.getAudioLocation()}magicIdea01.mp3`, 1);
                     resolve(true);
                 }).then(value => {
                     game.stopTrack();
-                    game.playTrack(`${audioDir}steviaSphere_PolarBears.mp3`, true, 0.5);
+                    game.playTrack(`${game.pathStorage.getAudioLocation()}steviaSphere_PolarBears.mp3`, true, 0.5);
                 });
             }
         } else if (game.modes.play) {
@@ -121,6 +121,8 @@ class Game {
 
         // game storage
         this.storage = new ScoreStorageHelper();
+        this.pathStorage = new PathStorageHelper();
+        this.pathStorage.initPaths();
 
         // game strings
         this.madeByText = new UIText({canvas: this.spriteCanvas}, 20, (540-30), authorStr, 30, 1.45);
@@ -151,13 +153,13 @@ class Game {
      */
     boot() {
         let bootLogo = new Image();
-        bootLogo.src = `${imagesDir}boot.png`;
+        bootLogo.src = `${game.pathStorage.getImagesLocation()}boot.png`;
 
         let bgl1 = document.getElementById("bgl1");
         let bgl1Ctx = bgl1.getContext("2d");
 
         bootLogo.onload = () => {
-            let bootSfx = new Audio(`${audioDir}logo_short.mp3`);
+            let bootSfx = new Audio(`${game.pathStorage.getAudioLocation()}logo_short.mp3`);
             bootSfx.play();
             bgl1Ctx.globalAlpha = 0;
             
@@ -315,13 +317,13 @@ class Game {
 
                         // Check if game over
                         if (this.player.hitpoints > -1) {
-                            this.playSFX(`${audioDir}hit.mp3`, 1);
+                            this.playSFX(`${this.pathStorage.getAudioLocation()}hit.mp3`, 1);
                         } else {
                             if (this.score > this.storage.getHighScore()) {
                                 this.storage.addHighScore(this.score);
                                 this.newHighScoreFlag = true;
                             }
-                            this.playSFX(`${audioDir}failBuzzer.mp3`, 1);
+                            this.playSFX(`${this.pathStorage.getAudioLocation()}failBuzzer.mp3`, 1);
                             this.startGameOverTimer();
                             this.setMode("death");
                         }
@@ -332,7 +334,7 @@ class Game {
                 if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                     this.score++;
                     enemy.passedByPlayer = true;
-                    this.playSFX(`${audioDir}collect.mp3`, 1);
+                    this.playSFX(`${this.pathStorage.getAudioLocation()}collect.mp3`, 1);
                     this.hud1.setText(`${scoreStr} ${this.score}`);
                 }
             });
@@ -671,7 +673,7 @@ async function gameLoop() {
 
     // Start the title sequence
     game.showLayers();
-    game.playTrack(`${audioDir}steviaSphere_Dolphin.mp3`, true, 0.5);
+    game.playTrack(`${game.pathStorage.getAudioLocation()}steviaSphere_Dolphin.mp3`, true, 0.5);
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 

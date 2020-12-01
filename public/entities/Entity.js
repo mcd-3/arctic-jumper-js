@@ -7,5 +7,6 @@ class Entity {
         this.ctx = canvasObj.canvas.getContext("2d");
         this.x = x;
         this.y = y;
+        this.imagePath = new PathStorageHelper().getImagesLocation();
     }
 }

@@ -44,7 +44,7 @@ class Background extends Entity {
                 )
             };
         }
-        img.src = `assets/images/${this.imgName}`;
+        img.src = `${this.imagePath}${this.imgName}`;
     }
 
     /**
