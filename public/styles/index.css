@@ -110,5 +110,5 @@ canvas {
 /* Load custom fonts*/
 @font-face {
     font-family: 'dpcomic';
-    src: url('assets/fonts/dpcomic.regular.ttf');
+    src: url('../assets/fonts/dpcomic.regular.ttf');
 }

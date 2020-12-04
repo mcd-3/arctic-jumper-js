@@ -46,18 +46,18 @@ const mainMenuTemplate = [{
               }
             },
             {
-                label: "Quit",
-                accelerator: process.platform == "darwin" ? "Command+Q" : "Ctrl+Q",
-                click() {
-                    app.quit();
-                }
+              label: "Quit",
+              accelerator: process.platform == "darwin" ? "Command+Q" : "Ctrl+Q",
+              click() {
+                  app.quit();
+              }
             }
         ]
     }
 ];
 
 function openOptions() {
-  options = new BrowserWindow({width: 100, height: 100, resizable: false});
+  options = new BrowserWindow({width: 480, height: 720, resizable: false});
   options.loadURL(url.format({
     pathname: path.join(`${__dirname}/public`, "options.html"),
     protocol: "file:",
