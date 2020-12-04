@@ -400,9 +400,9 @@ class Game {
     pause() {
         this.muteColors();
         let textArray = [
-            new UIText({canvas: this.hud5.canvas}, 250, 60, pauseStr, 54, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 250, 140, resumeGameStr, 24, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 250, 200, gotoOptionsStr, 24, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 60, pauseStr, 54, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 200, resumeGameStr, 28, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 280, gotoOptionsStr, 28, 1.15),
         ];
         this.hud5.drawTexts(textArray);
     }
@@ -413,10 +413,10 @@ class Game {
     options() {
         this.muteColors();
         let textArray = [
-            new UIText({canvas: this.hud5.canvas}, 250, 60, optionsStr, 54, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
             new UIText({canvas: this.hud5.canvas}, 250, 140, musicOptionStr, 24, 1.15),
             new UIText({canvas: this.hud5.canvas}, 250, 200, sfxOptionStr, 24, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 250, 240, exitOptionsStr, 24, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 280, exitOptionsStr, 24, 1.15),
         ];
         this.hud5.drawTexts(textArray);
         this.musicSlider.show();
@@ -763,6 +763,22 @@ class Game {
     }
 
     /**
+     * Initializes callbacks for volume sliders to update game audio
+     */
+    initSliderCallbacks() {
+        this.musicSlider.addUpdateListeners(() => {
+            console.log("updated");
+        }, () => {
+            alert("saved");
+        });
+        this.sfxSlider.addUpdateListeners(() => {
+            console.log("updated");
+        }, () => {
+            alert("saved");
+        })
+    }
+
+    /**
      * Gives a bit of buffer time when the player game overs, so that if 
      * they are holding down the jump button, it won't immediately start again
      */
@@ -809,6 +825,7 @@ async function gameLoop() {
         document.getElementById("hud5")
     );
     game.initSliders("musicSlider", "sfxSlider");
+    game.initSliderCallbacks();
     game.initDl(document.getElementById("dl"));
 
     // Boot game

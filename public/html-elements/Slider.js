@@ -18,11 +18,14 @@ class Slider {
     }
 
     /**
-     * Executes a callback function when the slider's value is changed
+     * Adds oninput and onchange listeners to the sliders,
+     * and executes callbacks when these are triggered
      * 
-     * @param {Callback} callback 
+     * @param {Callback} oninputCallback 
+     * @param {Callback} onchangeCallback 
      */
-    update(callback) {
-
+    addUpdateListeners(oninputCallback, onchangeCallback) {
+        this.slider.addEventListener("input", oninputCallback);
+        this.slider.addEventListener("change", onchangeCallback);
     }
 }
