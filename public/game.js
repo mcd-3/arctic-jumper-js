@@ -292,11 +292,6 @@ class Game {
         // Draw the title card moving downwards or stationary if it isn't finished yet
         this.titleCard.draw();
         this.titleDoneFlag = this.titleCard.isDoneDrawing;
-        this.madeByText.draw();
-
-        if (this.titleDoneFlag) {
-            this.startText.draw();
-        }
 
         // Start drawing in the player and moving card off-screen
         if (this.gameStartingFlag) {
@@ -304,6 +299,11 @@ class Game {
             if (this.titleCard.isDoneDrawing) {
                 this.setMode("play");
             }
+        } else {
+            if (this.titleDoneFlag) {
+                this.startText.draw();
+            }
+            this.madeByText.draw();
         }
 
         if (this.isOptions) {
