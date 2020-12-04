@@ -147,7 +147,7 @@ class Game {
         this.enemyBuffer = [];
         this.enemyLimit = 3;
         this.framesUntilNewSpawn = 35;
-        this.enemySpeed = 8;
+        this.enemySpeed = 8.4;
         this.enemySpawnPointX = -128;
         this.enemySpawnPointY = 395;
 

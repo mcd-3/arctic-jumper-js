@@ -27,7 +27,7 @@ class Player extends Entity {
             INIT_JUMP_FORCE: 8,
             INIT_JUMP_DIRECTION: 1,
             JUMP_FRAME_WAIT: 2,
-            JUMP_ZERO_WAIT: 4,
+            JUMP_ZERO_WAIT: 3,
             START_Y: this.y
         }
         this.jumpForce = this.jumpConfig.INIT_JUMP_FORCE; // subtract 1 until 0 each frame
