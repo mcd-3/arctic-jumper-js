@@ -80,16 +80,6 @@ canvas {
     right: 0;
 }
 
-#hud4 {
-    position: absolute;
-    width: 33%;
-    height: 10%;
-    left: 0;
-    bottom: 0;
-    z-index: 4;
-    background-color: rgba(0, 0, 0, 0); 
-}
-
 #hud3 {
     position: relative;
     padding: 0,0,0,0;
@@ -103,8 +93,48 @@ canvas {
     background-color: rgba(0, 0, 0, 0);
 }
 
+#hud4 {
+    position: absolute;
+    width: 33%;
+    height: 10%;
+    left: 0;
+    bottom: 0;
+    z-index: 4;
+    background-color: rgba(0, 0, 0, 0); 
+}
+
+#hud5 {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 10%;
+    z-index: 6;
+    /* background-color: yellow; */
+    background-color: rgba(0, 0, 0, 0); 
+}
+
 #bgl2, #fgl2 {
     background-color: rgba(0, 0, 0, 0);
+}
+
+/* Input Styles */
+input {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    z-index: 7;
+    visibility: hidden;
+}
+
+#musicSlider {
+    top: 20%;
+    right: 20%;
+}
+
+#sfxSlider {
+    top: 50%;
+    right: 20%;
 }
 
 /* Load custom fonts*/

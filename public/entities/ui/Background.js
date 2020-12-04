@@ -48,7 +48,7 @@ class Background extends Entity {
     }
 
     /**
-     * Stroop background scrolling
+     * Stop background scrolling
      */
     stop() {
         this.isStopped = true;

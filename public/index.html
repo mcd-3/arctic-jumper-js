@@ -21,6 +21,10 @@
       <canvas id="hud2" width="350" height="100"></canvas>
       <canvas id="hud3" width="310" height="540"></canvas>
       <canvas id="hud4" width="350" height="100"></canvas>
+      <canvas id="hud5" width="350" height="100"></canvas>
+
+      <input type="range" min="0" max="100" value="100" step="0.01" id="musicSlider" class="slider" name="music" />
+      <input type="range" min="0" max="100" value="100" step="0.01" id="sfxSlider" class="slider" name="sfx" />
     </div>
 
     <!-- All scripts needed to make the game work -->
@@ -41,6 +45,7 @@
     <script src="entities/ui/TitleCard.js"></script>
     <script src="canvas/Hud.js"></script>
     <script src="canvas/MultiHud.js"></script>
+    <script src="html-elements/Slider.js"></script>
 
     <!-- Obstacles -->
     <script src="entities/obstacles/Penguin.js"></script>

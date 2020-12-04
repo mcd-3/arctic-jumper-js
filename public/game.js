@@ -13,9 +13,13 @@ const highScoreStr = "High Score: ";
 const gameOverStr = "Game Over!";
 const resumeStr = "-- Press Space to Play Again --";
 const newHighScoreStr = "New High Score!";
+const optionsStr = "Options";
+const musicOptionStr = "Music:";
+const sfxOptionStr = "SFX:";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
+const enterKeyCode = "Enter"
 
 // Program flags
 let bootCompleteFlag = false;
@@ -27,7 +31,7 @@ let game;
 document.addEventListener('keydown', (e) => {
     if (e.code == spaceBarKeyCode) {
         if (game.modes.menu) {
-            if (game.titleDoneFlag) { // Play music, get rid of title card
+            if (game.titleDoneFlag && !game.isOptions) { // Play music, get rid of title card
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
@@ -47,6 +51,16 @@ document.addEventListener('keydown', (e) => {
             if (game.gameOverTimerDone) {
                 game.restart();
             }
+        }
+    } else if (e.code == enterKeyCode) {
+        if (game.modes.menu) {
+            if (!game.gameStartingFlag) {
+                game.isOptions = !game.isOptions;
+                game.isOptions ? game.stopMovement() : game.resumeMovement();
+            }
+            // set isOptions to true
+        } else if (game.modes.play) {
+            // set isPaused to true
         }
     }
 });
@@ -85,6 +99,9 @@ class Game {
         this.hud2 = null;
         this.hud3 = null;
         this.hud4 = null;
+        this.hud5 = null;
+        this.musicSlider = null;
+        this.sfxSlider = null;
         this.player = null;
 
         // game variables
@@ -105,6 +122,7 @@ class Game {
         this.gameStartingFlag = false;
         this.newHighScoreFlag = false;
         this.gameOverTimerDone = false;
+        this.isOptions = false;
 
         // enemy variables
         this.enemyBuffer = [];
@@ -252,22 +270,26 @@ class Game {
      * Starts main menu mode
      */
     menu() {
-            // Draw the title card moving downwards or stationary if it isn't finished yet
-            this.titleCard.draw();
-            this.titleDoneFlag = this.titleCard.isDoneDrawing;
-            this.madeByText.draw();
+        // Draw the title card moving downwards or stationary if it isn't finished yet
+        this.titleCard.draw();
+        this.titleDoneFlag = this.titleCard.isDoneDrawing;
+        this.madeByText.draw();
 
-            if (this.titleDoneFlag) {
-                this.startText.draw();
-            }
+        if (this.titleDoneFlag) {
+            this.startText.draw();
+        }
 
-            // Start drawing in the player and moving card off-screen
-            if (this.gameStartingFlag) {
-                this.player.moveToStartPos();
-                if (this.titleCard.isDoneDrawing) {
-                    this.setMode("play");
-                }
+        // Start drawing in the player and moving card off-screen
+        if (this.gameStartingFlag) {
+            this.player.moveToStartPos();
+            if (this.titleCard.isDoneDrawing) {
+                this.setMode("play");
             }
+        }
+
+        if (this.isOptions) {
+            this.options();
+        }
     }
 
     /**
@@ -345,6 +367,21 @@ class Game {
     }
 
     /**
+     * Toggles the options screen
+     */
+    options() {
+        this.muteColors();
+        let textArray = [
+            new UIText({canvas: this.hud5.canvas}, 250, 60, optionsStr, 54, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 250, 140, musicOptionStr, 24, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 250, 200, sfxOptionStr, 24, 1.15),
+        ];
+        this.hud5.drawTexts(textArray);
+        this.musicSlider.show();
+        this.sfxSlider.show();
+    }
+
+    /**
      * Shows the "game over, play again" screen in death mode
      */
     death() {
@@ -363,9 +400,7 @@ class Game {
         this.fgl1.stop();
 
         // show the death layer + text
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.4)";
-        this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
+        this.muteColors();
         this.showGameOverText();
     }
 
@@ -394,6 +429,54 @@ class Game {
         this.fgl1.resume();
 
         this.setMode("play");
+    }
+
+    /**
+     * Stops the movement of entities
+     */
+    stopMovement() {
+        if (this.modes.menu) {
+            this.titleCard.stop();
+            this.bgl1.stop();
+            this.bgl2.stop();
+            this.fgl1.stop();
+        } else {
+
+        }
+    }
+
+    /**
+     * Resumes the movement of entities
+     */
+    resumeMovement() {
+        if (this.modes.menu) {
+            this.titleCard.resume();
+            this.bgl1.resume();
+            this.bgl2.resume();
+            this.fgl1.resume();
+        } else {
+
+        }
+        this.unmuteColors();
+        this.hud5.clear();
+        this.musicSlider.hide();
+        this.sfxSlider.hide();
+    }
+
+    /**
+     * Makes the screen turn grey
+     */
+    muteColors() {
+        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
+        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.4)";
+        this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
+    }
+
+    /**
+     * Clears the grey color from the screen
+     */
+    unmuteColors() {
+        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
     }
 
     /**
@@ -586,7 +669,7 @@ class Game {
      * @param {HUD} hud2Layer 
      * @param {HUD} hud3Layer 
      */
-    initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer) { 
+    initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer, hud5Layer) { 
         this.scoreText = new UIText({canvas: hud1Layer}, 18, 40, `${scoreStr} ${this.score}`, 36, 1.15);
         this.healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
         this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
@@ -594,6 +677,18 @@ class Game {
         this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
         this.hud3 = new MultiHUD({canvas: hud3Layer}, true);
         this.hud4 = new HUD({canvas: hud4Layer}, this.highScoreText, true);
+        this.hud5 = new MultiHUD({canvas: hud5Layer}, true)
+    }
+
+    /**
+     * Initializes the sliders on the options screen
+     * 
+     * @param {string} musicId 
+     * @param {string} sfxId 
+     */
+    initSliders(musicId, sfxId) {
+        this.musicSlider = new Slider(musicId);
+        this.sfxSlider = new Slider(sfxId);
     }
 
     /**
@@ -657,8 +752,10 @@ async function gameLoop() {
         document.getElementById("hud1"),
         document.getElementById("hud2"),
         document.getElementById("hud3"),
-        document.getElementById("hud4")
+        document.getElementById("hud4"),
+        document.getElementById("hud5")
     );
+    game.initSliders("musicSlider", "sfxSlider");
     game.initDl(document.getElementById("dl"));
 
     // Boot game

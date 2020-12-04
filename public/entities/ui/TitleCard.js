@@ -15,6 +15,7 @@ class TitleCard extends Entity {
         this.dy = 1;
         this.eraseOnDestination = true;
         this.isDoneDrawing = true;
+        this.isStopped = false;
     }
 
     /**
@@ -60,17 +61,34 @@ class TitleCard extends Entity {
         if (this.currentX != this.toX || this.currentY != this.toY) {
             this.ctx.drawImage(img, this.currentX, this.currentY);
 
-            if (this.currentX != this.toX) {
-                this.currentX += this.dx;
+            if (!this.isStopped) {
+                if (this.currentX != this.toX) {
+                    this.currentX += this.dx;
+                }
+                if (this.currentY != this.toY) {
+                    this.currentY += this.dy;
+                }
             }
-            if (this.currentY != this.toY) {
-                this.currentY += this.dy;
-            }
+            
         } else {
             this.isDoneDrawing = true;
             if (!this.eraseOnDestination) {
                 this.ctx.drawImage(img, this.currentX, this.currentY);
             }
         }
+    }
+
+    /**
+     * Stops moving the title card
+     */
+    stop() {
+        this.isStopped = true;
+    }
+
+    /**
+     * Resumes moving the title card
+     */
+    resume() {
+        this.isStopped = false;
     }
 }
