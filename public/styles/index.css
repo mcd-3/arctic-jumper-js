@@ -110,7 +110,6 @@ canvas {
     left: 10%;
     top: 10%;
     z-index: 6;
-    /* background-color: yellow; */
     background-color: rgba(0, 0, 0, 0); 
 }
 
@@ -128,13 +127,13 @@ input {
 }
 
 #musicSlider {
-    top: 20%;
-    right: 20%;
+    top: 20.5%;
+    right: 25%;
 }
 
 #sfxSlider {
-    top: 50%;
-    right: 20%;
+    top: 36%;
+    right: 25%;
 }
 
 /* Load custom fonts*/

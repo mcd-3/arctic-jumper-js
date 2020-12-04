@@ -414,9 +414,9 @@ class Game {
         this.muteColors();
         let textArray = [
             new UIText({canvas: this.hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 250, 140, musicOptionStr, 24, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 250, 200, sfxOptionStr, 24, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 375, 280, exitOptionsStr, 24, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 180, 140, musicOptionStr, 32, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 180, 220, sfxOptionStr, 32, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 340, exitOptionsStr, 28, 1.15),
         ];
         this.hud5.drawTexts(textArray);
         this.musicSlider.show();
