@@ -16,6 +16,10 @@ const newHighScoreStr = "New High Score!";
 const optionsStr = "Options";
 const musicOptionStr = "Music:";
 const sfxOptionStr = "SFX:";
+const exitOptionsStr = "-- Press Enter to Exit Options --";
+const pauseStr = "Paused";
+const resumeGameStr = "-- Press Space to Resume --";
+const gotoOptionsStr = "-- Press Enter to go to Options --";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -43,10 +47,17 @@ document.addEventListener('keydown', (e) => {
                 });
             }
         } else if (game.modes.play) {
-            if (game.player.isGrounded) {
-                game.playSFX(game.assetsFetcher.getJumpSFXLocation(), 1);
+            if (!game.isPaused) { // jump
+                if (game.player.isGrounded) {
+                    game.playSFX(game.assetsFetcher.getJumpSFXLocation(), 1);
+                }
+                game.player.jump();
+            } else { // exit from paused
+                if (!game.isOptions) {
+                    game.isPaused = false;
+                    game.resumeMovement();
+                }
             }
-            game.player.jump();
         } else if (game.modes.death) {
             if (game.gameOverTimerDone) {
                 game.restart();
@@ -58,9 +69,16 @@ document.addEventListener('keydown', (e) => {
                 game.isOptions = !game.isOptions;
                 game.isOptions ? game.stopMovement() : game.resumeMovement();
             }
-            // set isOptions to true
         } else if (game.modes.play) {
-            // set isPaused to true
+            if (game.isPaused) { // go to options
+                if (game.isOptions) {
+                    game.musicSlider.hide();
+                    game.sfxSlider.hide();
+                }
+                game.isOptions = !game.isOptions;
+            } else { // pause the game
+                game.isPaused = true;
+            }
         }
     }
 });
@@ -123,6 +141,7 @@ class Game {
         this.newHighScoreFlag = false;
         this.gameOverTimerDone = false;
         this.isOptions = false;
+        this.isPaused = false;
 
         // enemy variables
         this.enemyBuffer = [];
@@ -297,73 +316,95 @@ class Game {
      */
     play() {
         if (this.player.isAtStartPos()) {
-
-            if (this.player.hitpoints < 2) {
-                this.hud2.changeColor("#ff0000");
-            }
-
-            // Draw the HUD first
-            this.hud1.drawText();
-            this.hud2.drawText();
-            this.hud4.drawText();
-
-            this.framesUntilNewSpawn--;
-
-            for (let i = 0; i < this.enemyBuffer.length; i++) {
-                this.enemyBuffer[i].slideTowardsPlayer();
-
-                if (this.enemyBuffer[i].isOutOfBounds()) {
-                    this.despawnEnemy(i);
-                } else {
-                    this.enemyBuffer[i].draw();
-                    //this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+            if (!this.isPaused) {
+                if (this.player.hitpoints < 2) {
+                    this.hud2.changeColor("#ff0000");
                 }
-            }
-
-            if (this.framesUntilNewSpawn <= 0) {
-                this.spawnEnemy();
-            }
-
-            this.player.updatePos();
-            //this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
-
-            this.enemyBuffer.forEach(enemy => {
-
-                // Check if hitboxes overlap
-                if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
-                    if (!this.player.isHurt()) {
-                        this.player.takeDamage();
-                        this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
-
-                        // Check if game over
-                        if (this.player.hitpoints > 0) {
-                            this.playSFX(this.assetsFetcher.getHitSFXLocation(), 1);
-                        } else {
-                            if (this.score > this.storage.getHighScore()) {
-                                this.storage.addHighScore(this.score);
-                                this.newHighScoreFlag = true;
-                            }
-                            this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), 1);
-                            this.startGameOverTimer();
-                            this.hud2.changeColor("#585858");
-                            this.hud2.drawText();
-                            this.setMode("death");
-                        }
+    
+                // Draw the HUD first
+                this.hud1.drawText();
+                this.hud2.drawText();
+                this.hud4.drawText();
+    
+                this.framesUntilNewSpawn--;
+    
+                for (let i = 0; i < this.enemyBuffer.length; i++) {
+                    this.enemyBuffer[i].slideTowardsPlayer();
+    
+                    if (this.enemyBuffer[i].isOutOfBounds()) {
+                        this.despawnEnemy(i);
+                    } else {
+                        this.enemyBuffer[i].draw();
+                        //this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
                     }
                 }
-
-                // Check if a point has been scored
-                if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
-                    this.score++;
-                    enemy.passedByPlayer = true;
-                    this.playSFX(this.assetsFetcher.getScoreSFXLocation(), 1);
-                    this.hud1.setText(`${scoreStr} ${this.score}`);
+    
+                if (this.framesUntilNewSpawn <= 0) {
+                    this.spawnEnemy();
                 }
-            });
-
+    
+                this.player.updatePos();
+                //this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+    
+                this.enemyBuffer.forEach(enemy => {
+    
+                    // Check if hitboxes overlap
+                    if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
+                        if (!this.player.isHurt()) {
+                            this.player.takeDamage();
+                            this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
+    
+                            // Check if game over
+                            if (this.player.hitpoints > 0) {
+                                this.playSFX(this.assetsFetcher.getHitSFXLocation(), 1);
+                            } else {
+                                if (this.score > this.storage.getHighScore()) {
+                                    this.storage.addHighScore(this.score);
+                                    this.newHighScoreFlag = true;
+                                }
+                                this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), 1);
+                                this.startGameOverTimer();
+                                this.hud2.changeColor("#585858");
+                                this.hud2.drawText();
+                                this.setMode("death");
+                            }
+                        }
+                    }
+    
+                    // Check if a point has been scored
+                    if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
+                        this.score++;
+                        enemy.passedByPlayer = true;
+                        this.playSFX(this.assetsFetcher.getScoreSFXLocation(), 1);
+                        this.hud1.setText(`${scoreStr} ${this.score}`);
+                    }
+                });    
+            } else { // Show the pause or option menu
+                if (!this.isOptions) {
+                    this.pause();
+                    this.stopMovement();
+                } else {
+                    this.options();
+                    this.player.draw();
+                    this.drawEnemies();
+                }
+            }
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
+    }
+
+    /**
+     * Toggles the pause screen
+     */
+    pause() {
+        this.muteColors();
+        let textArray = [
+            new UIText({canvas: this.hud5.canvas}, 250, 60, pauseStr, 54, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 250, 140, resumeGameStr, 24, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 250, 200, gotoOptionsStr, 24, 1.15),
+        ];
+        this.hud5.drawTexts(textArray);
     }
 
     /**
@@ -375,6 +416,7 @@ class Game {
             new UIText({canvas: this.hud5.canvas}, 250, 60, optionsStr, 54, 1.15),
             new UIText({canvas: this.hud5.canvas}, 250, 140, musicOptionStr, 24, 1.15),
             new UIText({canvas: this.hud5.canvas}, 250, 200, sfxOptionStr, 24, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 250, 240, exitOptionsStr, 24, 1.15),
         ];
         this.hud5.drawTexts(textArray);
         this.musicSlider.show();
@@ -391,13 +433,7 @@ class Game {
         this.hud4.setText(`${highScoreStr} ${this.storage.getHighScore()}`);
 
         // keep objects drawn and stop backgrounds
-        this.enemyBuffer.forEach(enemy => {
-            enemy.draw();
-        });
-        this.player.draw();
-        this.bgl1.stop();
-        this.bgl2.stop();
-        this.fgl1.stop();
+        this.stopMovement();
 
         // show the death layer + text
         this.muteColors();
@@ -441,7 +477,11 @@ class Game {
             this.bgl2.stop();
             this.fgl1.stop();
         } else {
-
+            this.drawEnemies();
+            this.player.draw();
+            this.bgl1.stop();
+            this.bgl2.stop();
+            this.fgl1.stop();
         }
     }
 
@@ -454,13 +494,17 @@ class Game {
             this.bgl1.resume();
             this.bgl2.resume();
             this.fgl1.resume();
+            this.unmuteColors();
+            this.hud5.clear();
+            this.musicSlider.hide();
+            this.sfxSlider.hide();
         } else {
-
+            this.bgl1.resume();
+            this.bgl2.resume();
+            this.fgl1.resume();
+            this.unmuteColors();
+            this.hud5.clear();
         }
-        this.unmuteColors();
-        this.hud5.clear();
-        this.musicSlider.hide();
-        this.sfxSlider.hide();
     }
 
     /**
@@ -589,6 +633,15 @@ class Game {
         }
 
         this.hud3.drawTexts(textArray);
+    }
+
+    /**
+     * Draws all enemies
+     */
+    drawEnemies() {
+        this.enemyBuffer.forEach(enemy => {
+            enemy.draw();
+        });
     }
 
     /**

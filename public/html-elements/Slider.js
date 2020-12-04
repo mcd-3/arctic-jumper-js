@@ -16,4 +16,13 @@ class Slider {
     hide() {
         this.slider.style.visibility = "hidden";
     }
+
+    /**
+     * Executes a callback function when the slider's value is changed
+     * 
+     * @param {Callback} callback 
+     */
+    update(callback) {
+
+    }
 }
