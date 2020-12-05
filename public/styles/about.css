@@ -4,8 +4,13 @@
     src: url('../assets/fonts/dpcomic.regular.ttf');
 }
 
+/* HTML Styles */
+html {
+    background-color: rgb(209, 244, 255);
+}
+
 /* Div Styles */
-div {
+div.container {
     background-color: #44444433;
     border-radius: 0.6em;
     border-color: black;
@@ -13,7 +18,64 @@ div {
     border-style: solid;
     margin-bottom: 1em;
 }
+
+.textDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
 /* Text Styles */
 h1 {
     font-family: 'dpcomic';
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 4%;
+    margin-top: 4%;
+    color: white;
+    -webkit-text-stroke: 0.015em black;
+}
+
+ul {
+    list-style-type: none;
+    padding-bottom: 2%;
+}
+
+li {
+    font-family: 'dpcomic';
+    margin-bottom: 2%;
+}
+
+.textDiv > p {
+    font-family: 'dpcomic';
+    font-size: 1.2em;
+    color: black;
+}
+
+.creditsText {
+    margin-left: 10%;
+}
+
+.authorText {
+    margin-right: 10%;
+}
+
+.container > h2 {
+    margin-left: 1em;
+    font-family: 'dpcomic';
+    font-size: 2em;
+    color: white;
+    -webkit-text-stroke: 0.01em black;
+}
+
+.container > p {
+    font-family: 'dpcomic';
+    text-align: center;
+}
+
+.trackItem > p {
+    font-family: 'dpcomic';
+    font-size: 1.5em;
+    margin-left: 7%;
+    color: white;
+    -webkit-text-stroke: 0.04em black;
 }
