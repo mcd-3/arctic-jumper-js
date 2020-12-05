@@ -7,6 +7,7 @@
 // Text strings
 const authorStr = "Made by: Matthew C-D";
 const startStr = "-- Press Space to Start --";
+const optionsMenuStr = "Options: Enter Key";
 const healthStr = "Health: ";
 const scoreStr = "Score: ";
 const highScoreStr = "High Score: ";
@@ -296,6 +297,7 @@ class Game {
 
         // Start drawing in the player and moving card off-screen
         if (this.gameStartingFlag) {
+            this.hud1.setText("");
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
                 this.setMode("play");
@@ -306,6 +308,7 @@ class Game {
             }
             this.madeByText.draw();
         }
+        this.hud1.drawText();
 
         if (this.isOptions) {
             this.options();
@@ -317,6 +320,7 @@ class Game {
      */
     play() {
         if (this.player.isAtStartPos()) {
+            this.hud1.setText(`${scoreStr} ${this.score}`);
             if (!this.isPaused) {
                 if (this.player.hitpoints < 2) {
                     this.hud2.changeColor("#ff0000");
@@ -377,7 +381,6 @@ class Game {
                         this.score++;
                         enemy.passedByPlayer = true;
                         this.playSFX(this.assetsFetcher.getScoreSFXLocation(), this.volumeSettings.getUserSFXVolume());
-                        this.hud1.setText(`${scoreStr} ${this.score}`);
                     }
                 });    
             } else { // Show the pause or option menu
@@ -724,7 +727,7 @@ class Game {
      * @param {HUD} hud3Layer 
      */
     initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer, hud5Layer) { 
-        this.scoreText = new UIText({canvas: hud1Layer}, 18, 40, `${scoreStr} ${this.score}`, 36, 1.15);
+        this.scoreText = new UIText({canvas: hud1Layer}, 18, 40, optionsMenuStr, 36, 1.15);
         this.healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
         this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
         this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
