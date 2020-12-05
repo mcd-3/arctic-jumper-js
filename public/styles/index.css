@@ -119,11 +119,32 @@ canvas {
 
 /* Input Styles */
 input {
+    -webkit-appearance: none;
     position: absolute;
     width: 30%;
     height: 10%;
     z-index: 7;
     visibility: hidden;
+    background: #d3d3d3;
+    outline: darkblue;
+    outline-width: 0.3em;
+    outline-style: solid;
+    opacity: 0.8;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+  
+input:hover {
+    opacity: 1;
+}
+  
+input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.2em;
+    height: 2.5em;
+    background: darkblue;
+    cursor: pointer;
 }
 
 #musicSlider {
