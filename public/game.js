@@ -39,17 +39,17 @@ document.addEventListener('keydown', (e) => {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
-                    game.playSFX(game.assetsFetcher.getStartGameSFXLocation(), 1);
+                    game.playSFX(game.assetsFetcher.getStartGameSFXLocation(), game.volumeSettings.getUserSFXVolume());
                     resolve(true);
                 }).then(value => {
                     game.stopTrack();
-                    game.playTrack(game.assetsFetcher.getMainSongLocation(), true, 0.5);
+                    game.playTrack(game.assetsFetcher.getMainSongLocation(), true, game.volumeSettings.getUserMusicVolume());
                 });
             }
         } else if (game.modes.play) {
             if (!game.isPaused) { // jump
                 if (game.player.isGrounded) {
-                    game.playSFX(game.assetsFetcher.getJumpSFXLocation(), 1);
+                    game.playSFX(game.assetsFetcher.getJumpSFXLocation(), game.volumeSettings.getUserSFXVolume());
                 }
                 game.player.jump();
             } else { // exit from paused
@@ -157,6 +157,7 @@ class Game {
         // game storage
         this.storage = new ScoreStorageHelper();
         this.assetsFetcher = new AssetLocationFetcher();
+        this.volumeSettings = new VolumeSettings();
         new PathStorageHelper().initPaths();
 
         // game strings
@@ -356,13 +357,13 @@ class Game {
     
                             // Check if game over
                             if (this.player.hitpoints > 0) {
-                                this.playSFX(this.assetsFetcher.getHitSFXLocation(), 1);
+                                this.playSFX(this.assetsFetcher.getHitSFXLocation(), this.volumeSettings.getUserSFXVolume());
                             } else {
                                 if (this.score > this.storage.getHighScore()) {
                                     this.storage.addHighScore(this.score);
                                     this.newHighScoreFlag = true;
                                 }
-                                this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), 1);
+                                this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), this.volumeSettings.getUserSFXVolume());
                                 this.startGameOverTimer();
                                 this.hud2.changeColor("#585858");
                                 this.hud2.drawText();
@@ -375,7 +376,7 @@ class Game {
                     if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                         this.score++;
                         enemy.passedByPlayer = true;
-                        this.playSFX(this.assetsFetcher.getScoreSFXLocation(), 1);
+                        this.playSFX(this.assetsFetcher.getScoreSFXLocation(), this.volumeSettings.getUserSFXVolume());
                         this.hud1.setText(`${scoreStr} ${this.score}`);
                     }
                 });    
@@ -741,7 +742,9 @@ class Game {
      */
     initSliders(musicId, sfxId) {
         this.musicSlider = new Slider(musicId);
+        this.musicSlider.setValue(this.volumeSettings.getUserMusicVolume());
         this.sfxSlider = new Slider(sfxId);
+        this.sfxSlider.setValue(this.volumeSettings.getUserSFXVolume());
     }
 
     /**
@@ -767,14 +770,14 @@ class Game {
      */
     initSliderCallbacks() {
         this.musicSlider.addUpdateListeners(() => {
-            console.log("updated");
+            //game.volumeSettings.setUserMusicVolume(this.musicSlider.getValue());
         }, () => {
             alert("saved");
         });
         this.sfxSlider.addUpdateListeners(() => {
-            console.log("updated");
+            game.volumeSettings.setUserSFXVolume(this.sfxSlider.getValue());
         }, () => {
-            alert("saved");
+            game.volumeSettings.saveUserSFXVolume();
         })
     }
 
@@ -840,7 +843,7 @@ async function gameLoop() {
 
     // Start the title sequence
     game.showLayers();
-    game.playTrack(game.assetsFetcher.getTitleScreenSongLocation(), true, 0.5);
+    game.playTrack(game.assetsFetcher.getTitleScreenSongLocation(), true, game.volumeSettings.getUserMusicVolume());
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 

@@ -3,6 +3,13 @@ class Slider {
         this.slider = document.getElementById(id);
     }
 
+    setValue(val) {
+        this.slider.value = val;
+    }
+
+    getValue = () => this.slider.value;
+    
+
     /**
      * Shows the slider on screen
      */
