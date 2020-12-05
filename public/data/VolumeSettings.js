@@ -63,6 +63,6 @@ class VolumeSettings {
      * Saves the user sfx volume setting to localstorage
      */
     async saveUserSFXVolume() {
-        localStorage.setItem(this.sfxVolumeLocation, this.sfxVolumeLocation);
+        localStorage.setItem(this.sfxVolumeLocation, this.sfxVolume);
     }
 }
