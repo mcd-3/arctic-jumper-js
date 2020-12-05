@@ -1,0 +1,19 @@
+/* Load custom fonts*/
+@font-face {
+    font-family: 'dpcomic';
+    src: url('../assets/fonts/dpcomic.regular.ttf');
+}
+
+/* Div Styles */
+div {
+    background-color: #44444433;
+    border-radius: 0.6em;
+    border-color: black;
+    border-width: 0.3em;
+    border-style: solid;
+    margin-bottom: 1em;
+}
+/* Text Styles */
+h1 {
+    font-family: 'dpcomic';
+}

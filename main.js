@@ -7,7 +7,7 @@ const width = 920;
 const height = 540;
 
 let main;
-let options;
+let about;
 
 // Change me to "production" when not debugging
 process.env.NODE_ENV = "debug"
@@ -37,11 +37,11 @@ const mainMenuTemplate = [{
               }
             },
             {
-              label: "Options",
-              accelerator: process.platform == "darwin" ? "Command+O" : "Ctrl+O",
+              label: "About",
+              accelerator: process.platform == "darwin" ? "Command+A" : "Ctrl+A",
               click() {
-                if (options == undefined || options == null) {
-                  openOptions();
+                if (about == undefined || about == null) {
+                  openAbout();
                 }
               }
             },
@@ -56,14 +56,14 @@ const mainMenuTemplate = [{
     }
 ];
 
-function openOptions() {
-  options = new BrowserWindow({width: 480, height: 720, resizable: false});
-  options.loadURL(url.format({
-    pathname: path.join(`${__dirname}/public`, "options.html"),
+function openAbout() {
+  about = new BrowserWindow({width: 480, height: 720, resizable: false});
+  about.loadURL(url.format({
+    pathname: path.join(`${__dirname}/public`, "about.html"),
     protocol: "file:",
     slashes: true
   }));
-  options.on('close', () => options = null);
+  about.on('close', () => about = null);
 }
 
 // Add developer tools option if in dev
