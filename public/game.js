@@ -770,9 +770,11 @@ class Game {
      */
     initSliderCallbacks() {
         this.musicSlider.addUpdateListeners(() => {
-            //game.volumeSettings.setUserMusicVolume(this.musicSlider.getValue());
+            let sliderVal = this.musicSlider.getValue();
+            game.volumeSettings.setUserMusicVolume(sliderVal);
+            game.playingTrack.volume = sliderVal;
         }, () => {
-            alert("saved");
+            game.volumeSettings.saveUserMusicVolume();
         });
         this.sfxSlider.addUpdateListeners(() => {
             game.volumeSettings.setUserSFXVolume(this.sfxSlider.getValue());
