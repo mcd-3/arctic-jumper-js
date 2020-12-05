@@ -121,18 +121,18 @@ canvas {
 input {
     position: absolute;
     width: 30%;
-    height: 30%;
+    height: 10%;
     z-index: 7;
     visibility: hidden;
 }
 
 #musicSlider {
-    top: 20.5%;
+    top: 31%;
     right: 25%;
 }
 
 #sfxSlider {
-    top: 36%;
+    top: 46%;
     right: 25%;
 }
 

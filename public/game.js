@@ -516,7 +516,7 @@ class Game {
      */
     muteColors() {
         this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.4)";
+        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.6)";
         this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
     }
 
