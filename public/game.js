@@ -197,6 +197,7 @@ class Game {
 
         bootLogo.onload = () => {
             let bootSfx = new Audio(game.assetsFetcher.getBootGameSFXLocation());
+            bootSfx.volume = game.volumeSettings.getUserMusicVolume();
             bootSfx.play();
             bgl1Ctx.globalAlpha = 0;
             
