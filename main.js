@@ -1,6 +1,8 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const shell = electron.shell
+const ipc = electron.ipcMain
 
 const {app, BrowserWindow, Menu} = electron;
 const width = 920;
@@ -57,7 +59,7 @@ const mainMenuTemplate = [{
 ];
 
 function openAbout() {
-  about = new BrowserWindow({width: 480, height: 720, resizable: false});
+  about = new BrowserWindow({width: 480, height: 720, resizable: false, webPreferences: {nodeIntegration: true}});
   about.loadURL(url.format({
     pathname: path.join(`${__dirname}/public`, "about.html"),
     protocol: "file:",
@@ -65,6 +67,10 @@ function openAbout() {
   }));
   about.on('close', () => about = null);
 }
+
+ipc.on("open-browser", (event, arg) => {
+  shell.openExternal(arg);
+});
 
 // Add developer tools option if in dev
 if(process.env.NODE_ENV !== 'production'){
