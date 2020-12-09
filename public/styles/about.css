@@ -79,3 +79,14 @@ li {
     color: white;
     -webkit-text-stroke: 0.04em black;
 }
+
+/* Link Styles */
+a {
+    color: #000089;
+    -webkit-text-stroke: 0.04em black;
+}
+
+a:hover {
+    color: white;
+    -webkit-text-stroke: 0.04em black;
+}
