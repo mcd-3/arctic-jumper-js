@@ -17,7 +17,7 @@ process.env.NODE_ENV = "debug"
 app.on('ready', () => {
     main = new BrowserWindow({width, height, resizable: false});
     main.loadURL(url.format({
-        pathname: path.join(`${__dirname}/public`, "index.html"),
+        pathname: path.join(`${__dirname}/public`, "game.html"),
         protocol: "file:",
         slashes: true
     }));
