@@ -7,40 +7,50 @@ class Penguin extends Obstacle {
         this.waitFrames = this.maxWaitFrames;
         this.frameSpeed = 1;
         this.isFrame1 = true;
+        this.img = null;
+        this.imgloaded = false;
+
+        this.initImage();
     }
 
     /**
      * Draws the penguin obstacle to screen
      */
     draw() {
-        let img = new Image();
-        img.src = this.assetFetcher.getPenguinImageLocation();
-        img.onload = this.onImageLoaded(img);
+        if (this.imgloaded) {
+            if (this.waitFrames > 0) {
+                this.waitFrames -= this.frameSpeed;
+            } else {
+                this.waitFrames = this.maxWaitFrames;
+    
+                // Dont animate if the animation is supposed to be stopped
+                if (!this.isStopped) {
+                    this.isFrame1 = !this.isFrame1;
+                }
+            }
+    
+            if (this.isFrame1) {
+                this.ctx.drawImage(this.img, 0, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
+            } else {
+                this.ctx.drawImage(this.img, 164, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
+            }
+        }
     }
 
     /**
-     * Internal function used to draw the player to screen
-     * 
-     * @param {Image} img 
+     * Flags the sprite as loaded into memory
      */
-    onImageLoaded(img) {
+    onImageLoaded() {
+        this.imgloaded = true;
+    }
 
-        if (this.waitFrames > 0) {
-            this.waitFrames -= this.frameSpeed;
-        } else {
-            this.waitFrames = this.maxWaitFrames;
-
-            // Dont animate if the animation is supposed to be stopped
-            if (!this.isStopped) {
-                this.isFrame1 = !this.isFrame1;
-            }
-        }
-
-        if (this.isFrame1) {
-            this.ctx.drawImage(img, 0, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
-        } else {
-            this.ctx.drawImage(img, 164, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
-        }
+    /**
+     * Loads the sprite into memory
+     */
+    initImage() {
+        this.img = new Image();
+        this.img.src = this.assetFetcher.getPenguinImageLocation();
+        this.img.onload = this.onImageLoaded();
     }
 
     /**

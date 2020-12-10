@@ -2,24 +2,35 @@ class Rock extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox) {
         super(canvasObj, x, y, slideSpeed, hitbox);
         this.spriteWidth = 64;
+        this.img = null;
+        this.imgloaded = false;
+
+        this.initImage();
     }
 
     /**
      * Draws the rock obstacle to screen
      */
     draw() {
-        let img = new Image();
-        img.src = this.assetFetcher.getRockImageLocation();
-        img.onload = this.onImageLoaded(img);
+        if (this.imgloaded) {
+            this.ctx.drawImage(this.img, this.x, this.y);
+        }
     }
 
     /**
-     * Internal function used to draw the player to screen
-     * 
-     * @param {Image} img 
+     * Flags the sprite as loaded into memory
      */
-    onImageLoaded(img) {
-        this.ctx.drawImage(img, this.x, this.y);
+    onImageLoaded() {
+        this.imgloaded = true;
+    }
+
+    /**
+     * Loads the sprite into memory
+     */
+    initImage() {
+        this.img = new Image();
+        this.img.src = this.assetFetcher.getRockImageLocation();;
+        this.img.onload = this.onImageLoaded();
     }
     
     /**
