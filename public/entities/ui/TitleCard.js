@@ -16,6 +16,10 @@ class TitleCard extends Entity {
         this.eraseOnDestination = true;
         this.isDoneDrawing = true;
         this.isStopped = false;
+        this.img = null;
+        this.imageLoaded = false;
+
+        this.initImage();
     }
 
     /**
@@ -46,9 +50,23 @@ class TitleCard extends Entity {
      */
     draw() {
         if (this.coordinatesSet) {
-            let img = new Image();
-            img.src = this.imgPath;
-            img.onload = this.onImageLoaded(img);
+            if (this.currentX != this.toX || this.currentY != this.toY) {
+                this.ctx.drawImage(this.img, this.currentX, this.currentY);
+    
+                if (!this.isStopped) {
+                    if (this.currentX != this.toX) {
+                        this.currentX += this.dx;
+                    }
+                    if (this.currentY != this.toY) {
+                        this.currentY += this.dy;
+                    }
+                }
+            } else {
+                this.isDoneDrawing = true;
+                if (!this.eraseOnDestination) {
+                    this.ctx.drawImage(this.img, this.currentX, this.currentY);
+                }
+            }
         }
     }
 
@@ -57,25 +75,17 @@ class TitleCard extends Entity {
      * 
      * @param {Image} img 
      */
-    onImageLoaded(img) {
-        if (this.currentX != this.toX || this.currentY != this.toY) {
-            this.ctx.drawImage(img, this.currentX, this.currentY);
+    onImageLoaded() {
+        this.imageLoaded = true;
+    }
 
-            if (!this.isStopped) {
-                if (this.currentX != this.toX) {
-                    this.currentX += this.dx;
-                }
-                if (this.currentY != this.toY) {
-                    this.currentY += this.dy;
-                }
-            }
-            
-        } else {
-            this.isDoneDrawing = true;
-            if (!this.eraseOnDestination) {
-                this.ctx.drawImage(img, this.currentX, this.currentY);
-            }
-        }
+    /**
+     * Initializes the image
+     */
+    initImage() {
+        this.img = new Image();
+        this.img.src = this.imgPath;
+        this.img.onload = this.onImageLoaded();
     }
 
     /**
