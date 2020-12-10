@@ -1,10 +1,13 @@
 {
   "name": "arctic-jumper",
+  "productName": "Arctic Jumper",
   "version": "1.0.0",
   "description": "Arctic Jumper: a game where you jump over things!",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icons/logo.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . arctic-jumper --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/logo.ico --prune=true --out=release-builds --version-string.CompanyName=\"Matthew Carvalho-Dagenais\" --version-string.FileDescription=\"Jump through the arctic!\" --version-string.ProductName=\"Arctic Jumper\""
   },
   "author": "Matthew Carvalho-Dagenais",
   "license": "MIT",
