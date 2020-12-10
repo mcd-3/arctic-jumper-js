@@ -7,6 +7,8 @@ class Player extends Entity {
         this.fadeX = 1000;
         this.originalX = this.x;
         this.isStopped = false;
+        this.img = null;
+        this.imgLoaded = false;
 
         // Health
         this.maxHitpoints = 3;
@@ -57,6 +59,8 @@ class Player extends Entity {
         this.waitFrames = this.maxWaitFrames;
         this.frameSpeed = 1;
         this.currentFrame = 1;
+
+        this.initPlayerImage();
     }
 
     /**
@@ -75,9 +79,55 @@ class Player extends Entity {
      * Draws the player to screen
      */
     draw() {
-        let img = new Image();
-        img.src = this.spriteSheetPath;
-        img.onload = this.onImageLoaded(img);
+        if (this.imgLoaded) {
+            if (this.isGrounded) {
+                let frameStr = '';
+                this.currentInvincibility == 0 ? frameStr = `frame${this.currentFrame}` : frameStr = `frame${this.currentFrame + 4}`;
+                this.ctx.drawImage(this.img,
+                    this.spriteCoordinates[frameStr][0],
+                    this.spriteCoordinates[frameStr][1],
+                    72,
+                    128,
+                    this.x,
+                    this.y,
+                    this.spriteWidth,
+                    this.spriteHeight);
+    
+                if (!this.isStopped) {
+                    this.waitFrames--;
+                    if (this.waitFrames < 1) {
+                        this.currentFrame++;
+                        if (this.currentFrame > 4) {
+                            this.currentFrame = 1;
+                        }
+                        this.waitFrames = this.maxWaitFrames;
+                    }
+                }
+            } else {
+                let jumpStr = (this.jumpDirection > 0) ? "jumpUp" : "jumpDown";
+                if (this.currentInvincibility != 0) {
+                    jumpStr += "Hit";
+                } 
+                this.ctx.drawImage(this.img,
+                    this.spriteCoordinates[jumpStr][0],
+                    this.spriteCoordinates[jumpStr][1],
+                    72,
+                    128,
+                    this.x,
+                    this.y,
+                    this.spriteWidth,
+                    this.spriteHeight);
+            }
+        }
+    }
+
+    /**
+     * Load the sprite sheet into memory
+     */
+    initPlayerImage() {
+        this.img = new Image();
+        this.img.src = this.spriteSheetPath;
+        this.img.onload = this.onImageLoaded();
     }
 
     /**
@@ -142,49 +192,10 @@ class Player extends Entity {
     }
 
     /**
-     * Internal function used to draw the player to screen
-     * 
-     * @param {Image} img 
+     * Flag the image as loaded into memory
      */
-    onImageLoaded(img) {
-        if (this.isGrounded) {
-            let frameStr = '';
-            this.currentInvincibility == 0 ? frameStr = `frame${this.currentFrame}` : frameStr = `frame${this.currentFrame + 4}`;
-            this.ctx.drawImage(img,
-                this.spriteCoordinates[frameStr][0],
-                this.spriteCoordinates[frameStr][1],
-                72,
-                128,
-                this.x,
-                this.y,
-                this.spriteWidth,
-                this.spriteHeight);
-
-            if (!this.isStopped) {
-                this.waitFrames--;
-                if (this.waitFrames < 1) {
-                    this.currentFrame++;
-                    if (this.currentFrame > 4) {
-                        this.currentFrame = 1;
-                    }
-                    this.waitFrames = this.maxWaitFrames;
-                }
-            }
-        } else {
-            let jumpStr = (this.jumpDirection > 0) ? "jumpUp" : "jumpDown";
-            if (this.currentInvincibility != 0) {
-                jumpStr += "Hit";
-            } 
-            this.ctx.drawImage(img,
-                this.spriteCoordinates[jumpStr][0],
-                this.spriteCoordinates[jumpStr][1],
-                72,
-                128,
-                this.x,
-                this.y,
-                this.spriteWidth,
-                this.spriteHeight);
-        }
+    onImageLoaded() {
+        this.imgLoaded = true;
     }
 
     /**
