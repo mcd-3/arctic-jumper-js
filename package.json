@@ -7,12 +7,16 @@
   "scripts": {
     "start": "electron .",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icons/logo.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . arctic-jumper --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/logo.ico --prune=true --out=release-builds --version-string.CompanyName=\"Matthew Carvalho-Dagenais\" --version-string.FileDescription=\"Jump through the arctic!\" --version-string.ProductName=\"Arctic Jumper\""
+    "package-win": "electron-packager . arctic-jumper --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/logo.ico --prune=true --out=release-builds --version-string.CompanyName=\"Matthew Carvalho-Dagenais\" --version-string.FileDescription=\"Jump through the arctic!\" --version-string.ProductName=\"Arctic Jumper\"",
+    "installer-mac": "electron-installer-dmg ./release-builds/\"Arctic Jumper-darwin-x64\"/\"Arctic Jumper.app\" \"Arctic Jumper Installer\" --out=release-builds/\"Arctic Jumper-darwin-x64\" --icon=./icons/install.icns"
   },
   "author": "Matthew Carvalho-Dagenais",
   "license": "MIT",
   "dependencies": {
-    "electron": "^10.0.0",
+    "electron": "^10.0.0"
+  },
+  "devDependencies": {
+    "electron-installer-dmg": "^3.0.0",
     "electron-packager": "^15.1.0"
   }
 }

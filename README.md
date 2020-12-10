@@ -10,6 +10,9 @@ When building for any platform, make sure you go to `main.js` and change `proces
 - The, run the following command:
     - `npm run package-mac`
 - Your application will be built under `release-builds/Arctic Jumper-darwin-x64`
+- If you would like to build an installer, run the following command:
+    - `npm run installer-mac`
+- The DMG installer will be built under ``release-builds/Arctic Jumper-darwin-x64``
 
 
 ## Music Used
