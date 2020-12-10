@@ -35,10 +35,16 @@ class Obstacle extends Entity {
         this.hitbox = hitbox
     }
 
+    /**
+     * Stops the enemy
+     */
     stop() {
         this.isStopped = true;
     }
 
+    /**
+     * Resumes movement for the enemy
+     */
     resume() {
         this.isStopped = false;
     }

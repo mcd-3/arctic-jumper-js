@@ -34,6 +34,22 @@ class Player extends Entity {
         this.jumpDirection = this.jumpConfig.INIT_JUMP_DIRECTION; // 1 goes up, -1 goes down
         this.jumpWait = this.jumpConfig.JUMP_FRAME_WAIT; // wait time until we draw next frame
         this.jumpHeightWait = this.jumpConfig.JUMP_ZERO_WAIT; // waits at the top of a jump for x frames
+
+        // Sprite upper left coordinates
+        this.spriteCoordinates = {
+            frame1: [0, 0],
+            frame2: [144, 0],
+            frame3: [0, 0],
+            frame4: [72, 0],
+            jumpUp: [0, 128],
+            jumpDown: [72, 128]
+        }
+        this.spriteWidth = 72;
+        this.spriteHeight = 128;
+        this.maxWaitFrames = 18;
+        this.waitFrames = this.maxWaitFrames;
+        this.frameSpeed = 1;
+        this.currentFrame = 1;
     }
 
     /**
@@ -114,8 +130,59 @@ class Player extends Entity {
             this.x + this.hitboxConfig.WIDTH + this.hitboxConfig.X_MARGIN
         );
         this.updateInvincibility();
-
+        //this.ctx.clearRect(this.x, this.y, this.spriteWidth, this.spriteHeight);
         this.draw();
+    }
+
+    /**
+     * Internal function used to draw the player to screen
+     * 
+     * @param {Image} img 
+     */
+    onImageLoaded(img) {
+        if (this.isGrounded) {
+            let frameStr = `frame${this.currentFrame}`;
+            this.ctx.drawImage(img,
+                this.spriteCoordinates[frameStr][0],
+                this.spriteCoordinates[frameStr][1],
+                72,
+                128,
+                this.x,
+                this.y,
+                this.spriteWidth,
+                this.spriteHeight);
+            this.waitFrames--;
+
+            if (this.waitFrames < 1) {
+                this.currentFrame++;
+                if (this.currentFrame > 4) {
+                    this.currentFrame = 1;
+                }
+                this.waitFrames = this.maxWaitFrames;
+            }
+        } else {
+            if (this.jumpDirection > 0) {
+            this.ctx.drawImage(img,
+                this.spriteCoordinates["jumpUp"][0],
+                this.spriteCoordinates["jumpUp"][1],
+                72,
+                128,
+                this.x,
+                this.y,
+                this.spriteWidth,
+                this.spriteHeight);
+            } else {
+                this.ctx.drawImage(img,
+                    this.spriteCoordinates["jumpDown"][0],
+                    this.spriteCoordinates["jumpDown"][1],
+                    72,
+                    128,
+                    this.x,
+                    this.y,
+                    this.spriteWidth,
+                    this.spriteHeight);
+            }
+        }
     }
 
     /**
@@ -168,12 +235,9 @@ class Player extends Entity {
 
     }
 
-    /**
-     * Internal function used to draw the player to screen
-     * 
-     * @param {Image} img 
-     */
-    onImageLoaded(img) {
-        this.ctx.drawImage(img, this.x, this.y);
-    }
+    /* How to store sprite coordinates for animation, handle in onImageLoaded
+
+    Checking if jump animation is check ifGrounded == false, and for direction of jump its jumpDirection > 0 or < 0
+    Store the cycleFrame as an int, combine with "frame" as a string, and use that to access frame spriteCoordinates["frame1"][0] for example...
+    */
 }
