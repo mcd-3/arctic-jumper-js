@@ -37,8 +37,8 @@ class Background extends Entity {
                     
                     if (!this.isStopped) {
                         this.x += this.dx;
-                        this.intervalSet = true;
                     }
+                    this.intervalSet = true;
                 },
                 this.speed
                 )
