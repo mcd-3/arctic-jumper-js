@@ -6,6 +6,7 @@ class Obstacle extends Entity {
         this.passedByPlayer = false;
         this.imagePath = new PathStorageHelper().getImagesLocation();
         this.assetFetcher = new AssetLocationFetcher();
+        this.isStopped = false;;
     }
 
     /**
@@ -32,5 +33,13 @@ class Obstacle extends Entity {
      */
     setHitbox(hitbox) {
         this.hitbox = hitbox
+    }
+
+    stop() {
+        this.isStopped = true;
+    }
+
+    resume() {
+        this.isStopped = false;
     }
 }

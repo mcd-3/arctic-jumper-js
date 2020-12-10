@@ -866,6 +866,9 @@ async function gameLoop() {
         } else if (game.modes.play) { // Gameplay Mode
             game.play();
         } else if (game.modes.death) { // Player lost
+            game.enemyBuffer.forEach(enemy => {
+                enemy.stop();
+            });
             game.death();
         }
 

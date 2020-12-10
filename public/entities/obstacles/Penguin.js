@@ -2,6 +2,11 @@ class Penguin extends Obstacle {
     constructor(canvasObj, x, y, slideSpeed, hitbox = null) {
         super(canvasObj, x, y, slideSpeed, hitbox);
         this.spriteWidth = 164;
+        this.spriteHeight = 72;
+        this.maxWaitFrames = 18;
+        this.waitFrames = this.maxWaitFrames;
+        this.frameSpeed = 1;
+        this.isFrame1 = true;
     }
 
     /**
@@ -19,7 +24,23 @@ class Penguin extends Obstacle {
      * @param {Image} img 
      */
     onImageLoaded(img) {
-        this.ctx.drawImage(img, this.x, this.y);
+
+        if (this.waitFrames > 0) {
+            this.waitFrames -= this.frameSpeed;
+        } else {
+            this.waitFrames = this.maxWaitFrames;
+
+            // Dont animate if the animation is supposed to be stopped
+            if (!this.isStopped) {
+                this.isFrame1 = !this.isFrame1;
+            }
+        }
+
+        if (this.isFrame1) {
+            this.ctx.drawImage(img, 0, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
+        } else {
+            this.ctx.drawImage(img, 164, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
+        }
     }
 
     /**
