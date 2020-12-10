@@ -469,6 +469,7 @@ class Game {
         this.bgl2.resume();
         this.fgl1.resume();
         this.player.resume();
+        this.player.resetInvincibility();
 
         this.setMode("play");
     }

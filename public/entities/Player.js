@@ -11,7 +11,7 @@ class Player extends Entity {
         // Health
         this.maxHitpoints = 3;
         this.hitpoints = this.maxHitpoints;
-        this.invincibilityFrames = 75;
+        this.invincibilityFrames = 128;
         this.currentInvincibility = 0;
 
         // Variables to control hitbox
@@ -42,8 +42,14 @@ class Player extends Entity {
             frame2: [144, 0],
             frame3: [0, 0],
             frame4: [72, 0],
+            frame5: [0, 256],
+            frame6: [144, 256],
+            frame7: [0, 256],
+            frame8: [72, 256],
             jumpUp: [0, 128],
-            jumpDown: [72, 128]
+            jumpDown: [72, 128],
+            jumpUpHit: [0, 384],
+            jumpDownHit: [72, 384]
         }
         this.spriteWidth = 72;
         this.spriteHeight = 128;
@@ -142,7 +148,8 @@ class Player extends Entity {
      */
     onImageLoaded(img) {
         if (this.isGrounded) {
-            let frameStr = `frame${this.currentFrame}`;
+            let frameStr = '';
+            this.currentInvincibility == 0 ? frameStr = `frame${this.currentFrame}` : frameStr = `frame${this.currentFrame + 4}`;
             this.ctx.drawImage(img,
                 this.spriteCoordinates[frameStr][0],
                 this.spriteCoordinates[frameStr][1],
@@ -164,27 +171,19 @@ class Player extends Entity {
                 }
             }
         } else {
-            if (this.jumpDirection > 0) {
+            let jumpStr = (this.jumpDirection > 0) ? "jumpUp" : "jumpDown";
+            if (this.currentInvincibility != 0) {
+                jumpStr += "Hit";
+            } 
             this.ctx.drawImage(img,
-                this.spriteCoordinates["jumpUp"][0],
-                this.spriteCoordinates["jumpUp"][1],
+                this.spriteCoordinates[jumpStr][0],
+                this.spriteCoordinates[jumpStr][1],
                 72,
                 128,
                 this.x,
                 this.y,
                 this.spriteWidth,
                 this.spriteHeight);
-            } else {
-                this.ctx.drawImage(img,
-                    this.spriteCoordinates["jumpDown"][0],
-                    this.spriteCoordinates["jumpDown"][1],
-                    72,
-                    128,
-                    this.x,
-                    this.y,
-                    this.spriteWidth,
-                    this.spriteHeight);
-            }
         }
     }
 
@@ -236,6 +235,13 @@ class Player extends Entity {
      */
     changePosition(x, y) {
 
+    }
+
+    /**
+     * Sets the current invincibility frames to 0
+     */
+    resetInvincibility() {
+        this.currentInvincibility = 0;
     }
 
     /**
