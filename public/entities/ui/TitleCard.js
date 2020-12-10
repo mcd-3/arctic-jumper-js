@@ -49,22 +49,24 @@ class TitleCard extends Entity {
      * Draws the image to screen
      */
     draw() {
-        if (this.coordinatesSet) {
-            if (this.currentX != this.toX || this.currentY != this.toY) {
-                this.ctx.drawImage(this.img, this.currentX, this.currentY);
-    
-                if (!this.isStopped) {
-                    if (this.currentX != this.toX) {
-                        this.currentX += this.dx;
-                    }
-                    if (this.currentY != this.toY) {
-                        this.currentY += this.dy;
-                    }
-                }
-            } else {
-                this.isDoneDrawing = true;
-                if (!this.eraseOnDestination) {
+        if (this.imageLoaded) {
+            if (this.coordinatesSet) {
+                if (this.currentX != this.toX || this.currentY != this.toY) {
                     this.ctx.drawImage(this.img, this.currentX, this.currentY);
+        
+                    if (!this.isStopped) {
+                        if (this.currentX != this.toX) {
+                            this.currentX += this.dx;
+                        }
+                        if (this.currentY != this.toY) {
+                            this.currentY += this.dy;
+                        }
+                    }
+                } else {
+                    this.isDoneDrawing = true;
+                    if (!this.eraseOnDestination) {
+                        this.ctx.drawImage(this.img, this.currentX, this.currentY);
+                    }
                 }
             }
         }
