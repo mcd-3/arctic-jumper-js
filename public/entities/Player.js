@@ -6,6 +6,7 @@ class Player extends Entity {
         this.isAtStart = false;
         this.fadeX = 1000;
         this.originalX = this.x;
+        this.isStopped = false;
 
         // Health
         this.maxHitpoints = 3;
@@ -151,14 +152,16 @@ class Player extends Entity {
                 this.y,
                 this.spriteWidth,
                 this.spriteHeight);
-            this.waitFrames--;
 
-            if (this.waitFrames < 1) {
-                this.currentFrame++;
-                if (this.currentFrame > 4) {
-                    this.currentFrame = 1;
+            if (!this.isStopped) {
+                this.waitFrames--;
+                if (this.waitFrames < 1) {
+                    this.currentFrame++;
+                    if (this.currentFrame > 4) {
+                        this.currentFrame = 1;
+                    }
+                    this.waitFrames = this.maxWaitFrames;
                 }
-                this.waitFrames = this.maxWaitFrames;
             }
         } else {
             if (this.jumpDirection > 0) {
@@ -226,7 +229,7 @@ class Player extends Entity {
     }
 
     /**
-     * Manually change the player's position
+     * Manually changes player position
      * 
      * @param {int} x 
      * @param {int} y 
@@ -235,9 +238,17 @@ class Player extends Entity {
 
     }
 
-    /* How to store sprite coordinates for animation, handle in onImageLoaded
+    /**
+     * Stops movement
+     */
+    stop() {
+        this.isStopped = true;
+    }
 
-    Checking if jump animation is check ifGrounded == false, and for direction of jump its jumpDirection > 0 or < 0
-    Store the cycleFrame as an int, combine with "frame" as a string, and use that to access frame spriteCoordinates["frame1"][0] for example...
-    */
+    /**
+     * Resumes movement
+     */
+    resume() {
+        this.isStopped = false;
+    }
 }

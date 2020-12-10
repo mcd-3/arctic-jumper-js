@@ -468,6 +468,7 @@ class Game {
         this.bgl1.resume();
         this.bgl2.resume();
         this.fgl1.resume();
+        this.player.resume();
 
         this.setMode("play");
     }
@@ -487,6 +488,10 @@ class Game {
             this.bgl1.stop();
             this.bgl2.stop();
             this.fgl1.stop();
+            this.player.stop();
+            this.enemyBuffer.forEach(enemy => {
+                enemy.stop();
+            });
         }
     }
 
@@ -509,6 +514,10 @@ class Game {
             this.fgl1.resume();
             this.unmuteColors();
             this.hud5.clear();
+            this.player.resume();
+            this.enemyBuffer.forEach(enemy => {
+                enemy.resume();
+            });
         }
     }
 
@@ -866,9 +875,6 @@ async function gameLoop() {
         } else if (game.modes.play) { // Gameplay Mode
             game.play();
         } else if (game.modes.death) { // Player lost
-            game.enemyBuffer.forEach(enemy => {
-                enemy.stop();
-            });
             game.death();
         }
 
