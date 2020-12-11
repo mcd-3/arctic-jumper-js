@@ -12,7 +12,16 @@ When building for any platform, make sure you go to `main.js` and change `proces
 - Your application will be built under `release-builds/Arctic Jumper-darwin-x64`
 - If you would like to build an installer, run the following command:
     - `npm run installer-mac`
-- The DMG installer will be built under ``release-builds/Arctic Jumper-darwin-x64``
+- The DMG installer will be built under `release-builds/Arctic Jumper-darwin-x64`
+
+### Windows
+- From the terminal, cd into your arctic-jumper directory
+- The, run the following command:
+    - `npm run package-win`
+- Your application will be built under `release-builds/arctic-jumper-win32-ia32`
+- If you would like to build an installer, run the following command:
+    - `npm run installer-win`
+- The EXE installer will be built under `release-builds/windows-installer`
 
 
 ## Music Used
