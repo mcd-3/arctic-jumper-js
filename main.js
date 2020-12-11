@@ -1,6 +1,7 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const setupEvents = require('./installers/setupEvents')
 const shell = electron.shell
 const ipc = electron.ipcMain
 
@@ -12,7 +13,7 @@ let main;
 let about;
 
 // Change me to "production" when not debugging
-process.env.NODE_ENV = "debug"
+process.env.NODE_ENV = "debug";
 
 app.on('ready', () => {
     main = new BrowserWindow({width, height, resizable: false});
@@ -90,3 +91,8 @@ if(process.env.NODE_ENV !== 'production'){
       ]
     });
   }
+
+if (setupEvents.handleSquirrelEvent()) {
+  // squirrel event handled and app will exit in 1000ms, so don't do anything else
+  return;
+}
