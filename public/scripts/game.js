@@ -125,9 +125,9 @@ class Game {
 
         // game variables
         this.bootTime = 7500;
-        this.bgl1Speed = 50;
-        this.bgl2Speed = 20;
-        this.fgl1Speed = 3;
+        this.bgl1Speed = 1;
+        this.bgl2Speed = 4;
+        this.fgl1Speed = 9;
         this.modes = {
             'boot': false,
             'menu': false,
@@ -148,7 +148,7 @@ class Game {
         this.enemyBuffer = [];
         this.enemyLimit = 3;
         this.framesUntilNewSpawn = 35;
-        this.enemySpeed = 8.4;
+        this.enemySpeed = 10;
         this.enemySpawnPointX = -128;
         this.enemySpawnPointY = 395;
 
