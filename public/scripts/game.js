@@ -708,7 +708,7 @@ class Game {
         this.fgl1 = new Background(
             {canvas: layer},
             0, 
-            0,
+            (540 - 154),
             1,
             0,
             this.fgl1Speed,
