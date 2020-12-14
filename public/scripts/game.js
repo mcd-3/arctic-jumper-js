@@ -145,7 +145,7 @@ class Game {
         this.isPaused = false;
 
         // enemy variables
-        this.enemyBuffer = [];
+        this.enemyBuffer = [null, null, null];
         this.enemyLimit = 3;
         this.framesUntilNewSpawn = 35;
         this.enemySpeed = 10;
@@ -335,13 +335,15 @@ class Game {
                 this.framesUntilNewSpawn--;
     
                 for (let i = 0; i < this.enemyBuffer.length; i++) {
-                    this.enemyBuffer[i].slideTowardsPlayer();
+                    if (this.enemyBuffer[i] != null) {
+                        this.enemyBuffer[i].slideTowardsPlayer();
     
-                    if (this.enemyBuffer[i].isOutOfBounds()) {
-                        this.despawnEnemy(i);
-                    } else {
-                        this.enemyBuffer[i].draw();
-                        //this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+                        if (this.enemyBuffer[i].isOutOfBounds()) {
+                            this.despawnEnemy(i);
+                        } else {
+                            this.enemyBuffer[i].draw();
+                            //this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
+                        }
                     }
                 }
     
@@ -353,35 +355,36 @@ class Game {
                 //this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
     
                 this.enemyBuffer.forEach(enemy => {
-    
-                    // Check if hitboxes overlap
-                    if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
-                        if (!this.player.isHurt()) {
-                            this.player.takeDamage();
-                            this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
-    
-                            // Check if game over
-                            if (this.player.hitpoints > 0) {
-                                this.playSFX(this.assetsFetcher.getHitSFXLocation(), this.volumeSettings.getUserSFXVolume());
-                            } else {
-                                if (this.score > this.storage.getHighScore()) {
-                                    this.storage.addHighScore(this.score);
-                                    this.newHighScoreFlag = true;
+                    if (enemy != null) {
+                        // Check if hitboxes overlap
+                        if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
+                            if (!this.player.isHurt()) {
+                                this.player.takeDamage();
+                                this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
+        
+                                // Check if game over
+                                if (this.player.hitpoints > 0) {
+                                    this.playSFX(this.assetsFetcher.getHitSFXLocation(), this.volumeSettings.getUserSFXVolume());
+                                } else {
+                                    if (this.score > this.storage.getHighScore()) {
+                                        this.storage.addHighScore(this.score);
+                                        this.newHighScoreFlag = true;
+                                    }
+                                    this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), this.volumeSettings.getUserSFXVolume());
+                                    this.startGameOverTimer();
+                                    this.hud2.changeColor("#585858");
+                                    this.hud2.drawText();
+                                    this.setMode("death");
                                 }
-                                this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), this.volumeSettings.getUserSFXVolume());
-                                this.startGameOverTimer();
-                                this.hud2.changeColor("#585858");
-                                this.hud2.drawText();
-                                this.setMode("death");
                             }
                         }
-                    }
-    
-                    // Check if a point has been scored
-                    if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
-                        this.score++;
-                        enemy.passedByPlayer = true;
-                        this.playSFX(this.assetsFetcher.getScoreSFXLocation(), this.volumeSettings.getUserSFXVolume());
+        
+                        // Check if a point has been scored
+                        if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
+                            this.score++;
+                            enemy.passedByPlayer = true;
+                            this.playSFX(this.assetsFetcher.getScoreSFXLocation(), this.volumeSettings.getUserSFXVolume());
+                        }
                     }
                 });    
             } else { // Show the pause or option menu
@@ -454,7 +457,7 @@ class Game {
         this.hud2.changeColor("#ffffff");
         
         // Clear all game variables
-        this.enemyBuffer = [];
+        this.enemyBuffer = [null, null, null];
         this.player.restoreAllHealth();
         this.score = 0;
         this.newHighScoreFlag = false;
@@ -491,7 +494,9 @@ class Game {
             this.fgl1.stop();
             this.player.stop();
             this.enemyBuffer.forEach(enemy => {
-                enemy.stop();
+                if (enemy != null) {
+                    enemy.stop();
+                }
             });
         }
     }
@@ -517,7 +522,9 @@ class Game {
             this.hud5.clear();
             this.player.resume();
             this.enemyBuffer.forEach(enemy => {
-                enemy.resume();
+                if (enemy != null) {
+                    enemy.resume();
+                }
             });
         }
     }
@@ -584,9 +591,15 @@ class Game {
         }
 
         // Don't spawn an enemy if the buffer is full
-        if (this.enemyBuffer.length < this.enemyLimit) {
-            this.enemyBuffer.push(enemy);
+        for (let i = 0; i < this.enemyBuffer.length; i++) {
+            if (this.enemyBuffer[i] == null) {
+                this.enemyBuffer[i] = enemy;
+                break;
+            }
         }
+        // if (this.enemyBuffer.length < this.enemyLimit) {
+        //     this.enemyBuffer.push(enemy);
+        // }
 
         // Determine how many frame to wait until next spawn
         switch(randomFrameTime) {
@@ -614,7 +627,7 @@ class Game {
      * @param {int} bufferIndex 
      */
     despawnEnemy(bufferIndex) {
-        this.enemyBuffer.splice(bufferIndex, 1);
+        this.enemyBuffer[bufferIndex] = null;//.splice(bufferIndex, 1);
     }
 
     /**
@@ -655,7 +668,9 @@ class Game {
      */
     drawEnemies() {
         this.enemyBuffer.forEach(enemy => {
-            enemy.draw();
+            if (enemy != null) {
+                enemy.draw();
+            }
         });
     }
 
