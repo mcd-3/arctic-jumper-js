@@ -125,6 +125,7 @@ class Game {
 
         // game variables
         this.bootTime = 7500;
+        this.framerate = 1000 / 60; //60 frames per second
         this.bgl1Speed = 1;
         this.bgl2Speed = 4;
         this.fgl1Speed = 9;
@@ -878,22 +879,27 @@ async function gameLoop() {
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
+    let prevTime = Date.now();
+
     // This is the game loop
     function loop() {
+        let currTime = Date.now();
 
-        game.bgl1.draw();
-        game.bgl2.draw();
-        game.fgl1.draw();
-        game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
-
-        if (game.modes.menu) { // Main Menu Mode
-            game.menu();
-        } else if (game.modes.play) { // Gameplay Mode
-            game.play();
-        } else if (game.modes.death) { // Player lost
-            game.death();
+        if ((currTime - prevTime) > game.framerate) {
+            game.bgl1.draw();
+            game.bgl2.draw();
+            game.fgl1.draw();
+            game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
+    
+            if (game.modes.menu) { // Main Menu Mode
+                game.menu();
+            } else if (game.modes.play) { // Gameplay Mode
+                game.play();
+            } else if (game.modes.death) { // Player lost
+                game.death();
+            }
+            prevTime = currTime;
         }
-
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
