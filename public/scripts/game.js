@@ -125,7 +125,7 @@ class Game {
 
         // game variables
         this.bootTime = 7500;
-        this.framerate = 1000 / 65; //60 frames per second
+        this.framerate = 1000 / 70; //60 frames per second
         this.bgl1Speed = 1;
         this.bgl2Speed = 4;
         this.fgl1Speed = 9;
