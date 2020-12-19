@@ -32,4 +32,13 @@ class HUD {
     setText(str) {
         this.uiText.setText(str);
     }
+
+    /**
+     * Changes the HUD text object
+     * 
+     * @param {UIText} uiText
+     */
+    setUIText(uiText) {
+        this.uiText = uiText;
+    }
 }

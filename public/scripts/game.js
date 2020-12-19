@@ -163,7 +163,7 @@ class Game {
         new PathStorageHelper().initPaths();
 
         // game strings
-        this.madeByText = new UIText({canvas: this.spriteCanvas}, 20, (540-30), authorStr, 30, 1.45);
+        this.madeByText = null;
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
         this.healthText = null;
         this.scoreText = null;
@@ -300,15 +300,18 @@ class Game {
         // Start drawing in the player and moving card off-screen
         if (this.gameStartingFlag) {
             this.hud1.setText("");
+            this.hud4.setText("");
+            this.hud4.drawText();
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
                 this.setMode("play");
+                this.hud4.setUIText(this.highScoreText);
             }
         } else {
             if (this.titleDoneFlag) {
                 this.startText.draw();
             }
-            this.madeByText.draw();
+            this.hud4.drawText();
         }
         this.hud1.drawText();
 
@@ -757,10 +760,11 @@ class Game {
         this.scoreText = new UIText({canvas: hud1Layer}, 18, 40, optionsMenuStr, 36, 1.15);
         this.healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
         this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
+        this.madeByText = new UIText({canvas: hud4Layer}, 18, 40, authorStr, 28, 1.15);
         this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
         this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
         this.hud3 = new MultiHUD({canvas: hud3Layer}, true);
-        this.hud4 = new HUD({canvas: hud4Layer}, this.highScoreText, true);
+        this.hud4 = new HUD({canvas: hud4Layer}, this.madeByText, true);
         this.hud5 = new MultiHUD({canvas: hud5Layer}, true)
     }
 
