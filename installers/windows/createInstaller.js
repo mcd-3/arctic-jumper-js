@@ -14,11 +14,11 @@ function getInstallerConfig () {
   const outPath = path.join(rootPath, 'release-builds')
 
   return Promise.resolve({
-    appDirectory: path.join(outPath, 'arctic-jumper-win32-ia32/'),
+    appDirectory: path.join(outPath, 'Arctic Jumper-win32-ia32/'),
     authors: 'Matthew Carvalho-Dagenais',
     noMsi: true,
     outputDirectory: path.join(outPath, 'windows-installer'),
-    exe: 'arctic-jumper.exe',
+    exe: 'Arctic Jumper.exe',
     setupExe: 'ArcticJumperInstaller.exe',
     setupIcon: path.join(rootPath, 'icons', 'install.ico')
   })
