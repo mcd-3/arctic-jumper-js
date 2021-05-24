@@ -7,7 +7,7 @@ When building for any platform, make sure you go to `main.js` and change `proces
 
 ### macOS
 - From the terminal, cd into your arctic-jumper directory
-- The, run the following command:
+- Then, run the following command:
     - `npm run package-mac`
 - Your application will be built under `release-builds/Arctic Jumper-darwin-x64`
 - If you would like to build an installer, run the following command:
@@ -16,13 +16,21 @@ When building for any platform, make sure you go to `main.js` and change `proces
 
 ### Windows
 - From the terminal, cd into your arctic-jumper directory
-- The, run the following command:
+- Then, run the following command:
     - `npm run package-win`
 - Your application will be built under `release-builds/arctic-jumper-win32-ia32`
 - If you would like to build an installer, run the following command:
     - `npm run installer-win`
 - The EXE installer will be built under `release-builds/windows-installer`
 
+### Linux
+- From the terminal, cd into your arctic-jumper directory
+- Then, run the following command:
+    - `npm run package-linux`
+- Your application will be built under `release-builds/arctic-jumper-linux-x64`
+- If you want to build an installer for Debian distros, run the following command:
+    - `npm run installer-deb`
+- The deb installer will be built under `release-builds/`
 
 ## Music Used
 The following music tracks are used in this project. All rights reserved and all credit goes to the tracks' respective artists.
@@ -48,7 +56,7 @@ The following music tracks are used in this project. All rights reserved and all
 **Author**: Unknown</br>
 **Hosted On**: http://freesoundeffect.net/sound/magic-idea-01-sound-effect</br>
 **License**: Royalty Free</br>
-</br><
+</br>
 **SFX**: Realistic Punch</br>
 **Author**: Mark DiAngelo</br>
 **Hosted On**: http://soundbible.com/2069-Realistic-Punch.html</br>
