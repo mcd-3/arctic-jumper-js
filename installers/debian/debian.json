@@ -1,0 +1,10 @@
+{
+  "dest": "release-builds/",
+  "icon": "icons/logo.png",
+  "categories": [
+    "Games"
+  ],
+  "lintianOverrides": [
+    "changelog-file-missing-in-native-package"
+  ]
+}

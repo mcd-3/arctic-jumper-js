@@ -8,8 +8,10 @@
     "start": "electron .",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icons/logo.icns --prune=true --out=release-builds",
     "package-win": "electron-packager . \"Arctic Jumper\" --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/logo.ico --prune=true --out=release-builds --version-string.CompanyName=\"Matthew Carvalho-Dagenais\" --version-string.FileDescription=\"Jump through the arctic!\" --version-string.ProductName=\"Arctic Jumper\"",
+    "package-linux": "electron-packager . arctic-jumper --overwrite --asar=true --platform=linux --arch=x64 --icon=icons/logo.png --prune=true --out=release-builds",
     "installer-mac": "electron-installer-dmg ./release-builds/\"Arctic Jumper-darwin-x64\"/\"Arctic Jumper.app\" \"Arctic Jumper Installer\" --out=release-builds/\"Arctic Jumper-darwin-x64\" --icon=./icons/install.icns",
-    "installer-win": "node installers/windows/createInstaller.js"
+    "installer-win": "node installers/windows/createInstaller.js",
+    "installer-deb": "electron-installer-debian --src release-builds/arctic-jumper-linux-x64/ --arch amd64 --config ./installers/debian/debian.json"
   },
   "author": "Matthew Carvalho-Dagenais",
   "license": "MIT",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "electron-installer-dmg": "^3.0.0",
     "electron-packager": "^15.1.0",
-    "electron-winstaller": "^4.0.1"
+    "electron-winstaller": "^4.0.1",
+    "electron-installer-debian": "^3.1.0"
   }
 }
