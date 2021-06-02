@@ -43,17 +43,17 @@ document.addEventListener('keydown', (e) => {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
-                    game.playSFX(game.assetsFetcher.getStartGameSFXLocation(), game.volumeSettings.getUserSFXVolume());
+                    game.audioController.playSFX(game.assetsFetcher.getStartGameSFXLocation());
                     resolve(true);
                 }).then(value => {
-                    game.stopTrack();
-                    game.playTrack(game.assetsFetcher.getMainSongLocation(), true, game.volumeSettings.getUserMusicVolume());
+                    game.audioController.stopTrack();
+                    game.audioController.playTrack(game.assetsFetcher.getMainSongLocation());
                 });
             }
         } else if (game.modes.play) {
             if (!game.isPaused) { // jump
                 if (game.player.isGrounded) {
-                    game.playSFX(game.assetsFetcher.getJumpSFXLocation(), game.volumeSettings.getUserSFXVolume());
+                    game.audioController.playSFX(game.assetsFetcher.getJumpSFXLocation());
                 }
                 game.player.jump();
             } else { // exit from paused
@@ -164,7 +164,7 @@ class Game {
         // game storage
         this.storage = new ScoreStorageHelper();
         this.assetsFetcher = new AssetLocationFetcher();
-        this.volumeSettings = new VolumeSettings();
+        this.audioController = new AudioController();
         new PathStorageHelper().initPaths();
 
         // game strings
@@ -202,9 +202,10 @@ class Game {
         let bgl1Ctx = bgl1.getContext("2d");
 
         bootLogo.onload = () => {
-            let bootSfx = new Audio(game.assetsFetcher.getBootGameSFXLocation());
-            bootSfx.volume = game.volumeSettings.getUserMusicVolume();
-            bootSfx.play();
+            game.audioController.playTrack(
+                game.assetsFetcher.getBootGameSFXLocation(),
+                false
+            );
             bgl1Ctx.globalAlpha = 0;
             
             // Fade the logo in
@@ -248,50 +249,6 @@ class Game {
      */
     awaitBootFinish() {
         return this.sleep(this.bootTime);
-    }
-
-    /**
-     * Play a music track. Not to be used for SFX
-     * 
-     * @param {string} track 
-     * @param {boolean} isLoop 
-     * @param {float} volume 
-     * @returns {Audio}
-     */
-    playTrack(track, isLoop, volume) {
-        if (this.playingTrack != null) {
-            this.stopTrack();
-        }
-        this.playingTrack = new Audio(track);
-        this.playingTrack.loop = isLoop;
-        this.playingTrack.volume = volume;
-        this.playingTrack.play();
-        return this.playingTrack;
-    }
-
-    /**
-     * Stops a music track if it is playing
-     */
-    stopTrack() {
-        if (this.playingTrack != null) {
-            this.playingTrack.pause();
-            this.playingTrack.currentTime = 0;
-            this.playingTrack = null;
-        }
-    }
-
-    /**
-     * Plays a sound effect. Not to be used for music tracks
-     * 
-     * @param {string} sfx 
-     * @param {float} volume 
-     * @returns {Audio}
-     */
-    playSFX(sfx, volume) {
-        let gameSfx = new Audio(sfx);
-        gameSfx.volume = volume;
-        gameSfx.play();
-        return gameSfx;
     }
 
     /**
@@ -373,13 +330,13 @@ class Game {
         
                                 // Check if game over
                                 if (this.player.hitpoints > 0) {
-                                    this.playSFX(this.assetsFetcher.getHitSFXLocation(), this.volumeSettings.getUserSFXVolume());
+                                    this.audioController.playSFX(this.assetsFetcher.getHitSFXLocation());
                                 } else {
                                     if (this.score > this.storage.getHighScore()) {
                                         this.storage.addHighScore(this.score);
                                         this.newHighScoreFlag = true;
                                     }
-                                    this.playSFX(this.assetsFetcher.getGameOverSFXLocation(), this.volumeSettings.getUserSFXVolume());
+                                    this.audioController.playSFX(this.assetsFetcher.getGameOverSFXLocation());
                                     this.startGameOverTimer();
                                     this.hud2.changeColor("#585858");
                                     this.hud2.drawText();
@@ -392,7 +349,7 @@ class Game {
                         if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                             this.score++;
                             enemy.passedByPlayer = true;
-                            this.playSFX(this.assetsFetcher.getScoreSFXLocation(), this.volumeSettings.getUserSFXVolume());
+                            this.audioController.playSFX(this.assetsFetcher.getScoreSFXLocation());
                         }
                     }
                 });    
@@ -781,9 +738,9 @@ class Game {
      */
     initSliders(musicId, sfxId) {
         this.musicSlider = new Slider(musicId);
-        this.musicSlider.setValue(this.volumeSettings.getUserMusicVolume());
+        this.musicSlider.setValue(this.audioController.getMusicVolume());
         this.sfxSlider = new Slider(sfxId);
-        this.sfxSlider.setValue(this.volumeSettings.getUserSFXVolume());
+        this.sfxSlider.setValue(this.audioController.getSFXVolume());
     }
 
     /**
@@ -818,17 +775,11 @@ class Game {
      */
     initSliderCallbacks() {
         this.musicSlider.addUpdateListeners(() => {
-            let sliderVal = this.musicSlider.getValue();
-            game.volumeSettings.setUserMusicVolume(sliderVal);
-            game.playingTrack.volume = sliderVal;
-        }, () => {
-            game.volumeSettings.saveUserMusicVolume();
+            game.audioController.updateMusicVolume(this.musicSlider.getValue());
         });
         this.sfxSlider.addUpdateListeners(() => {
-            game.volumeSettings.setUserSFXVolume(this.sfxSlider.getValue());
-        }, () => {
-            game.volumeSettings.saveUserSFXVolume();
-        })
+            game.audioController.updateSFXVolume(this.sfxSlider.getValue());
+        });
     }
 
     /**
@@ -911,7 +862,7 @@ async function gameLoop() {
 
     // Start the title sequence
     game.showLayers();
-    game.playTrack(game.assetsFetcher.getTitleScreenSongLocation(), true, game.volumeSettings.getUserMusicVolume());
+    game.audioController.playTrack(game.assetsFetcher.getTitleScreenSongLocation());
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
