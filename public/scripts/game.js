@@ -158,9 +158,6 @@ class Game {
         this.enemySpawnPointX = -128;
         this.enemySpawnPointY = 395;
 
-        // game audio
-        this.playingTrack = null;
-
         // game storage
         this.storage = new ScoreStorageHelper();
         this.assetsFetcher = new AssetLocationFetcher();
