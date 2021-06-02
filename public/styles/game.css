@@ -118,7 +118,7 @@ canvas {
     left: 10%;
     top: 10%;
     z-index: 6;
-    background-color: rgba(0, 0, 0, 0); 
+    background-color: rgba(0, 0, 0, 0);
 }
 
 #bgl2, #fgl2 {
@@ -135,7 +135,7 @@ input {
     visibility: hidden;
     background: #d3d3d3;
     outline: darkblue;
-    outline-width: 0.3em;
+    outline-width: 25%;
     outline-style: solid;
     opacity: 0.8;
     -webkit-transition: .2s;
@@ -157,12 +157,43 @@ input::-webkit-slider-thumb {
 
 #musicSlider {
     top: 31%;
-    right: 25%;
+    right: 15%;
 }
 
 #sfxSlider {
     top: 46%;
-    right: 25%;
+    right: 15%;
+}
+
+#resetHighScoreButton {
+    font-family: 'dpcomic';
+    font-size: 1.75em;
+    border-width: 0;
+    top: 61%;
+    right: 15%;
+    -webkit-text-fill-color: #FFFFFF;
+    -webkit-text-stroke: 0.04em #000000;
+    outline: darkred;
+    outline-width: 25%;
+    outline-style: solid;
+}
+
+#resetHighScoreButton:hover {
+    background: #e7e7e7;
+    outline: darkred;
+    outline-width: 25%;
+    outline-style: solid;
+    -webkit-text-fill-color: #ffffff;
+    -webkit-text-stroke: 0.04em #000000;
+}
+
+#resetHighScoreButton:active {
+    background: #a1a1a1;
+    outline: darkred;
+    outline-width: 25%;
+    outline-style: solid;
+    -webkit-text-fill-color: #d3d3d3;
+    -webkit-text-stroke: 0.04em #000000;
 }
 
 /* Load custom fonts*/

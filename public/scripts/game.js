@@ -17,10 +17,13 @@ const newHighScoreStr = "New High Score!";
 const optionsStr = "Options";
 const musicOptionStr = "Music:";
 const sfxOptionStr = "SFX:";
+const resetHighscoreStr = "Reset Highscore:";
 const exitOptionsStr = "-- Press Enter to Exit Options --";
 const pauseStr = "Paused";
 const resumeGameStr = "-- Press Space to Resume --";
 const gotoOptionsStr = "-- Press Enter to go to Options --";
+const resetHighscorePrompt = "Are you sure you want to reset your highscore?\n\nThis action cannot be undone!";
+const resetHighscoreConfirm = "Highscore has been reset!";
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -75,6 +78,7 @@ document.addEventListener('keydown', (e) => {
                 if (game.isOptions) {
                     game.musicSlider.hide();
                     game.sfxSlider.hide();
+                    game.resetButton.hide();
                 }
                 game.isOptions = !game.isOptions;
             } else { // pause the game
@@ -121,6 +125,7 @@ class Game {
         this.hud5 = null;
         this.musicSlider = null;
         this.sfxSlider = null;
+        this.resetButton = null;
         this.player = null;
 
         // game variables
@@ -426,13 +431,15 @@ class Game {
         this.muteColors();
         let textArray = [
             new UIText({canvas: this.hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 180, 140, musicOptionStr, 32, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 180, 220, sfxOptionStr, 32, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 375, 340, exitOptionsStr, 28, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 268, 140, musicOptionStr, 32, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 280, 220, sfxOptionStr, 32, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 208, 300, resetHighscoreStr, 32, 1.15),
+            new UIText({canvas: this.hud5.canvas}, 375, 400, exitOptionsStr, 28, 1.15),
         ];
         this.hud5.drawTexts(textArray);
         this.musicSlider.show();
         this.sfxSlider.show();
+        this.resetButton.show();
     }
 
     /**
@@ -518,6 +525,7 @@ class Game {
             this.hud5.clear();
             this.musicSlider.hide();
             this.sfxSlider.hide();
+            this.resetButton.hide();
         } else {
             this.bgl1.resume();
             this.bgl2.resume();
@@ -601,9 +609,6 @@ class Game {
                 break;
             }
         }
-        // if (this.enemyBuffer.length < this.enemyLimit) {
-        //     this.enemyBuffer.push(enemy);
-        // }
 
         // Determine how many frame to wait until next spawn
         switch(randomFrameTime) {
@@ -782,6 +787,15 @@ class Game {
     }
 
     /**
+     * Initializes the reset highscore button on the options screen
+     * 
+     * @param {string} btnId 
+     */
+    initResetButton(btnId) {
+        this.resetButton = new DeleteButton(btnId);
+    }
+
+    /**
      * Loads the title card
      * 
      * @returns {TitleCard}
@@ -815,6 +829,22 @@ class Game {
         }, () => {
             game.volumeSettings.saveUserSFXVolume();
         })
+    }
+
+    /**
+     * Initializes callbacks for reset highscore button to reset highscore
+     */
+    initResetButtonCallbacks() {
+        this.resetButton.addOnClickListener(() => {
+            if (confirm(resetHighscorePrompt)) {
+                game.storage.deleteHighScore();
+                if (!game.modes.menu) {
+                    this.hud4.setText(`${highScoreStr} 0`);
+                }
+                alert(resetHighscoreConfirm);
+            }
+            this.resetButton.unfocus();
+        });
     }
 
     /**
@@ -864,7 +894,9 @@ async function gameLoop() {
         document.getElementById("hud5")
     );
     game.initSliders("musicSlider", "sfxSlider");
+    game.initResetButton("resetHighScoreButton");
     game.initSliderCallbacks();
+    game.initResetButtonCallbacks();
     game.initDl(document.getElementById("dl"));
 
     // Boot game
