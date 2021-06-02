@@ -105,7 +105,7 @@ class Game {
         this.bootCanvas = bootCanvas;
         this.bootCanvasCtx = this.bootCanvas.getContext("2d");
         this.spriteCanvas = spriteCanvas;
-        this.spriteCanvasCtx = scaler.scale(this.spriteCanvas);//this.spriteCanvas.getContext("2d");
+        this.spriteCanvasCtx = scaler.scale(this.spriteCanvas);
 
         // Emulate a dark intro screen seen in most games
         this.bootCanvasCtx.fillStyle = 'black';
@@ -308,7 +308,6 @@ class Game {
                             this.despawnEnemy(i);
                         } else {
                             this.enemyBuffer[i].draw();
-                            //this.enemyBuffer[i].hitbox.debugDrawHitbox(this.spriteCanvasCtx);
                         }
                     }
                 }
@@ -318,7 +317,6 @@ class Game {
                 }
     
                 this.player.updatePos();
-                //this.player.hitbox.debugDrawHitbox(this.spriteCanvasCtx);
     
                 this.enemyBuffer.forEach(enemy => {
                     if (enemy != null) {
@@ -593,7 +591,7 @@ class Game {
      * @param {int} bufferIndex 
      */
     despawnEnemy(bufferIndex) {
-        this.enemyBuffer[bufferIndex] = null;//.splice(bufferIndex, 1);
+        this.enemyBuffer[bufferIndex] = null;
     }
 
     /**
