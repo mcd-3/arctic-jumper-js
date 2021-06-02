@@ -16,48 +16,47 @@ let about;
 process.env.NODE_ENV = "production";
 
 app.on('ready', () => {
-    main = new BrowserWindow({width, height, resizable: false});
-    main.loadURL(url.format({
-        pathname: path.join(`${__dirname}/public`, "game.html"),
-        protocol: "file:",
-        slashes: true
-    }));
-    const menu = Menu.buildFromTemplate(mainMenuTemplate);
-    Menu.setApplicationMenu(menu);
+  main = new BrowserWindow({width, height, resizable: false});
+  main.loadURL(url.format({
+      pathname: path.join(`${__dirname}/public`, "game.html"),
+      protocol: "file:",
+      slashes: true
+  }));
+  const menu = Menu.buildFromTemplate(mainMenuTemplate);
+  Menu.setApplicationMenu(menu);
 
-    main.on('closed', () => app.quit());
+  main.on('closed', () => app.quit());
 });
 
 const mainMenuTemplate = [{
-        label: "File",
-        submenu: [
-            {
-              label: "Fullscreen",
-              accelerator: process.platform == "darwin" ? "Command+F" : "Ctrl+F",
-              click() {
-                let window = BrowserWindow.getFocusedWindow();
-                window.setFullScreen(!window.isFullScreen())
-              }
-            },
-            {
-              label: "About",
-              accelerator: process.platform == "darwin" ? "Command+A" : "Ctrl+A",
-              click() {
-                if (about == undefined || about == null) {
-                  openAbout();
-                }
-              }
-            },
-            {
-              label: "Quit",
-              accelerator: process.platform == "darwin" ? "Command+Q" : "Ctrl+Q",
-              click() {
-                  app.quit();
-              }
-            }
-        ]
+  label: "File",
+  submenu: [
+    {
+      label: "Fullscreen",
+      accelerator: process.platform == "darwin" ? "Command+F" : "Ctrl+F",
+      click() {
+        let window = BrowserWindow.getFocusedWindow();
+        window.setFullScreen(!window.isFullScreen())
+      }
+    },
+    {
+      label: "About",
+      accelerator: process.platform == "darwin" ? "Command+A" : "Ctrl+A",
+      click() {
+        if (about == undefined || about == null) {
+          openAbout();
+        }
+      }
+    },
+    {
+      label: "Quit",
+      accelerator: process.platform == "darwin" ? "Command+Q" : "Ctrl+Q",
+      click() {
+          app.quit();
+      }
     }
-];
+  ]
+}];
 
 function openAbout() {
   about = new BrowserWindow({width: 480, height: 720, resizable: false, webPreferences: {nodeIntegration: true}});
@@ -75,22 +74,22 @@ ipc.on("open-browser", (event, arg) => {
 
 // Add developer tools option if in dev
 if(process.env.NODE_ENV !== 'production'){
-    mainMenuTemplate.push({
-      label: 'Developer Tools',
-      submenu:[
-        {
-          role: 'reload'
-        },
-        {
-          label: 'Toggle DevTools',
-          accelerator:process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-          click(item, focusedWindow){
-            focusedWindow.toggleDevTools();
-          }
+  mainMenuTemplate.push({
+    label: 'Developer Tools',
+    submenu:[
+      {
+        role: 'reload'
+      },
+      {
+        label: 'Toggle DevTools',
+        accelerator:process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+        click(item, focusedWindow){
+          focusedWindow.toggleDevTools();
         }
-      ]
-    });
-  }
+      }
+    ]
+  });
+}
 
 if (setupEvents.handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
