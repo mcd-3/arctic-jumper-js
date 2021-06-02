@@ -165,11 +165,7 @@ class Game {
         new PathStorageHelper().initPaths();
 
         // game strings
-        this.madeByText = null;
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
-        this.healthText = null;
-        this.scoreText = null;
-        this.gameOverText = null;
         this.highScoreText = null;
     }
 
@@ -714,14 +710,14 @@ class Game {
      * @param {HUD} hud3Layer 
      */
     initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer, hud5Layer) { 
-        this.scoreText = new UIText({canvas: hud1Layer}, 18, 40, optionsMenuStr, 36, 1.15);
-        this.healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
+        const scoreText = new UIText({canvas: hud1Layer}, 18, 40, optionsMenuStr, 36, 1.15);
+        const healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
         this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
-        this.madeByText = new UIText({canvas: hud4Layer}, 18, 40, authorStr, 28, 1.15);
-        this.hud1 = new HUD({canvas: hud1Layer}, this.scoreText, true);
-        this.hud2 = new HUD({canvas: hud2Layer}, this.healthText, true);
+        const madeByText = new UIText({canvas: hud4Layer}, 18, 40, authorStr, 28, 1.15);
+        this.hud1 = new HUD({canvas: hud1Layer}, scoreText, true);
+        this.hud2 = new HUD({canvas: hud2Layer}, healthText, true);
         this.hud3 = new MultiHUD({canvas: hud3Layer}, true);
-        this.hud4 = new HUD({canvas: hud4Layer}, this.madeByText, true);
+        this.hud4 = new HUD({canvas: hud4Layer}, madeByText, true);
         this.hud5 = new MultiHUD({canvas: hud5Layer}, true)
     }
 
