@@ -114,7 +114,6 @@ class Game {
         // game objects
         this.titleCard = null;
         this.fgl2 = null;
-        this.dl = null;
         this.hud1 = null;
         this.hud2 = null;
         this.hud3 = null;
@@ -358,7 +357,7 @@ class Game {
      * Toggles the pause screen
      */
     pause() {
-        this.muteColors();
+        this.gfxController.showDeathLayer();
         let textArray = [
             new UIText({canvas: this.hud5.canvas}, 375, 60, pauseStr, 54, 1.15),
             new UIText({canvas: this.hud5.canvas}, 375, 200, resumeGameStr, 28, 1.15),
@@ -371,7 +370,7 @@ class Game {
      * Toggles the options screen
      */
     options() {
-        this.muteColors();
+        this.gfxController.showDeathLayer();
         let textArray = [
             new UIText({canvas: this.hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
             new UIText({canvas: this.hud5.canvas}, 268, 140, musicOptionStr, 32, 1.15),
@@ -398,7 +397,7 @@ class Game {
         this.stopMovement();
 
         // show the death layer + text
-        this.muteColors();
+        this.gfxController.showDeathLayer();
         this.showGameOverText();
     }
 
@@ -406,7 +405,7 @@ class Game {
      * Restart the game
      */
     restart() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
+        this.gfxController.hideDeathLayer();
         this.hud3.clear();
         this.hud2.changeColor("#ffffff");
         
@@ -456,14 +455,14 @@ class Game {
         if (this.modes.menu) {
             this.titleCard.resume();
             this.gfxController.resumeLayerMovements();
-            this.unmuteColors();
+            this.gfxController.hideDeathLayer();
             this.hud5.clear();
             this.musicSlider.hide();
             this.sfxSlider.hide();
             this.resetButton.hide();
         } else {
             this.gfxController.resumeLayerMovements();
-            this.unmuteColors();
+            this.gfxController.hideDeathLayer();
             this.hud5.clear();
             this.player.resume();
             this.enemyBuffer.forEach(enemy => {
@@ -474,21 +473,6 @@ class Game {
         }
     }
 
-    /**
-     * Makes the screen turn grey
-     */
-    muteColors() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.6)";
-        this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
-    }
-
-    /**
-     * Clears the grey color from the screen
-     */
-    unmuteColors() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-    }
 
     /**
      * Spawns an enemy on the screen
@@ -612,17 +596,6 @@ class Game {
                 enemy.draw();
             }
         });
-    }
-
-    /**
-     * Initializes the death layer.
-     * Unlike the other "init" functions, this only requires a canvas
-     * as the only purpose is to mute all other colours except HUD3
-     *  
-     * @param {Canvas} layer 
-     */
-    initDl(layer) {
-        this.dl = layer;
     }
 
     /**
@@ -759,7 +732,6 @@ async function gameLoop() {
     game.initResetButton("resetHighScoreButton");
     game.initSliderCallbacks();
     game.initResetButtonCallbacks();
-    game.initDl(document.getElementById("dl"));
 
     // Boot game
     game.setMode("boot");

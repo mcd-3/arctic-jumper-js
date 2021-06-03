@@ -23,7 +23,7 @@ class GraphicsController {
         this.#initBgl2(document.getElementById("bgl2"));
         this.#initFgl1(document.getElementById("fgl1"));
         this.#initFgl2(document.getElementById("fgl2"));
-        
+        this.#initDl(document.getElementById("dl"));
     }
 
     /**
@@ -62,6 +62,21 @@ class GraphicsController {
         this.#fgl1.show();
     }
 
+    /**
+     * Makes the death layer visible
+     */
+    showDeathLayer() {
+        this.#dl.getContext("2d").clearRect(0, 0, this.#dl.width, this.#dl.height);
+        this.#dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.6)";
+        this.#dl.getContext("2d").fillRect(0, 0, this.#dl.width, this.#dl.height);
+    }
+
+    /**
+     * Hides the death layer
+     */
+    hideDeathLayer() {
+        this.#dl.getContext("2d").clearRect(0, 0, this.#dl.width, this.#dl.height);
+    }
 
     /**
      * Loads the foreground (the layer closest to the screen) into memory
@@ -119,5 +134,12 @@ class GraphicsController {
             layer.height, 
             this.#assetsFetcher.getBGL2ImageLocation()
         );
+    }
+
+    /**
+     * Loads the death layer into memory
+     */
+    #initDl(layer) {
+        this.#dl = layer;
     }
 }
