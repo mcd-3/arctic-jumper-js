@@ -113,9 +113,6 @@ class Game {
 
         // game objects
         this.titleCard = null;
-        this.bgl1 = null;
-        this.bgl2 = null;
-        this.fgl1 = null;
         this.fgl2 = null;
         this.dl = null;
         this.hud1 = null;
@@ -131,9 +128,6 @@ class Game {
         // game variables
         this.bootTime = 7500;
         this.framerate = 1000 / 70; //60 frames per second
-        this.bgl1Speed = 1;
-        this.bgl2Speed = 4;
-        this.fgl1Speed = 9;
         this.modes = {
             'boot': false,
             'menu': false,
@@ -162,6 +156,7 @@ class Game {
         this.storage = new ScoreStorageHelper();
         this.assetsFetcher = new AssetLocationFetcher();
         this.audioController = new AudioController();
+        this.gfxController = new GraphicsController();
         new PathStorageHelper().initPaths();
 
         // game strings
@@ -427,9 +422,7 @@ class Game {
         this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
         this.player.changePosition(760, 340);
         this.player.draw();
-        this.bgl1.resume();
-        this.bgl2.resume();
-        this.fgl1.resume();
+        this.gfxController.resumeLayerMovements();
         this.player.resume();
         this.player.resetInvincibility();
 
@@ -442,15 +435,11 @@ class Game {
     stopMovement() {
         if (this.modes.menu) {
             this.titleCard.stop();
-            this.bgl1.stop();
-            this.bgl2.stop();
-            this.fgl1.stop();
+            this.gfxController.stopLayerMovements();
         } else {
             this.drawEnemies();
             this.player.draw();
-            this.bgl1.stop();
-            this.bgl2.stop();
-            this.fgl1.stop();
+            this.gfxController.stopLayerMovements();
             this.player.stop();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -466,18 +455,14 @@ class Game {
     resumeMovement() {
         if (this.modes.menu) {
             this.titleCard.resume();
-            this.bgl1.resume();
-            this.bgl2.resume();
-            this.fgl1.resume();
+            this.gfxController.resumeLayerMovements();
             this.unmuteColors();
             this.hud5.clear();
             this.musicSlider.hide();
             this.sfxSlider.hide();
             this.resetButton.hide();
         } else {
-            this.bgl1.resume();
-            this.bgl2.resume();
-            this.fgl1.resume();
+            this.gfxController.resumeLayerMovements();
             this.unmuteColors();
             this.hud5.clear();
             this.player.resume();
@@ -591,9 +576,7 @@ class Game {
      * Makes all layers visible
      */
     showLayers() {
-        this.bgl1.canvas.style.display = "block";
-        this.bgl2.canvas.style.display = "block";
-        this.fgl1.canvas.style.display = "block";
+        this.gfxController.showLayers();
         this.spriteCanvas.style.display = "block";
         this.hud1.display = "block";
         this.hud2.display = "block";
@@ -629,66 +612,6 @@ class Game {
                 enemy.draw();
             }
         });
-    }
-
-    /**
-     * Loads background layer 1 (the furthest back layer)
-     * 
-     * @returns {Background}
-     */
-    initBgl1(layer) {
-        this.bgl1 = new Background(
-            {canvas: layer},
-            0,
-            0,
-            1,
-            0,
-            this.bgl1Speed,
-            layer.width,
-            layer.height,
-            this.assetsFetcher.getBGL1ImageLocation()
-        );
-        return this.bgl1;
-    }
-
-    /**
-     * Loads background layer 2 (the middle layer)
-     * 
-     * @returns {Background}
-     */
-    initBgl2(layer) {
-        this.bgl2 = new Background(
-            {canvas: layer},
-            0,
-            0,
-            1,
-            0,
-            this.bgl2Speed,
-            layer.width,
-            layer.height, 
-            this.assetsFetcher.getBGL2ImageLocation()
-        );
-        return this.bgl2;
-    }
-
-    /**
-     * Loads the foreground (the layer closest to the screen)
-     * 
-     * @returns {Background}
-     */
-    initFgl1(layer) {
-        this.fgl1 = new Background(
-            {canvas: layer},
-            0, 
-            (540 - 154),
-            1,
-            0,
-            this.fgl1Speed,
-            layer.width,
-            layer.height,
-            this.assetsFetcher.getFGL1ImageLocation()
-        );
-        return this.fgl1;
     }
 
     /**
@@ -823,11 +746,8 @@ async function gameLoop() {
 
     // Initialize game layers
     // We are preloading them, so if the user changes aspect ratio it will not bug out
-    game.initBgl1(bgl1);
     game.initTitleCard(fgl2);
     game.initPlayer(fgl2);
-    game.initBgl2(document.getElementById("bgl2"));
-    game.initFgl1(document.getElementById("fgl1"));
     game.initHuds(
         document.getElementById("hud1"),
         document.getElementById("hud2"),
@@ -864,9 +784,7 @@ async function gameLoop() {
         let currTime = Date.now();
 
         if ((currTime - prevTime) > game.framerate) {
-            game.bgl1.draw();
-            game.bgl2.draw();
-            game.fgl1.draw();
+            game.gfxController.drawLayers();
             game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
     
             if (game.modes.menu) { // Main Menu Mode

@@ -75,4 +75,11 @@ class Background extends Entity {
     resume() {
         this.isStopped = false;
     }
+
+    /**
+     * Makes a background visible
+     */
+    show() {
+        this.canvas.style.display = "block";
+    }
 }
