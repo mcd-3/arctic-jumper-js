@@ -11,7 +11,6 @@ class GraphicsController {
     #dl;
     #hud1
     #hud2;
-    #hud3;
     #hud4;
     #hud5;
 
@@ -24,6 +23,9 @@ class GraphicsController {
         this.#initFgl1(document.getElementById("fgl1"));
         this.#initFgl2(document.getElementById("fgl2"));
         this.#initDl(document.getElementById("dl"));
+        this.#initScoreLayer(document.getElementById("hud1"));
+        this.#initHealthLayer(document.getElementById("hud2"));
+        this.#initTextLayer(document.getElementById("hud5"));
     }
 
     /**
@@ -76,6 +78,121 @@ class GraphicsController {
      */
     hideDeathLayer() {
         this.#dl.getContext("2d").clearRect(0, 0, this.#dl.width, this.#dl.height);
+    }
+
+    /**
+     * Draws the amount of hp left on the Health HUD
+     * 
+     * @param {int} hp 
+     */
+    drawHealth(text, hp) {
+        // Check which colour to use
+        if (hp > 1) {
+            this.#hud2.changeColor("#ffffff");
+        } else if (hp > 0) {
+            this.#hud2.changeColor("#ff0000");
+        } else {
+            this.#hud2.changeColor("#585858");
+        }
+
+        this.#hud2.setText(`${text} ${hp}`);
+        this.#hud2.drawText();
+    }
+
+    /**
+     * Draws the score on the Score HUD
+     * 
+     * @param {int} score 
+     */
+    drawScore(text, score = -1) {
+        score < 0 
+            ? this.#hud1.setText(text)
+            : this.#hud1.setText(`${text} ${score}`);
+        this.#hud1.drawText();
+    }
+
+    /**
+     * Shows all the HUDs
+     */
+    showHUDs() {
+        this.#hud1.display = "block";
+        this.#hud2.display = "block";
+    }
+
+    /**
+     * Shows the pause screen
+     */
+    showPauseScreen() {
+        const textArray = [
+            new UIText({canvas: this.#hud5.canvas}, 375, 60, pauseStr, 54, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 375, 200, resumeGameStr, 28, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 375, 280, gotoOptionsStr, 28, 1.15),
+        ];
+        this.#hud5.drawTexts(textArray);
+    }
+
+    /**
+     * Shows the options screen
+     */
+    showOptionsScreen() {
+        const textArray = [
+            new UIText({canvas: this.#hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 268, 140, musicOptionStr, 32, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 280, 220, sfxOptionStr, 32, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 208, 300, resetHighscoreStr, 32, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 375, 400, exitOptionsStr, 28, 1.15),
+        ];
+        this.#hud5.drawTexts(textArray);
+    }
+
+    /**
+     * Shows the game over screen
+     * 
+     * @param {boolean} isGameOverTimerDone 
+     * @param {boolean} isNewHighscore 
+     * @param {int} score 
+     */
+    showGameOverScreen(isGameOverTimerDone, isNewHighscore, score) {
+        const textArray = [
+            new UIText({canvas: this.#hud5.canvas}, 375, 80, `${gameOverStr}`, 54, 1.15),
+            new UIText({canvas: this.#hud5.canvas}, 375, 160, `${scoreStr} ${score}`, 54, 1.15),
+        ];
+
+        if (isGameOverTimerDone) {
+            textArray.push(
+                new UIText(
+                    {canvas: this.#hud5.canvas},
+                    375,
+                    240,
+                    `${resumeStr}`,
+                    32,
+                    1.15
+                )
+            );
+        }
+
+        if (isNewHighscore) {
+            textArray.push(
+                new UIText(
+                    {canvas: this.#hud5.canvas},
+                    375,
+                    320,
+                    `${newHighScoreStr}`,
+                    48,
+                    1.15,
+                    "yellow"
+                )
+            );
+        }
+
+        this.#hud5.drawTexts(textArray);
+    }
+
+    /**
+     * Clears the text layer
+     */
+    clearTextLayer() {
+        this.#hud5.clear();
     }
 
     /**
@@ -141,5 +258,28 @@ class GraphicsController {
      */
     #initDl(layer) {
         this.#dl = layer;
+    }
+
+    /**
+     * Loads the health HUD into memory
+     */
+    #initHealthLayer(layer) {
+        const healthText = new UIText({canvas: layer}, 152, 40, `${healthStr}`, 36, 1.15);
+        this.#hud2 = new HUD({canvas: layer}, healthText, true);
+    }
+
+    /**
+     * Loads the score HUD into memory
+     */
+    #initScoreLayer(layer) {
+        const scoreText = new UIText({canvas: layer}, 18, 40, optionsMenuStr, 36, 1.15);
+        this.#hud1 = new HUD({canvas: layer}, scoreText, true);
+    }
+
+    /**
+     * Loads the pause/options/game-over screen into memory
+     */
+    #initTextLayer(layer) {
+        this.#hud5 = new MultiHUD({canvas: layer}, true);
     }
 }
