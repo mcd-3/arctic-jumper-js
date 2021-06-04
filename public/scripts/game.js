@@ -114,7 +114,6 @@ class Game {
         // game objects
         this.titleCard = null;
         this.fgl2 = null;
-        this.hud4 = null;
         this.musicSlider = null;
         this.sfxSlider = null;
         this.resetButton = null;
@@ -130,6 +129,7 @@ class Game {
             'death': false
         };
         this.score = 0;
+        this.cachedHighscore = 0;
 
         // flags
         this.titleDoneFlag = false;
@@ -156,7 +156,6 @@ class Game {
 
         // game strings
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
-        this.highScoreText = null;
     }
 
     /**
@@ -239,6 +238,8 @@ class Game {
      */
     menu() {
         let optionsStr = optionsMenuStr;
+        let author = authorStr;
+
         // Draw the title card moving downwards or stationary if it isn't finished yet
         this.titleCard.draw();
         this.titleDoneFlag = this.titleCard.isDoneDrawing;
@@ -246,18 +247,17 @@ class Game {
         // Start drawing in the player and moving card off-screen
         if (this.gameStartingFlag) {
             optionsStr = "";
-            this.hud4.setText("");
-            this.hud4.drawText();
+            author = "";
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
+                this.cachedHighscore = this.storage.getHighScore();
+                this.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
-                this.hud4.setUIText(this.highScoreText);
             }
         } else {
             if (this.titleDoneFlag) {
                 this.startText.draw();
             }
-            this.hud4.drawText();
         }
 
         if (this.isOptions) {
@@ -265,6 +265,7 @@ class Game {
         }
 
         this.gfxController.drawScore(optionsStr);
+        this.gfxController.drawHighscore(author);
     }
 
     /**
@@ -273,9 +274,6 @@ class Game {
     play() {
         if (this.player.isAtStartPos()) {
             if (!this.isPaused) {
-    
-                // Draw the HUD first
-                this.hud4.drawText();
     
                 this.framesUntilNewSpawn--;
     
@@ -308,8 +306,9 @@ class Game {
                                 if (this.player.hitpoints > 0) {
                                     this.audioController.playSFX(this.assetsFetcher.getHitSFXLocation());
                                 } else {
-                                    if (this.score > this.storage.getHighScore()) {
+                                    if (this.score > this.cachedHighscore) {
                                         this.storage.addHighScore(this.score);
+                                        this.cachedHighscore = this.score;
                                         this.newHighScoreFlag = true;
                                     }
                                     this.audioController.playSFX(this.assetsFetcher.getGameOverSFXLocation());
@@ -340,6 +339,7 @@ class Game {
 
             this.gfxController.drawScore(scoreStr, this.score);
             this.gfxController.drawHealth(healthStr, this.player.hitpoints);
+            this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
@@ -371,7 +371,7 @@ class Game {
         // update the HUD, so it doesn't vanish
         this.gfxController.drawScore(scoreStr, this.score);
         this.gfxController.drawHealth(healthStr, this.player.hitpoints);
-        this.hud4.setText(`${highScoreStr} ${this.storage.getHighScore()}`);
+        this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
 
         // keep objects drawn and stop backgrounds
         this.stopMovement();
@@ -546,7 +546,6 @@ class Game {
         this.gfxController.showLayers();
         this.spriteCanvas.style.display = "block";
         this.gfxController.showHUDs();
-        this.hud4.display = "block";
     }
 
     /**
@@ -558,18 +557,6 @@ class Game {
                 enemy.draw();
             }
         });
-    }
-
-    /**
-     * Initializes the HUD canvases
-     * 
-     * @param {HUD} hud3Layer 
-     */
-    initHuds(hud4Layer) { 
-        // TODO: This call should not be here!
-        this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
-        const madeByText = new UIText({canvas: hud4Layer}, 18, 40, authorStr, 28, 1.15);
-        this.hud4 = new HUD({canvas: hud4Layer}, madeByText, true);
     }
 
     /**
@@ -631,9 +618,7 @@ class Game {
         this.resetButton.addOnClickListener(() => {
             if (confirm(resetHighscorePrompt)) {
                 game.storage.deleteHighScore();
-                if (!game.modes.menu) {
-                    this.hud4.setText(`${highScoreStr} 0`);
-                }
+                game.cachedHighscore = 0;
                 alert(resetHighscoreConfirm);
             }
             this.resetButton.unfocus();
@@ -675,9 +660,6 @@ async function gameLoop() {
     // We are preloading them, so if the user changes aspect ratio it will not bug out
     game.initTitleCard(fgl2);
     game.initPlayer(fgl2);
-    game.initHuds(
-        document.getElementById("hud4")
-    );
     game.initSliders("musicSlider", "sfxSlider");
     game.initResetButton("resetHighScoreButton");
     game.initSliderCallbacks();

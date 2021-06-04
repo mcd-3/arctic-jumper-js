@@ -25,6 +25,7 @@ class GraphicsController {
         this.#initDl(document.getElementById("dl"));
         this.#initScoreLayer(document.getElementById("hud1"));
         this.#initHealthLayer(document.getElementById("hud2"));
+        this.#initHighscoreLayer(document.getElementById("hud4"))
         this.#initTextLayer(document.getElementById("hud5"));
     }
 
@@ -102,6 +103,7 @@ class GraphicsController {
     /**
      * Draws the score on the Score HUD
      * 
+     * @param {string} text
      * @param {int} score 
      */
     drawScore(text, score = -1) {
@@ -112,11 +114,33 @@ class GraphicsController {
     }
 
     /**
+     * Draws the highscore on the Highscore HUD
+     * 
+     * @param {string} text
+     * @param {int} hs
+     */
+    drawHighscore(text, hs = -1) {
+        hs < 0 
+            ? this.#hud4.setText(text)
+            : this.#hud4.setText(`${text} ${hs}`);
+        this.#hud4.drawText();
+    }
+
+    /**
+     * Changes the size of the HS UI font
+     */
+    changeHighscoreUISize(size) {
+        // 36
+        this.#hud4.setUIText(new UIText({canvas: this.#hud4.canvas}, 18, 40, `${highScoreStr}}`, size, 1.15))
+    }
+
+    /**
      * Shows all the HUDs
      */
     showHUDs() {
         this.#hud1.display = "block";
         this.#hud2.display = "block";
+        this.#hud4.display = "block";
     }
 
     /**
@@ -274,6 +298,14 @@ class GraphicsController {
     #initScoreLayer(layer) {
         const scoreText = new UIText({canvas: layer}, 18, 40, optionsMenuStr, 36, 1.15);
         this.#hud1 = new HUD({canvas: layer}, scoreText, true);
+    }
+
+    /**
+     * Loads the highscore HUD into memory
+     */
+    #initHighscoreLayer(layer) {
+        const madeByText = new UIText({canvas: layer}, 18, 40, authorStr, 28, 1.15);
+        this.#hud4 = new HUD({canvas: layer}, madeByText, true);
     }
 
     /**
