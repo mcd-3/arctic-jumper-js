@@ -113,16 +113,7 @@ class Game {
 
         // game objects
         this.titleCard = null;
-        this.bgl1 = null;
-        this.bgl2 = null;
-        this.fgl1 = null;
         this.fgl2 = null;
-        this.dl = null;
-        this.hud1 = null;
-        this.hud2 = null;
-        this.hud3 = null;
-        this.hud4 = null;
-        this.hud5 = null;
         this.musicSlider = null;
         this.sfxSlider = null;
         this.resetButton = null;
@@ -131,9 +122,6 @@ class Game {
         // game variables
         this.bootTime = 7500;
         this.framerate = 1000 / 70; //60 frames per second
-        this.bgl1Speed = 1;
-        this.bgl2Speed = 4;
-        this.fgl1Speed = 9;
         this.modes = {
             'boot': false,
             'menu': false,
@@ -141,6 +129,7 @@ class Game {
             'death': false
         };
         this.score = 0;
+        this.cachedHighscore = 0;
 
         // flags
         this.titleDoneFlag = false;
@@ -162,11 +151,11 @@ class Game {
         this.storage = new ScoreStorageHelper();
         this.assetsFetcher = new AssetLocationFetcher();
         this.audioController = new AudioController();
+        this.gfxController = new GraphicsController();
         new PathStorageHelper().initPaths();
 
         // game strings
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
-        this.highScoreText = null;
     }
 
     /**
@@ -248,31 +237,35 @@ class Game {
      * Starts main menu mode
      */
     menu() {
+        let optionsStr = optionsMenuStr;
+        let author = authorStr;
+
         // Draw the title card moving downwards or stationary if it isn't finished yet
         this.titleCard.draw();
         this.titleDoneFlag = this.titleCard.isDoneDrawing;
 
         // Start drawing in the player and moving card off-screen
         if (this.gameStartingFlag) {
-            this.hud1.setText("");
-            this.hud4.setText("");
-            this.hud4.drawText();
+            optionsStr = "";
+            author = "";
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
+                this.cachedHighscore = this.storage.getHighScore();
+                this.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
-                this.hud4.setUIText(this.highScoreText);
             }
         } else {
             if (this.titleDoneFlag) {
                 this.startText.draw();
             }
-            this.hud4.drawText();
         }
-        this.hud1.drawText();
 
         if (this.isOptions) {
             this.options();
         }
+
+        this.gfxController.drawScore(optionsStr);
+        this.gfxController.drawHighscore(author);
     }
 
     /**
@@ -280,16 +273,7 @@ class Game {
      */
     play() {
         if (this.player.isAtStartPos()) {
-            this.hud1.setText(`${scoreStr} ${this.score}`);
             if (!this.isPaused) {
-                if (this.player.hitpoints < 2) {
-                    this.hud2.changeColor("#ff0000");
-                }
-    
-                // Draw the HUD first
-                this.hud1.drawText();
-                this.hud2.drawText();
-                this.hud4.drawText();
     
                 this.framesUntilNewSpawn--;
     
@@ -317,20 +301,18 @@ class Game {
                         if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
                             if (!this.player.isHurt()) {
                                 this.player.takeDamage();
-                                this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
         
                                 // Check if game over
                                 if (this.player.hitpoints > 0) {
                                     this.audioController.playSFX(this.assetsFetcher.getHitSFXLocation());
                                 } else {
-                                    if (this.score > this.storage.getHighScore()) {
+                                    if (this.score > this.cachedHighscore) {
                                         this.storage.addHighScore(this.score);
+                                        this.cachedHighscore = this.score;
                                         this.newHighScoreFlag = true;
                                     }
                                     this.audioController.playSFX(this.assetsFetcher.getGameOverSFXLocation());
                                     this.startGameOverTimer();
-                                    this.hud2.changeColor("#585858");
-                                    this.hud2.drawText();
                                     this.setMode("death");
                                 }
                             }
@@ -354,6 +336,10 @@ class Game {
                     this.drawEnemies();
                 }
             }
+
+            this.gfxController.drawScore(scoreStr, this.score);
+            this.gfxController.drawHealth(healthStr, this.player.hitpoints);
+            this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
@@ -363,28 +349,16 @@ class Game {
      * Toggles the pause screen
      */
     pause() {
-        this.muteColors();
-        let textArray = [
-            new UIText({canvas: this.hud5.canvas}, 375, 60, pauseStr, 54, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 375, 200, resumeGameStr, 28, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 375, 280, gotoOptionsStr, 28, 1.15),
-        ];
-        this.hud5.drawTexts(textArray);
+        this.gfxController.showDeathLayer();
+        this.gfxController.showPauseScreen();
     }
 
     /**
      * Toggles the options screen
      */
     options() {
-        this.muteColors();
-        let textArray = [
-            new UIText({canvas: this.hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 268, 140, musicOptionStr, 32, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 280, 220, sfxOptionStr, 32, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 208, 300, resetHighscoreStr, 32, 1.15),
-            new UIText({canvas: this.hud5.canvas}, 375, 400, exitOptionsStr, 28, 1.15),
-        ];
-        this.hud5.drawTexts(textArray);
+        this.gfxController.showDeathLayer();
+        this.gfxController.showOptionsScreen();
         this.musicSlider.show();
         this.sfxSlider.show();
         this.resetButton.show();
@@ -395,25 +369,28 @@ class Game {
      */
     death() {
         // update the HUD, so it doesn't vanish
-        this.hud1.setText(`${scoreStr} ${this.score}`);
-        this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
-        this.hud4.setText(`${highScoreStr} ${this.storage.getHighScore()}`);
+        this.gfxController.drawScore(scoreStr, this.score);
+        this.gfxController.drawHealth(healthStr, this.player.hitpoints);
+        this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
 
         // keep objects drawn and stop backgrounds
         this.stopMovement();
 
         // show the death layer + text
-        this.muteColors();
-        this.showGameOverText();
+        this.gfxController.showDeathLayer();
+        this.gfxController.showGameOverScreen(
+            this.gameOverTimerDone,
+            this.newHighScoreFlag,
+            this.score
+        );
     }
 
     /**
      * Restart the game
      */
     restart() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-        this.hud3.clear();
-        this.hud2.changeColor("#ffffff");
+        this.gfxController.hideDeathLayer();
+        this.gfxController.clearTextLayer();
         
         // Clear all game variables
         this.enemyBuffer = [null, null, null];
@@ -423,13 +400,11 @@ class Game {
         this.gameOverTimerDone = false;
 
         // Update HUD, player, and backgrounds
-        this.hud1.setText(`${scoreStr} ${this.score}`);
-        this.hud2.setText(`${healthStr} ${this.player.hitpoints}`);
+        this.gfxController.drawScore(scoreStr, this.score);
+        this.gfxController.drawHealth(healthStr, this.player.hitpoints);
         this.player.changePosition(760, 340);
         this.player.draw();
-        this.bgl1.resume();
-        this.bgl2.resume();
-        this.fgl1.resume();
+        this.gfxController.resumeLayerMovements();
         this.player.resume();
         this.player.resetInvincibility();
 
@@ -442,15 +417,11 @@ class Game {
     stopMovement() {
         if (this.modes.menu) {
             this.titleCard.stop();
-            this.bgl1.stop();
-            this.bgl2.stop();
-            this.fgl1.stop();
+            this.gfxController.stopLayerMovements();
         } else {
             this.drawEnemies();
             this.player.draw();
-            this.bgl1.stop();
-            this.bgl2.stop();
-            this.fgl1.stop();
+            this.gfxController.stopLayerMovements();
             this.player.stop();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -466,20 +437,16 @@ class Game {
     resumeMovement() {
         if (this.modes.menu) {
             this.titleCard.resume();
-            this.bgl1.resume();
-            this.bgl2.resume();
-            this.fgl1.resume();
-            this.unmuteColors();
-            this.hud5.clear();
+            this.gfxController.resumeLayerMovements();
+            this.gfxController.hideDeathLayer();
+            this.gfxController.clearTextLayer();
             this.musicSlider.hide();
             this.sfxSlider.hide();
             this.resetButton.hide();
         } else {
-            this.bgl1.resume();
-            this.bgl2.resume();
-            this.fgl1.resume();
-            this.unmuteColors();
-            this.hud5.clear();
+            this.gfxController.resumeLayerMovements();
+            this.gfxController.hideDeathLayer();
+            this.gfxController.clearTextLayer();
             this.player.resume();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -489,21 +456,6 @@ class Game {
         }
     }
 
-    /**
-     * Makes the screen turn grey
-     */
-    muteColors() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-        this.dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.6)";
-        this.dl.getContext("2d").fillRect(0, 0, this.dl.width, this.dl.height);
-    }
-
-    /**
-     * Clears the grey color from the screen
-     */
-    unmuteColors() {
-        this.dl.getContext("2d").clearRect(0, 0, this.dl.width, this.dl.height);
-    }
 
     /**
      * Spawns an enemy on the screen
@@ -591,33 +543,9 @@ class Game {
      * Makes all layers visible
      */
     showLayers() {
-        this.bgl1.canvas.style.display = "block";
-        this.bgl2.canvas.style.display = "block";
-        this.fgl1.canvas.style.display = "block";
+        this.gfxController.showLayers();
         this.spriteCanvas.style.display = "block";
-        this.hud1.display = "block";
-        this.hud2.display = "block";
-        this.hud4.display = "block";
-    }
-
-    /**
-     * Show the game over screen with its respective text
-     */
-    showGameOverText() {
-        let textArray = [
-            new UIText({canvas: this.hud3.canvas}, 250, 60, `${gameOverStr}`, 54, 1.15),
-            new UIText({canvas: this.hud3.canvas}, 250, 140, `${scoreStr} ${this.score}`, 54, 1.15),
-        ];
-
-        if (this.gameOverTimerDone) {
-            textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 220, `${resumeStr}`, 32, 1.15));
-        }
-
-        if (this.newHighScoreFlag) {
-            textArray.push(new UIText({canvas: this.hud3.canvas}, 250, 280, `${newHighScoreStr}`, 48, 1.15, "yellow"))
-        }
-
-        this.hud3.drawTexts(textArray);
+        this.gfxController.showHUDs();
     }
 
     /**
@@ -629,96 +557,6 @@ class Game {
                 enemy.draw();
             }
         });
-    }
-
-    /**
-     * Loads background layer 1 (the furthest back layer)
-     * 
-     * @returns {Background}
-     */
-    initBgl1(layer) {
-        this.bgl1 = new Background(
-            {canvas: layer},
-            0,
-            0,
-            1,
-            0,
-            this.bgl1Speed,
-            layer.width,
-            layer.height,
-            this.assetsFetcher.getBGL1ImageLocation()
-        );
-        return this.bgl1;
-    }
-
-    /**
-     * Loads background layer 2 (the middle layer)
-     * 
-     * @returns {Background}
-     */
-    initBgl2(layer) {
-        this.bgl2 = new Background(
-            {canvas: layer},
-            0,
-            0,
-            1,
-            0,
-            this.bgl2Speed,
-            layer.width,
-            layer.height, 
-            this.assetsFetcher.getBGL2ImageLocation()
-        );
-        return this.bgl2;
-    }
-
-    /**
-     * Loads the foreground (the layer closest to the screen)
-     * 
-     * @returns {Background}
-     */
-    initFgl1(layer) {
-        this.fgl1 = new Background(
-            {canvas: layer},
-            0, 
-            (540 - 154),
-            1,
-            0,
-            this.fgl1Speed,
-            layer.width,
-            layer.height,
-            this.assetsFetcher.getFGL1ImageLocation()
-        );
-        return this.fgl1;
-    }
-
-    /**
-     * Initializes the death layer.
-     * Unlike the other "init" functions, this only requires a canvas
-     * as the only purpose is to mute all other colours except HUD3
-     *  
-     * @param {Canvas} layer 
-     */
-    initDl(layer) {
-        this.dl = layer;
-    }
-
-    /**
-     * Initializes the HUD canvases
-     * 
-     * @param {HUD} hud1Layer 
-     * @param {HUD} hud2Layer 
-     * @param {HUD} hud3Layer 
-     */
-    initHuds(hud1Layer, hud2Layer, hud3Layer, hud4Layer, hud5Layer) { 
-        const scoreText = new UIText({canvas: hud1Layer}, 18, 40, optionsMenuStr, 36, 1.15);
-        const healthText = new UIText({canvas: hud2Layer}, 152, 40, `${healthStr} ${this.player.hitpoints}`, 36, 1.15);
-        this.highScoreText = new UIText({canvas: hud4Layer}, 18, 40, `${highScoreStr} ${this.storage.getHighScore()}`, 36, 1.15);
-        const madeByText = new UIText({canvas: hud4Layer}, 18, 40, authorStr, 28, 1.15);
-        this.hud1 = new HUD({canvas: hud1Layer}, scoreText, true);
-        this.hud2 = new HUD({canvas: hud2Layer}, healthText, true);
-        this.hud3 = new MultiHUD({canvas: hud3Layer}, true);
-        this.hud4 = new HUD({canvas: hud4Layer}, madeByText, true);
-        this.hud5 = new MultiHUD({canvas: hud5Layer}, true)
     }
 
     /**
@@ -780,9 +618,7 @@ class Game {
         this.resetButton.addOnClickListener(() => {
             if (confirm(resetHighscorePrompt)) {
                 game.storage.deleteHighScore();
-                if (!game.modes.menu) {
-                    this.hud4.setText(`${highScoreStr} 0`);
-                }
+                game.cachedHighscore = 0;
                 alert(resetHighscoreConfirm);
             }
             this.resetButton.unfocus();
@@ -819,27 +655,15 @@ async function gameLoop() {
     let bgl1 = document.getElementById("bgl1");
     let fgl2 = document.getElementById("fgl2");
     game = new Game(bgl1, fgl2);
-    //game.storage.deleteHighScore();
 
     // Initialize game layers
     // We are preloading them, so if the user changes aspect ratio it will not bug out
-    game.initBgl1(bgl1);
     game.initTitleCard(fgl2);
     game.initPlayer(fgl2);
-    game.initBgl2(document.getElementById("bgl2"));
-    game.initFgl1(document.getElementById("fgl1"));
-    game.initHuds(
-        document.getElementById("hud1"),
-        document.getElementById("hud2"),
-        document.getElementById("hud3"),
-        document.getElementById("hud4"),
-        document.getElementById("hud5")
-    );
     game.initSliders("musicSlider", "sfxSlider");
     game.initResetButton("resetHighScoreButton");
     game.initSliderCallbacks();
     game.initResetButtonCallbacks();
-    game.initDl(document.getElementById("dl"));
 
     // Boot game
     game.setMode("boot");
@@ -864,9 +688,7 @@ async function gameLoop() {
         let currTime = Date.now();
 
         if ((currTime - prevTime) > game.framerate) {
-            game.bgl1.draw();
-            game.bgl2.draw();
-            game.fgl1.draw();
+            game.gfxController.drawLayers();
             game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
     
             if (game.modes.menu) { // Main Menu Mode
