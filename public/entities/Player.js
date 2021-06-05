@@ -82,7 +82,9 @@ class Player extends Entity {
         if (this.imgLoaded) {
             if (this.isGrounded) {
                 let frameStr = '';
-                this.currentInvincibility == 0 ? frameStr = `frame${this.currentFrame}` : frameStr = `frame${this.currentFrame + 4}`;
+                this.currentInvincibility == 0
+                    ? frameStr = `frame${this.currentFrame}`
+                    : frameStr = `frame${this.currentFrame + 4}`;
                 this.ctx.drawImage(this.img,
                     this.spriteCoordinates[frameStr][0],
                     this.spriteCoordinates[frameStr][1],
@@ -91,7 +93,8 @@ class Player extends Entity {
                     this.x,
                     this.y,
                     this.spriteWidth,
-                    this.spriteHeight);
+                    this.spriteHeight
+                );
     
                 if (!this.isStopped) {
                     this.waitFrames--;
@@ -104,7 +107,9 @@ class Player extends Entity {
                     }
                 }
             } else {
-                let jumpStr = (this.jumpDirection > 0) ? "jumpUp" : "jumpDown";
+                let jumpStr = (this.jumpDirection > 0)
+                    ? "jumpUp"
+                    : "jumpDown";
                 if (this.currentInvincibility != 0) {
                     jumpStr += "Hit";
                 } 
@@ -180,14 +185,15 @@ class Player extends Entity {
                 this.jumpWait = this.jumpConfig.JUMP_FRAME_WAIT;
             }
         }
+
         this.hitbox.updatePos(
             this.y + this.hitboxConfig.Y_MARGIN,
             this.y + this.hitboxConfig.HEIGHT + this.hitboxConfig.Y_MARGIN,
             this.x + this.hitboxConfig.X_MARGIN,
             this.x + this.hitboxConfig.WIDTH + this.hitboxConfig.X_MARGIN
         );
+        
         this.updateInvincibility();
-        //this.ctx.clearRect(this.x, this.y, this.spriteWidth, this.spriteHeight);
         this.draw();
     }
 

@@ -25,7 +25,7 @@ class GraphicsController {
         this.#initDl(document.getElementById("dl"));
         this.#initScoreLayer(document.getElementById("hud1"));
         this.#initHealthLayer(document.getElementById("hud2"));
-        this.#initHighscoreLayer(document.getElementById("hud4"))
+        this.#initHighscoreLayer(document.getElementById("hud4"));
         this.#initTextLayer(document.getElementById("hud5"));
     }
 
@@ -69,16 +69,31 @@ class GraphicsController {
      * Makes the death layer visible
      */
     showDeathLayer() {
-        this.#dl.getContext("2d").clearRect(0, 0, this.#dl.width, this.#dl.height);
+        this.#dl.getContext("2d").clearRect(
+            0,
+            0,
+            this.#dl.width,
+            this.#dl.height
+        );
         this.#dl.getContext("2d").fillStyle = "rgba(30, 30, 30, 0.6)";
-        this.#dl.getContext("2d").fillRect(0, 0, this.#dl.width, this.#dl.height);
+        this.#dl.getContext("2d").fillRect(
+            0,
+            0,
+            this.#dl.width,
+            this.#dl.height
+        );
     }
 
     /**
      * Hides the death layer
      */
     hideDeathLayer() {
-        this.#dl.getContext("2d").clearRect(0, 0, this.#dl.width, this.#dl.height);
+        this.#dl.getContext("2d").clearRect(
+            0,
+            0,
+            this.#dl.width,
+            this.#dl.height
+        );
     }
 
     /**
@@ -131,7 +146,16 @@ class GraphicsController {
      */
     changeHighscoreUISize(size) {
         // 36
-        this.#hud4.setUIText(new UIText({canvas: this.#hud4.canvas}, 18, 40, `${highScoreStr}}`, size, 1.15))
+        this.#hud4.setUIText(
+            new UIText(
+                {canvas: this.#hud4.canvas},
+                18,
+                40,
+                `${highScoreStr}}`,
+                size,
+                1.15
+            )
+        );
     }
 
     /**
@@ -148,9 +172,30 @@ class GraphicsController {
      */
     showPauseScreen() {
         const textArray = [
-            new UIText({canvas: this.#hud5.canvas}, 375, 60, pauseStr, 54, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 375, 200, resumeGameStr, 28, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 375, 280, gotoOptionsStr, 28, 1.15),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                60,
+                pauseStr,
+                54,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                200,
+                resumeGameStr,
+                28,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                280,
+                gotoOptionsStr,
+                28, 
+                1.15
+            ),
         ];
         this.#hud5.drawTexts(textArray);
     }
@@ -160,11 +205,46 @@ class GraphicsController {
      */
     showOptionsScreen() {
         const textArray = [
-            new UIText({canvas: this.#hud5.canvas}, 375, 60, optionsStr, 54, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 268, 140, musicOptionStr, 32, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 280, 220, sfxOptionStr, 32, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 208, 300, resetHighscoreStr, 32, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 375, 400, exitOptionsStr, 28, 1.15),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                60,
+                optionsStr,
+                54,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                268,
+                140,
+                musicOptionStr,
+                32,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                280,
+                220,
+                sfxOptionStr,
+                32,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                208,
+                300,
+                resetHighscoreStr,
+                32,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                400,
+                exitOptionsStr,
+                28,
+                1.15
+            ),
         ];
         this.#hud5.drawTexts(textArray);
     }
@@ -178,8 +258,22 @@ class GraphicsController {
      */
     showGameOverScreen(isGameOverTimerDone, isNewHighscore, score) {
         const textArray = [
-            new UIText({canvas: this.#hud5.canvas}, 375, 80, `${gameOverStr}`, 54, 1.15),
-            new UIText({canvas: this.#hud5.canvas}, 375, 160, `${scoreStr} ${score}`, 54, 1.15),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                80,
+                `${gameOverStr}`,
+                54,
+                1.15
+            ),
+            new UIText(
+                {canvas: this.#hud5.canvas},
+                375,
+                160,
+                `${scoreStr} ${score}`,
+                54,
+                1.15
+            ),
         ];
 
         if (isGameOverTimerDone) {
@@ -288,7 +382,13 @@ class GraphicsController {
      * Loads the health HUD into memory
      */
     #initHealthLayer(layer) {
-        const healthText = new UIText({canvas: layer}, 152, 40, `${healthStr}`, 36, 1.15);
+        const healthText = new UIText(
+            {canvas: layer},
+            152, 40,
+            `${healthStr}`,
+            36,
+            1.15
+        );
         this.#hud2 = new HUD({canvas: layer}, healthText, true);
     }
 
@@ -296,7 +396,14 @@ class GraphicsController {
      * Loads the score HUD into memory
      */
     #initScoreLayer(layer) {
-        const scoreText = new UIText({canvas: layer}, 18, 40, optionsMenuStr, 36, 1.15);
+        const scoreText = new UIText(
+            {canvas: layer},
+            18,
+            40,
+            optionsMenuStr,
+            36,
+            1.15
+        );
         this.#hud1 = new HUD({canvas: layer}, scoreText, true);
     }
 
@@ -304,7 +411,14 @@ class GraphicsController {
      * Loads the highscore HUD into memory
      */
     #initHighscoreLayer(layer) {
-        const madeByText = new UIText({canvas: layer}, 18, 40, authorStr, 28, 1.15);
+        const madeByText = new UIText(
+            {canvas: layer},
+            18,
+            40,
+            authorStr,
+            28,
+            1.15
+        );
         this.#hud4 = new HUD({canvas: layer}, madeByText, true);
     }
 

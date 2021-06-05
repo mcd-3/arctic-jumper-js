@@ -2,7 +2,7 @@ class HUD {
     constructor(canvasObj, uiText, displayed) {
         let scaler = new CanvasDPIHelper();
         this.canvas = canvasObj.canvas;
-        this.ctx = scaler.scaleText(this.canvas);//canvasObj.canvas.getContext("2d");
+        this.ctx = scaler.scaleText(this.canvas);
         this.uiText = uiText;
         this.displayed = displayed;
     }

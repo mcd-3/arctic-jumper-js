@@ -54,6 +54,11 @@ class Hitbox {
      */
     debugDrawHitbox(ctx) {
         ctx.fillStyle = 'green';
-        ctx.fillRect(this.l, this.d, (this.r - this.l), (this.u - this.d));
+        ctx.fillRect(
+            this.l,
+            this.d,
+            (this.r - this.l),
+            (this.u - this.d)
+        );
     }
 }

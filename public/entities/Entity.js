@@ -7,6 +7,5 @@ class Entity {
         this.ctx = canvasObj.canvas.getContext("2d");
         this.x = x;
         this.y = y;
-        this.assetFetcher = new AssetLocationFetcher();
     }
 }
