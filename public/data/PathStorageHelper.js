@@ -1,15 +1,14 @@
 class PathStorageHelper {
-    constructor() {
-        this.assetPathLocation = "arcticJumperPathAsset";
-        this.audioPathLocation = "arcticJumperPathAudio";
-        this.imagePathLocation = "arcticJumperPathImage";
-        this.fontPathLocation = "arcticJumperPathFont"
-    }
 
     /**
      * Initialize where each directory is located
      */
-    initPaths() {
+    static initPaths() {
+        this.assetPathLocation = "arcticJumperPathAsset";
+        this.audioPathLocation = "arcticJumperPathAudio";
+        this.imagePathLocation = "arcticJumperPathImage";
+        this.fontPathLocation = "arcticJumperPathFont";
+
         localStorage.setItem(this.assetPathLocation, "./assets/");
         localStorage.setItem(this.audioPathLocation, `./assets/audio/`);
         localStorage.setItem(this.imagePathLocation, `./assets/images/`)
@@ -20,7 +19,7 @@ class PathStorageHelper {
      * 
      * @returns {string}
      */
-    getAssetsLocation = () => localStorage.getItem(this.assetPathLocation);
+    static getAssetsLocation = () => localStorage.getItem(this.assetPathLocation);
     
 
     /**
@@ -28,12 +27,12 @@ class PathStorageHelper {
      * 
      * @returns {string}
      */
-    getAudioLocation = () => localStorage.getItem(this.audioPathLocation);
+    static getAudioLocation = () => localStorage.getItem(this.audioPathLocation);
 
     /**
      * Get the path of the image directory
      * 
      * @returns {string}
      */
-    getImagesLocation = () => localStorage.getItem(this.imagePathLocation);
+    static getImagesLocation = () => localStorage.getItem(this.imagePathLocation);
 }

@@ -29,7 +29,7 @@ class Snowman extends Obstacle {
      */
     initImage() {
         this.img = new Image();
-        this.img.src = this.assetFetcher.getSnowmanImageLocation();;
+        this.img.src = engine.assetsFetcher.getSnowmanImageLocation();
         this.img.onload = this.onImageLoaded();
     }
 

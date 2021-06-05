@@ -4,8 +4,6 @@ class Obstacle extends Entity {
         this.slideSpeed = slideSpeed;
         this.hitbox = hitbox;
         this.passedByPlayer = false;
-        this.imagePath = new PathStorageHelper().getImagesLocation();
-        this.assetFetcher = new AssetLocationFetcher();
         this.isStopped = false;;
     }
 
@@ -15,7 +13,12 @@ class Obstacle extends Entity {
     slideTowardsPlayer() {
         this.x += this.slideSpeed;
         if (this.hitbox != null) {
-            this.hitbox.updatePos(this.hitbox.u, this.hitbox.d, this.hitbox.l + this.slideSpeed, this.hitbox.r + this.slideSpeed);
+            this.hitbox.updatePos(
+                this.hitbox.u,
+                this.hitbox.d,
+                this.hitbox.l + this.slideSpeed,
+                this.hitbox.r + this.slideSpeed
+            );
         }
     }
 

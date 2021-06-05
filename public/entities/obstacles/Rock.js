@@ -29,7 +29,7 @@ class Rock extends Obstacle {
      */
     initImage() {
         this.img = new Image();
-        this.img.src = this.assetFetcher.getRockImageLocation();;
+        this.img.src = engine.assetsFetcher.getRockImageLocation();
         this.img.onload = this.onImageLoaded();
     }
     

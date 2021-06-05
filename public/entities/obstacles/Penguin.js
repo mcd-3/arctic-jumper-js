@@ -49,7 +49,7 @@ class Penguin extends Obstacle {
      */
     initImage() {
         this.img = new Image();
-        this.img.src = this.assetFetcher.getPenguinImageLocation();
+        this.img.src = engine.assetsFetcher.getPenguinImageLocation();
         this.img.onload = this.onImageLoaded();
     }
 

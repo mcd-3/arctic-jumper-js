@@ -13,7 +13,7 @@ let main;
 let about;
 
 // Change me to "production" when not debugging
-process.env.NODE_ENV = "production";
+process.env.NODE_ENV = "debug";
 
 app.on('ready', () => {
   main = new BrowserWindow({width, height, resizable: false});

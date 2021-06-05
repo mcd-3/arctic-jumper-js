@@ -3,27 +3,7 @@
  * 
  * Contains all game functionality and logic
  */
-
-// Text strings
-const authorStr = "Made by: Matthew C-D";
-const startStr = "-- Press Space to Start --";
-const optionsMenuStr = "Options: Enter Key";
-const healthStr = "Health: ";
-const scoreStr = "Score: ";
-const highScoreStr = "High Score: ";
-const gameOverStr = "Game Over!";
-const resumeStr = "-- Press Space to Play Again --";
-const newHighScoreStr = "New High Score!";
-const optionsStr = "Options";
-const musicOptionStr = "Music:";
-const sfxOptionStr = "SFX:";
-const resetHighscoreStr = "Reset Highscore:";
-const exitOptionsStr = "-- Press Enter to Exit Options --";
-const pauseStr = "Paused";
-const resumeGameStr = "-- Press Space to Resume --";
-const gotoOptionsStr = "-- Press Enter to go to Options --";
-const resetHighscorePrompt = "Are you sure you want to reset your highscore?\n\nThis action cannot be undone!";
-const resetHighscoreConfirm = "Highscore has been reset!";
+const engine = new Coldwind();
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -42,18 +22,24 @@ document.addEventListener('keydown', (e) => {
             if (game.titleDoneFlag && !game.isOptions) { // Play music, get rid of title card
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
-                let playSounds = new Promise(resolve => {
-                    game.audioController.playSFX(game.assetsFetcher.getStartGameSFXLocation());
+                new Promise(resolve => {
+                    engine.audioController.playSFX(
+                        engine.assetsFetcher.getStartGameSFXLocation()
+                    );
                     resolve(true);
-                }).then(value => {
-                    game.audioController.stopTrack();
-                    game.audioController.playTrack(game.assetsFetcher.getMainSongLocation());
+                }).then(() => {
+                    engine.audioController.stopTrack();
+                    engine.audioController.playTrack(
+                        engine.assetsFetcher.getMainSongLocation()
+                    );
                 });
             }
         } else if (game.modes.play) {
             if (!game.isPaused) { // jump
                 if (game.player.isGrounded) {
-                    game.audioController.playSFX(game.assetsFetcher.getJumpSFXLocation());
+                    engine.audioController.playSFX(
+                        engine.assetsFetcher.getJumpSFXLocation()
+                    );
                 }
                 game.player.jump();
             } else { // exit from paused
@@ -147,13 +133,6 @@ class Game {
         this.enemySpawnPointX = -128;
         this.enemySpawnPointY = 395;
 
-        // game storage
-        this.storage = new ScoreStorageHelper();
-        this.assetsFetcher = new AssetLocationFetcher();
-        this.audioController = new AudioController();
-        this.gfxController = new GraphicsController();
-        new PathStorageHelper().initPaths();
-
         // game strings
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
     }
@@ -178,14 +157,14 @@ class Game {
      */
     boot() {
         let bootLogo = new Image();
-        bootLogo.src = game.assetsFetcher.getBootImageLocation();
+        bootLogo.src = engine.assetsFetcher.getBootImageLocation();
 
         let bgl1 = document.getElementById("bgl1");
         let bgl1Ctx = bgl1.getContext("2d");
 
         bootLogo.onload = () => {
-            game.audioController.playTrack(
-                game.assetsFetcher.getBootGameSFXLocation(),
+            engine.audioController.playTrack(
+                engine.assetsFetcher.getBootGameSFXLocation(),
                 false
             );
             bgl1Ctx.globalAlpha = 0;
@@ -250,8 +229,8 @@ class Game {
             author = "";
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
-                this.cachedHighscore = this.storage.getHighScore();
-                this.gfxController.changeHighscoreUISize(36);
+                this.cachedHighscore = engine.storage.getHighScore();
+                engine.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
             }
         } else {
@@ -264,8 +243,8 @@ class Game {
             this.options();
         }
 
-        this.gfxController.drawScore(optionsStr);
-        this.gfxController.drawHighscore(author);
+        engine.gfxController.drawScore(optionsStr);
+        engine.gfxController.drawHighscore(author);
     }
 
     /**
@@ -304,14 +283,18 @@ class Game {
         
                                 // Check if game over
                                 if (this.player.hitpoints > 0) {
-                                    this.audioController.playSFX(this.assetsFetcher.getHitSFXLocation());
+                                    engine.audioController.playSFX(
+                                        engine.assetsFetcher.getHitSFXLocation()
+                                    );
                                 } else {
                                     if (this.score > this.cachedHighscore) {
-                                        this.storage.addHighScore(this.score);
+                                        engine.storage.addHighScore(this.score);
                                         this.cachedHighscore = this.score;
                                         this.newHighScoreFlag = true;
                                     }
-                                    this.audioController.playSFX(this.assetsFetcher.getGameOverSFXLocation());
+                                    engine.audioController.playSFX(
+                                        engine.assetsFetcher.getGameOverSFXLocation()
+                                    );
                                     this.startGameOverTimer();
                                     this.setMode("death");
                                 }
@@ -322,7 +305,9 @@ class Game {
                         if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                             this.score++;
                             enemy.passedByPlayer = true;
-                            this.audioController.playSFX(this.assetsFetcher.getScoreSFXLocation());
+                            engine.audioController.playSFX(
+                                engine.assetsFetcher.getScoreSFXLocation()
+                            );
                         }
                     }
                 });    
@@ -337,9 +322,9 @@ class Game {
                 }
             }
 
-            this.gfxController.drawScore(scoreStr, this.score);
-            this.gfxController.drawHealth(healthStr, this.player.hitpoints);
-            this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
+            engine.gfxController.drawScore(scoreStr, this.score);
+            engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
+            engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
@@ -349,16 +334,16 @@ class Game {
      * Toggles the pause screen
      */
     pause() {
-        this.gfxController.showDeathLayer();
-        this.gfxController.showPauseScreen();
+        engine.gfxController.showDeathLayer();
+        engine.gfxController.showPauseScreen();
     }
 
     /**
      * Toggles the options screen
      */
     options() {
-        this.gfxController.showDeathLayer();
-        this.gfxController.showOptionsScreen();
+        engine.gfxController.showDeathLayer();
+        engine.gfxController.showOptionsScreen();
         this.musicSlider.show();
         this.sfxSlider.show();
         this.resetButton.show();
@@ -369,16 +354,16 @@ class Game {
      */
     death() {
         // update the HUD, so it doesn't vanish
-        this.gfxController.drawScore(scoreStr, this.score);
-        this.gfxController.drawHealth(healthStr, this.player.hitpoints);
-        this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
+        engine.gfxController.drawScore(scoreStr, this.score);
+        engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
+        engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
 
         // keep objects drawn and stop backgrounds
         this.stopMovement();
 
         // show the death layer + text
-        this.gfxController.showDeathLayer();
-        this.gfxController.showGameOverScreen(
+        engine.gfxController.showDeathLayer();
+        engine.gfxController.showGameOverScreen(
             this.gameOverTimerDone,
             this.newHighScoreFlag,
             this.score
@@ -389,8 +374,8 @@ class Game {
      * Restart the game
      */
     restart() {
-        this.gfxController.hideDeathLayer();
-        this.gfxController.clearTextLayer();
+        engine.gfxController.hideDeathLayer();
+        engine.gfxController.clearTextLayer();
         
         // Clear all game variables
         this.enemyBuffer = [null, null, null];
@@ -400,11 +385,11 @@ class Game {
         this.gameOverTimerDone = false;
 
         // Update HUD, player, and backgrounds
-        this.gfxController.drawScore(scoreStr, this.score);
-        this.gfxController.drawHealth(healthStr, this.player.hitpoints);
+        engine.gfxController.drawScore(scoreStr, this.score);
+        engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
         this.player.changePosition(760, 340);
         this.player.draw();
-        this.gfxController.resumeLayerMovements();
+        engine.gfxController.resumeLayerMovements();
         this.player.resume();
         this.player.resetInvincibility();
 
@@ -417,11 +402,11 @@ class Game {
     stopMovement() {
         if (this.modes.menu) {
             this.titleCard.stop();
-            this.gfxController.stopLayerMovements();
+            engine.gfxController.stopLayerMovements();
         } else {
             this.drawEnemies();
             this.player.draw();
-            this.gfxController.stopLayerMovements();
+            engine.gfxController.stopLayerMovements();
             this.player.stop();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -437,16 +422,16 @@ class Game {
     resumeMovement() {
         if (this.modes.menu) {
             this.titleCard.resume();
-            this.gfxController.resumeLayerMovements();
-            this.gfxController.hideDeathLayer();
-            this.gfxController.clearTextLayer();
+            engine.gfxController.resumeLayerMovements();
+            engine.gfxController.hideDeathLayer();
+            engine.gfxController.clearTextLayer();
             this.musicSlider.hide();
             this.sfxSlider.hide();
             this.resetButton.hide();
         } else {
-            this.gfxController.resumeLayerMovements();
-            this.gfxController.hideDeathLayer();
-            this.gfxController.clearTextLayer();
+            engine.gfxController.resumeLayerMovements();
+            engine.gfxController.hideDeathLayer();
+            engine.gfxController.clearTextLayer();
             this.player.resume();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -543,9 +528,9 @@ class Game {
      * Makes all layers visible
      */
     showLayers() {
-        this.gfxController.showLayers();
+        engine.gfxController.showLayers();
         this.spriteCanvas.style.display = "block";
-        this.gfxController.showHUDs();
+        engine.gfxController.showHUDs();
     }
 
     /**
@@ -567,9 +552,9 @@ class Game {
      */
     initSliders(musicId, sfxId) {
         this.musicSlider = new Slider(musicId);
-        this.musicSlider.setValue(this.audioController.getMusicVolume());
+        this.musicSlider.setValue(engine.audioController.getMusicVolume());
         this.sfxSlider = new Slider(sfxId);
-        this.sfxSlider.setValue(this.audioController.getSFXVolume());
+        this.sfxSlider.setValue(engine.audioController.getSFXVolume());
     }
 
     /**
@@ -587,7 +572,7 @@ class Game {
      * @returns {TitleCard}
      */
     initTitleCard(layer) {
-        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, this.assetsFetcher.getTitleImageLocation());
+        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, engine.assetsFetcher.getTitleImageLocation());
         return this.titleCard;
     }
 
@@ -595,7 +580,7 @@ class Game {
      * 
      */
     initPlayer(layer) {
-        this.player = new Player({canvas: layer}, 760, 340, this.assetsFetcher.getPlayerImageLocation());
+        this.player = new Player({canvas: layer}, 760, 340, engine.assetsFetcher.getPlayerImageLocation());
         return this.player;
     }
 
@@ -604,10 +589,10 @@ class Game {
      */
     initSliderCallbacks() {
         this.musicSlider.addUpdateListeners(() => {
-            game.audioController.updateMusicVolume(this.musicSlider.getValue());
+            engine.audioController.updateMusicVolume(this.musicSlider.getValue());
         });
         this.sfxSlider.addUpdateListeners(() => {
-            game.audioController.updateSFXVolume(this.sfxSlider.getValue());
+            engine.audioController.updateSFXVolume(this.sfxSlider.getValue());
         });
     }
 
@@ -617,7 +602,7 @@ class Game {
     initResetButtonCallbacks() {
         this.resetButton.addOnClickListener(() => {
             if (confirm(resetHighscorePrompt)) {
-                game.storage.deleteHighScore();
+                engine.storage.deleteHighScore();
                 game.cachedHighscore = 0;
                 alert(resetHighscoreConfirm);
             }
@@ -677,7 +662,7 @@ async function gameLoop() {
 
     // Start the title sequence
     game.showLayers();
-    game.audioController.playTrack(game.assetsFetcher.getTitleScreenSongLocation());
+    engine.audioController.playTrack(engine.assetsFetcher.getTitleScreenSongLocation());
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
@@ -688,7 +673,7 @@ async function gameLoop() {
         let currTime = Date.now();
 
         if ((currTime - prevTime) > game.framerate) {
-            game.gfxController.drawLayers();
+            engine.gfxController.drawLayers();
             game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
     
             if (game.modes.menu) { // Main Menu Mode
