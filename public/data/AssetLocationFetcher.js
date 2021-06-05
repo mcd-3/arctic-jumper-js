@@ -1,6 +1,7 @@
 class AssetLocationFetcher {
     constructor() {
-        this.paths = new PathStorageHelper();
+        // Init the localstorage paths
+        PathStorageHelper.initPaths();
 
         // Audio
         this.startSfx = "magicIdea01.mp3";
@@ -32,119 +33,119 @@ class AssetLocationFetcher {
      * 
      * @returns {string}
      */
-    getStartGameSFXLocation = () => `${this.paths.getAudioLocation()}${this.startSfx}`;
+    getStartGameSFXLocation = () => `${PathStorageHelper.getAudioLocation()}${this.startSfx}`;
 
     /**
      * Get the "boot game" sound effect location
      * 
      * @returns {string}
      */
-    getBootGameSFXLocation = () => `${this.paths.getAudioLocation()}${this.bootSfx}`;
+    getBootGameSFXLocation = () => `${PathStorageHelper.getAudioLocation()}${this.bootSfx}`;
 
     /**
      * Get the "score" sound effect location
      * 
      * @returns {string}
      */
-    getScoreSFXLocation = () => `${this.paths.getAudioLocation()}${this.scoreSfx}`;
+    getScoreSFXLocation = () => `${PathStorageHelper.getAudioLocation()}${this.scoreSfx}`;
 
     /**
      * Get the "jump" sound effect location
      * 
      * @returns {string}
      */
-    getJumpSFXLocation = () => `${this.paths.getAudioLocation()}${this.jumpSfx}`;
+    getJumpSFXLocation = () => `${PathStorageHelper.getAudioLocation()}${this.jumpSfx}`;
 
     /**
      * Get the "hit" sound effect location
      * 
      * @returns {string}
      */
-    getHitSFXLocation = () => `${this.paths.getAudioLocation()}${this.hitSfx}`;
+    getHitSFXLocation = () => `${PathStorageHelper.getAudioLocation()}${this.hitSfx}`;
 
     /**
      * Get the "game over" sound effect location
      * 
      * @returns {string}
      */
-    getGameOverSFXLocation = () => `${this.paths.getAudioLocation()}${this.gameOverSfx}`;
+    getGameOverSFXLocation = () => `${PathStorageHelper.getAudioLocation()}${this.gameOverSfx}`;
 
     /**
      * Get the "title screen" song location
      * 
      * @returns {string}
      */
-    getTitleScreenSongLocation = () => `${this.paths.getAudioLocation()}${this.titleScreenSong}`;
+    getTitleScreenSongLocation = () => `${PathStorageHelper.getAudioLocation()}${this.titleScreenSong}`;
 
     /**
      * Get the "main" song location
      * 
      * @returns {string}
      */
-    getMainSongLocation = () => `${this.paths.getAudioLocation()}${this.mainSong}`;
+    getMainSongLocation = () => `${PathStorageHelper.getAudioLocation()}${this.mainSong}`;
 
     /**
      * Get the "bgl1" image location
      * 
      * @returns {string}
      */
-    getBGL1ImageLocation = () => `${this.paths.getImagesLocation()}${this.bgl1Img}`;
+    getBGL1ImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.bgl1Img}`;
 
     /**
      * Get the "bgl2" image location
      * 
      * @returns {string}
      */
-    getBGL2ImageLocation = () => `${this.paths.getImagesLocation()}${this.bgl2Img}`;
+    getBGL2ImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.bgl2Img}`;
 
     /**
      * Get the "fgl1" image location
      * 
      * @returns {string}
      */
-    getFGL1ImageLocation = () => `${this.paths.getImagesLocation()}${this.fgl1Img}`;
+    getFGL1ImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.fgl1Img}`;
 
     /**
      * Get the "boot" image location
      * 
      * @returns {string}
      */
-    getBootImageLocation = () => `${this.paths.getImagesLocation()}${this.bootImg}`;
+    getBootImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.bootImg}`;
 
     /**
      * Get the "title" image location
      * 
      * @returns {string}
      */
-    getTitleImageLocation = () => `${this.paths.getImagesLocation()}${this.titleImg}`;
+    getTitleImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.titleImg}`;
 
     /**
      * Get the "player" image location
      * 
      * @returns {string}
      */
-    getPlayerImageLocation = () => `${this.paths.getImagesLocation()}${this.playerImg}`;
+    getPlayerImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.playerImg}`;
 
     /**
      * Get the "penguin" image location
      * 
      * @returns {string}
      */
-    getPenguinImageLocation = () => `${this.paths.getImagesLocation()}${this.penguinImg}`;
+    getPenguinImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.penguinImg}`;
 
     /**
      * Get the "rock" image location
      * 
      * @returns {string}
      */
-    getRockImageLocation = () => `${this.paths.getImagesLocation()}${this.rockImg}`;
+    getRockImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.rockImg}`;
 
     /**
      * Get the "snowman" image location
      * 
      * @returns {string}
      */
-    getSnowmanImageLocation = () => `${this.paths.getImagesLocation()}${this.snowmanImg}`;
+    getSnowmanImageLocation = () => `${PathStorageHelper.getImagesLocation()}${this.snowmanImg}`;
 
     /**
      * Get the "dpcomic" font location

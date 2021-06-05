@@ -22,12 +22,12 @@ document.addEventListener('keydown', (e) => {
             if (game.titleDoneFlag && !game.isOptions) { // Play music, get rid of title card
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
-                let playSounds = new Promise(resolve => {
+                new Promise(resolve => {
                     engine.audioController.playSFX(
                         engine.assetsFetcher.getStartGameSFXLocation()
                     );
                     resolve(true);
-                }).then(value => {
+                }).then(() => {
                     engine.audioController.stopTrack();
                     engine.audioController.playTrack(
                         engine.assetsFetcher.getMainSongLocation()
@@ -133,10 +133,6 @@ class Game {
         this.enemySpawnPointX = -128;
         this.enemySpawnPointY = 395;
 
-        // game storage
-        this.storage = new ScoreStorageHelper();
-        new PathStorageHelper().initPaths();
-
         // game strings
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
     }
@@ -233,7 +229,7 @@ class Game {
             author = "";
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
-                this.cachedHighscore = this.storage.getHighScore();
+                this.cachedHighscore = engine.storage.getHighScore();
                 engine.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
             }
@@ -292,7 +288,7 @@ class Game {
                                     );
                                 } else {
                                     if (this.score > this.cachedHighscore) {
-                                        this.storage.addHighScore(this.score);
+                                        engine.storage.addHighScore(this.score);
                                         this.cachedHighscore = this.score;
                                         this.newHighScoreFlag = true;
                                     }
@@ -606,7 +602,7 @@ class Game {
     initResetButtonCallbacks() {
         this.resetButton.addOnClickListener(() => {
             if (confirm(resetHighscorePrompt)) {
-                game.storage.deleteHighScore();
+                engine.storage.deleteHighScore();
                 game.cachedHighscore = 0;
                 alert(resetHighscoreConfirm);
             }
