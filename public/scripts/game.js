@@ -23,17 +23,23 @@ document.addEventListener('keydown', (e) => {
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
                 game.gameStartingFlag = true;
                 let playSounds = new Promise(resolve => {
-                    engine.audioController.playSFX(game.assetsFetcher.getStartGameSFXLocation());
+                    engine.audioController.playSFX(
+                        engine.assetsFetcher.getStartGameSFXLocation()
+                    );
                     resolve(true);
                 }).then(value => {
                     engine.audioController.stopTrack();
-                    engine.audioController.playTrack(game.assetsFetcher.getMainSongLocation());
+                    engine.audioController.playTrack(
+                        engine.assetsFetcher.getMainSongLocation()
+                    );
                 });
             }
         } else if (game.modes.play) {
             if (!game.isPaused) { // jump
                 if (game.player.isGrounded) {
-                    engine.audioController.playSFX(game.assetsFetcher.getJumpSFXLocation());
+                    engine.audioController.playSFX(
+                        engine.assetsFetcher.getJumpSFXLocation()
+                    );
                 }
                 game.player.jump();
             } else { // exit from paused
@@ -129,7 +135,6 @@ class Game {
 
         // game storage
         this.storage = new ScoreStorageHelper();
-        this.assetsFetcher = new AssetLocationFetcher();
         new PathStorageHelper().initPaths();
 
         // game strings
@@ -156,14 +161,14 @@ class Game {
      */
     boot() {
         let bootLogo = new Image();
-        bootLogo.src = game.assetsFetcher.getBootImageLocation();
+        bootLogo.src = engine.assetsFetcher.getBootImageLocation();
 
         let bgl1 = document.getElementById("bgl1");
         let bgl1Ctx = bgl1.getContext("2d");
 
         bootLogo.onload = () => {
             engine.audioController.playTrack(
-                game.assetsFetcher.getBootGameSFXLocation(),
+                engine.assetsFetcher.getBootGameSFXLocation(),
                 false
             );
             bgl1Ctx.globalAlpha = 0;
@@ -282,14 +287,18 @@ class Game {
         
                                 // Check if game over
                                 if (this.player.hitpoints > 0) {
-                                    engine.audioController.playSFX(this.assetsFetcher.getHitSFXLocation());
+                                    engine.audioController.playSFX(
+                                        engine.assetsFetcher.getHitSFXLocation()
+                                    );
                                 } else {
                                     if (this.score > this.cachedHighscore) {
                                         this.storage.addHighScore(this.score);
                                         this.cachedHighscore = this.score;
                                         this.newHighScoreFlag = true;
                                     }
-                                    engine.audioController.playSFX(this.assetsFetcher.getGameOverSFXLocation());
+                                    engine.audioController.playSFX(
+                                        engine.assetsFetcher.getGameOverSFXLocation()
+                                    );
                                     this.startGameOverTimer();
                                     this.setMode("death");
                                 }
@@ -300,7 +309,9 @@ class Game {
                         if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
                             this.score++;
                             enemy.passedByPlayer = true;
-                            engine.audioController.playSFX(this.assetsFetcher.getScoreSFXLocation());
+                            engine.audioController.playSFX(
+                                engine.assetsFetcher.getScoreSFXLocation()
+                            );
                         }
                     }
                 });    
@@ -565,7 +576,7 @@ class Game {
      * @returns {TitleCard}
      */
     initTitleCard(layer) {
-        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, this.assetsFetcher.getTitleImageLocation());
+        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, engine.assetsFetcher.getTitleImageLocation());
         return this.titleCard;
     }
 
@@ -573,7 +584,7 @@ class Game {
      * 
      */
     initPlayer(layer) {
-        this.player = new Player({canvas: layer}, 760, 340, this.assetsFetcher.getPlayerImageLocation());
+        this.player = new Player({canvas: layer}, 760, 340, engine.assetsFetcher.getPlayerImageLocation());
         return this.player;
     }
 
@@ -655,7 +666,7 @@ async function gameLoop() {
 
     // Start the title sequence
     game.showLayers();
-    engine.audioController.playTrack(game.assetsFetcher.getTitleScreenSongLocation());
+    engine.audioController.playTrack(engine.assetsFetcher.getTitleScreenSongLocation());
     game.titleCard.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 

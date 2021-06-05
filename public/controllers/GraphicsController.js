@@ -14,8 +14,8 @@ class GraphicsController {
     #hud4;
     #hud5;
 
-    constructor() {
-        this.#assetsFetcher = new AssetLocationFetcher();
+    constructor(assetsFetcher) {
+        this.#assetsFetcher = assetsFetcher;
 
         // Initialize background/foreground layers
         this.#initBgl1(document.getElementById("bgl1"));
