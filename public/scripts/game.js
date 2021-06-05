@@ -3,27 +3,7 @@
  * 
  * Contains all game functionality and logic
  */
-
-// Text strings
-const authorStr = "Made by: Matthew C-D";
-const startStr = "-- Press Space to Start --";
-const optionsMenuStr = "Options: Enter Key";
-const healthStr = "Health: ";
-const scoreStr = "Score: ";
-const highScoreStr = "High Score: ";
-const gameOverStr = "Game Over!";
-const resumeStr = "-- Press Space to Play Again --";
-const newHighScoreStr = "New High Score!";
-const optionsStr = "Options";
-const musicOptionStr = "Music:";
-const sfxOptionStr = "SFX:";
-const resetHighscoreStr = "Reset Highscore:";
-const exitOptionsStr = "-- Press Enter to Exit Options --";
-const pauseStr = "Paused";
-const resumeGameStr = "-- Press Space to Resume --";
-const gotoOptionsStr = "-- Press Enter to go to Options --";
-const resetHighscorePrompt = "Are you sure you want to reset your highscore?\n\nThis action cannot be undone!";
-const resetHighscoreConfirm = "Highscore has been reset!";
+const engine = new Coldwind();
 
 // HTML elements
 const spaceBarKeyCode = "Space";
@@ -151,7 +131,6 @@ class Game {
         this.storage = new ScoreStorageHelper();
         this.assetsFetcher = new AssetLocationFetcher();
         this.audioController = new AudioController();
-        this.gfxController = new GraphicsController();
         new PathStorageHelper().initPaths();
 
         // game strings
@@ -251,7 +230,7 @@ class Game {
             this.player.moveToStartPos();
             if (this.titleCard.isDoneDrawing) {
                 this.cachedHighscore = this.storage.getHighScore();
-                this.gfxController.changeHighscoreUISize(36);
+                engine.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
             }
         } else {
@@ -264,8 +243,8 @@ class Game {
             this.options();
         }
 
-        this.gfxController.drawScore(optionsStr);
-        this.gfxController.drawHighscore(author);
+        engine.gfxController.drawScore(optionsStr);
+        engine.gfxController.drawHighscore(author);
     }
 
     /**
@@ -337,9 +316,9 @@ class Game {
                 }
             }
 
-            this.gfxController.drawScore(scoreStr, this.score);
-            this.gfxController.drawHealth(healthStr, this.player.hitpoints);
-            this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
+            engine.gfxController.drawScore(scoreStr, this.score);
+            engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
+            engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
         } else { // Make sure player gets to start position
             this.player.moveToStartPos();
         }
@@ -349,16 +328,16 @@ class Game {
      * Toggles the pause screen
      */
     pause() {
-        this.gfxController.showDeathLayer();
-        this.gfxController.showPauseScreen();
+        engine.gfxController.showDeathLayer();
+        engine.gfxController.showPauseScreen();
     }
 
     /**
      * Toggles the options screen
      */
     options() {
-        this.gfxController.showDeathLayer();
-        this.gfxController.showOptionsScreen();
+        engine.gfxController.showDeathLayer();
+        engine.gfxController.showOptionsScreen();
         this.musicSlider.show();
         this.sfxSlider.show();
         this.resetButton.show();
@@ -369,16 +348,16 @@ class Game {
      */
     death() {
         // update the HUD, so it doesn't vanish
-        this.gfxController.drawScore(scoreStr, this.score);
-        this.gfxController.drawHealth(healthStr, this.player.hitpoints);
-        this.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
+        engine.gfxController.drawScore(scoreStr, this.score);
+        engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
+        engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
 
         // keep objects drawn and stop backgrounds
         this.stopMovement();
 
         // show the death layer + text
-        this.gfxController.showDeathLayer();
-        this.gfxController.showGameOverScreen(
+        engine.gfxController.showDeathLayer();
+        engine.gfxController.showGameOverScreen(
             this.gameOverTimerDone,
             this.newHighScoreFlag,
             this.score
@@ -389,8 +368,8 @@ class Game {
      * Restart the game
      */
     restart() {
-        this.gfxController.hideDeathLayer();
-        this.gfxController.clearTextLayer();
+        engine.gfxController.hideDeathLayer();
+        engine.gfxController.clearTextLayer();
         
         // Clear all game variables
         this.enemyBuffer = [null, null, null];
@@ -400,11 +379,11 @@ class Game {
         this.gameOverTimerDone = false;
 
         // Update HUD, player, and backgrounds
-        this.gfxController.drawScore(scoreStr, this.score);
-        this.gfxController.drawHealth(healthStr, this.player.hitpoints);
+        engine.gfxController.drawScore(scoreStr, this.score);
+        engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
         this.player.changePosition(760, 340);
         this.player.draw();
-        this.gfxController.resumeLayerMovements();
+        engine.gfxController.resumeLayerMovements();
         this.player.resume();
         this.player.resetInvincibility();
 
@@ -417,11 +396,11 @@ class Game {
     stopMovement() {
         if (this.modes.menu) {
             this.titleCard.stop();
-            this.gfxController.stopLayerMovements();
+            engine.gfxController.stopLayerMovements();
         } else {
             this.drawEnemies();
             this.player.draw();
-            this.gfxController.stopLayerMovements();
+            engine.gfxController.stopLayerMovements();
             this.player.stop();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -437,16 +416,16 @@ class Game {
     resumeMovement() {
         if (this.modes.menu) {
             this.titleCard.resume();
-            this.gfxController.resumeLayerMovements();
-            this.gfxController.hideDeathLayer();
-            this.gfxController.clearTextLayer();
+            engine.gfxController.resumeLayerMovements();
+            engine.gfxController.hideDeathLayer();
+            engine.gfxController.clearTextLayer();
             this.musicSlider.hide();
             this.sfxSlider.hide();
             this.resetButton.hide();
         } else {
-            this.gfxController.resumeLayerMovements();
-            this.gfxController.hideDeathLayer();
-            this.gfxController.clearTextLayer();
+            engine.gfxController.resumeLayerMovements();
+            engine.gfxController.hideDeathLayer();
+            engine.gfxController.clearTextLayer();
             this.player.resume();
             this.enemyBuffer.forEach(enemy => {
                 if (enemy != null) {
@@ -543,9 +522,9 @@ class Game {
      * Makes all layers visible
      */
     showLayers() {
-        this.gfxController.showLayers();
+        engine.gfxController.showLayers();
         this.spriteCanvas.style.display = "block";
-        this.gfxController.showHUDs();
+        engine.gfxController.showHUDs();
     }
 
     /**
@@ -688,7 +667,7 @@ async function gameLoop() {
         let currTime = Date.now();
 
         if ((currTime - prevTime) > game.framerate) {
-            game.gfxController.drawLayers();
+            engine.gfxController.drawLayers();
             game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
     
             if (game.modes.menu) { // Main Menu Mode
