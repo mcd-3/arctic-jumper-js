@@ -134,6 +134,21 @@ class GraphicsController {
     }
 
     /**
+     * Draws an asset onto the sprite canvas
+     * 
+     * @param {Image} img 
+     * @param {int} canvasX 
+     * @param {int} canvasY 
+     */
+    drawSpriteAsset(img, canvasX, canvasY) {
+        this.#fgl2.getContext("2d").drawImage(
+            img,
+            canvasX,
+            canvasY
+        );
+    }
+
+    /**
      * Draws the amount of hp left on the Health HUD
      * 
      * @param {int} hp 

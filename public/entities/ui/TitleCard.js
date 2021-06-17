@@ -52,7 +52,11 @@ class TitleCard extends Entity {
         if (this.imageLoaded) {
             if (this.coordinatesSet) {
                 if (this.currentX != this.toX || this.currentY != this.toY) {
-                    this.ctx.drawImage(this.img, this.currentX, this.currentY);
+                    engine.gfxController.drawSpriteAsset(
+                        this.img,
+                        this.currentX,
+                        this.currentY
+                    );
         
                     if (!this.isStopped) {
                         if (this.currentX != this.toX) {
@@ -65,7 +69,11 @@ class TitleCard extends Entity {
                 } else {
                     this.isDoneDrawing = true;
                     if (!this.eraseOnDestination) {
-                        this.ctx.drawImage(this.img, this.currentX, this.currentY);
+                        engine.gfxController.drawSpriteAsset(
+                            this.img,
+                            this.currentX,
+                            this.currentY
+                        );
                     }
                 }
             }
