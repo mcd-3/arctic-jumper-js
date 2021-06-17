@@ -10,5 +10,6 @@ class Coldwind {
         this.storage = new ScoreStorageHelper();
         this.gfxController = new GraphicsController(this.assetsFetcher);
         this.audioController = new AudioController();
+        this.flagController = new FlagController();
     }
 }

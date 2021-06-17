@@ -7,10 +7,7 @@ const engine = new Coldwind();
 
 // HTML elements
 const spaceBarKeyCode = "Space";
-const enterKeyCode = "Enter"
-
-// Program flags
-let bootCompleteFlag = false;
+const enterKeyCode = "Enter";
 
 // This is the game object
 let game;
@@ -19,9 +16,13 @@ let game;
 document.addEventListener('keydown', (e) => {
     if (e.code == spaceBarKeyCode) {
         if (game.modes.menu) {
-            if (game.titleDoneFlag && !game.isOptions) { // Play music, get rid of title card
+            if (
+                engine.flagController.getFlag("titleDone") 
+                && !engine.flagController.getFlag("isOptions")
+            ) {
+                // Play music, get rid of title card
                 game.titleCard.setCoordinates(330, 60, 330, -138, true);
-                game.gameStartingFlag = true;
+                engine.flagController.setFlag("gameStarting", true);
                 new Promise(resolve => {
                     engine.audioController.playSFX(
                         engine.assetsFetcher.getStartGameSFXLocation()
@@ -35,40 +36,52 @@ document.addEventListener('keydown', (e) => {
                 });
             }
         } else if (game.modes.play) {
-            if (!game.isPaused) { // jump
+            if (!engine.flagController.getFlag("isPaused")) {
+                // jump
                 if (game.player.isGrounded) {
                     engine.audioController.playSFX(
                         engine.assetsFetcher.getJumpSFXLocation()
                     );
                 }
                 game.player.jump();
-            } else { // exit from paused
-                if (!game.isOptions) {
-                    game.isPaused = false;
+            } else {
+                // exit from paused
+                if (!engine.flagController.getFlag("isOptions")) {
+                    engine.flagController.setFlag("isPaused", false);
                     game.resumeMovement();
                 }
             }
         } else if (game.modes.death) {
-            if (game.gameOverTimerDone) {
+            if (engine.flagController.getFlag("gameOverTimerDone")) {
                 game.restart();
             }
         }
     } else if (e.code == enterKeyCode) {
         if (game.modes.menu) {
-            if (!game.gameStartingFlag) {
-                game.isOptions = !game.isOptions;
-                game.isOptions ? game.stopMovement() : game.resumeMovement();
+            if (!engine.flagController.getFlag("gameStarting")) {
+                engine.flagController.setFlag(
+                    "isOptions",
+                    !engine.flagController.getFlag("isOptions")
+                );
+                engine.flagController.getFlag("isOptions")
+                    ? game.stopMovement()
+                    : game.resumeMovement();
             }
         } else if (game.modes.play) {
-            if (game.isPaused) { // go to options
-                if (game.isOptions) {
+            if (engine.flagController.getFlag("isPaused")) {
+                // go to options
+                if (engine.flagController.getFlag("isOptions")) {
                     game.musicSlider.hide();
                     game.sfxSlider.hide();
                     game.resetButton.hide();
                 }
-                game.isOptions = !game.isOptions;
-            } else { // pause the game
-                game.isPaused = true;
+                engine.flagController.setFlag(
+                    "isOptions",
+                    !engine.flagController.getFlag("isOptions")
+                );
+            } else {
+                // pause the game
+                engine.flagController.setFlag("isPaused", true);
             }
         }
     }
@@ -117,14 +130,6 @@ class Game {
         this.score = 0;
         this.cachedHighscore = 0;
 
-        // flags
-        this.titleDoneFlag = false;
-        this.gameStartingFlag = false;
-        this.newHighScoreFlag = false;
-        this.gameOverTimerDone = false;
-        this.isOptions = false;
-        this.isPaused = false;
-
         // enemy variables
         this.enemyBuffer = [null, null, null];
         this.enemyLimit = 3;
@@ -171,7 +176,7 @@ class Game {
             
             // Fade the logo in
             function fadeIn() {
-                if (!bootCompleteFlag) {
+                if (!engine.flagController.getFlag("bootComplete")) {
                     bgl1Ctx.globalAlpha += 0.02;
                     bgl1Ctx.clearRect(0, 0, bgl1.width, bgl1.height);
                     bgl1Ctx.drawImage(bootLogo, 0, 0);
@@ -184,7 +189,7 @@ class Game {
 
             // Fade the logo out
             function fadeOut() {
-                if (!bootCompleteFlag) {
+                if (!engine.flagController.getFlag("bootComplete")) {
                     bgl1Ctx.globalAlpha -= 0.05;
                     bgl1Ctx.clearRect(0, 0, bgl1.width, bgl1.height);
                     bgl1Ctx.drawImage(bootLogo, 0, 0);
@@ -221,10 +226,10 @@ class Game {
 
         // Draw the title card moving downwards or stationary if it isn't finished yet
         this.titleCard.draw();
-        this.titleDoneFlag = this.titleCard.isDoneDrawing;
+        engine.flagController.setFlag("titleDone", this.titleCard.isDoneDrawing);
 
         // Start drawing in the player and moving card off-screen
-        if (this.gameStartingFlag) {
+        if (engine.flagController.getFlag("gameStarting")) {
             optionsStr = "";
             author = "";
             this.player.moveToStartPos();
@@ -234,12 +239,12 @@ class Game {
                 this.setMode("play");
             }
         } else {
-            if (this.titleDoneFlag) {
+            if (engine.flagController.getFlag("titleDone")) {
                 this.startText.draw();
             }
         }
 
-        if (this.isOptions) {
+        if (engine.flagController.getFlag("isOptions")) {
             this.options();
         }
 
@@ -252,7 +257,7 @@ class Game {
      */
     play() {
         if (this.player.isAtStartPos()) {
-            if (!this.isPaused) {
+            if (!engine.flagController.getFlag("isPaused")) {
     
                 this.framesUntilNewSpawn--;
     
@@ -290,7 +295,7 @@ class Game {
                                     if (this.score > this.cachedHighscore) {
                                         engine.storage.addHighScore(this.score);
                                         this.cachedHighscore = this.score;
-                                        this.newHighScoreFlag = true;
+                                        engine.flagController.setFlag("newHighScore", true);
                                     }
                                     engine.audioController.playSFX(
                                         engine.assetsFetcher.getGameOverSFXLocation()
@@ -312,7 +317,7 @@ class Game {
                     }
                 });    
             } else { // Show the pause or option menu
-                if (!this.isOptions) {
+                if (!engine.flagController.getFlag("isOptions")) {
                     this.pause();
                     this.stopMovement();
                 } else {
@@ -364,8 +369,8 @@ class Game {
         // show the death layer + text
         engine.gfxController.showDeathLayer();
         engine.gfxController.showGameOverScreen(
-            this.gameOverTimerDone,
-            this.newHighScoreFlag,
+            engine.flagController.getFlag("gameOverTimerDone"),
+            engine.flagController.getFlag("newHighScore"),
             this.score
         );
     }
@@ -381,8 +386,8 @@ class Game {
         this.enemyBuffer = [null, null, null];
         this.player.restoreAllHealth();
         this.score = 0;
-        this.newHighScoreFlag = false;
-        this.gameOverTimerDone = false;
+        engine.flagController.setFlag("newHighScore", false);
+        engine.flagController.setFlag("gameOverTimerDone", false);
 
         // Update HUD, player, and backgrounds
         engine.gfxController.drawScore(scoreStr, this.score);
@@ -617,7 +622,7 @@ class Game {
     startGameOverTimer() {
         let waitTime = 1000;
         this.sleep(waitTime).then(() => {
-            this.gameOverTimerDone = true;
+            engine.flagController.setFlag("gameOverTimerDone", true);
         });
     }
 
@@ -656,7 +661,7 @@ async function gameLoop() {
         requestAnimationFrame(game.boot);
     });
     await game.awaitBootFinish().then(() => {
-        bootCompleteFlag = true;
+        engine.flagController.setFlag("bootComplete", true);
         bgl1.getContext("2d").globalAlpha = 1;
     });
 
