@@ -38,12 +38,12 @@ document.addEventListener('keydown', (e) => {
         } else if (game.modes.play) {
             if (!engine.flagController.getFlag("isPaused")) {
                 // jump
-                if (game.player.isGrounded) {
+                if (engine.playerMngr.isGrounded()) {
                     engine.audioController.playSFX(
                         engine.assetsFetcher.getJumpSFXLocation()
                     );
                 }
-                game.player.jump();
+                engine.playerMngr.jump();
             } else {
                 // exit from paused
                 if (!engine.flagController.getFlag("isOptions")) {
@@ -116,7 +116,6 @@ class Game {
         this.musicSlider = null;
         this.sfxSlider = null;
         this.resetButton = null;
-        this.player = null;
 
         // game variables
         this.bootTime = 7500;
@@ -224,7 +223,7 @@ class Game {
         if (engine.flagController.getFlag("gameStarting")) {
             optionsStr = "";
             author = "";
-            this.player.moveToStartPos();
+            engine.playerMngr.moveToStart();
             if (this.titleCard.isDoneDrawing) {
                 this.cachedHighscore = engine.storage.getHighScore();
                 engine.gfxController.changeHighscoreUISize(36);
@@ -248,7 +247,7 @@ class Game {
      * Plays the game in play mode
      */
     play() {
-        if (this.player.isAtStartPos()) {
+        if (engine.playerMngr.isAtStartPos()) {
             if (!engine.flagController.getFlag("isPaused")) {
     
                 this.framesUntilNewSpawn--;
@@ -267,17 +266,17 @@ class Game {
     
                 engine.enemyMngr.spawnEnemy();
     
-                this.player.updatePos();
+                engine.playerMngr.updatePos();
     
                 engine.enemyMngr.getEnemyArray().forEach(enemy => {
                     if (enemy != null) {
                         // Check if hitboxes overlap
-                        if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
-                            if (!this.player.isHurt()) {
-                                this.player.takeDamage();
+                        if (engine.playerMngr.isOverlappingHitbox(enemy)) {
+                            if (!engine.playerMngr.isHurt()) {
+                                engine.playerMngr.takeDamage();
         
                                 // Check if game over
-                                if (this.player.hitpoints > 0) {
+                                if (engine.playerMngr.isAlive()) {
                                     engine.audioController.playSFX(
                                         engine.assetsFetcher.getHitSFXLocation()
                                     );
@@ -297,12 +296,7 @@ class Game {
                         }
         
                         // Check if a point has been scored
-                        if (
-                            this.player.hitbox.r < (
-                                enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)
-                            )
-                            && !enemy.passedByPlayer
-                        ) {
+                        if (engine.playerMngr.isPassedEnemy(enemy)) {
                             this.score++;
                             enemy.passedByPlayer = true;
                             engine.audioController.playSFX(
@@ -317,16 +311,17 @@ class Game {
                     this.stopMovement();
                 } else {
                     this.options();
-                    this.player.draw();
+                    engine.playerMngr.draw();
                     engine.enemyMngr.drawEnemies();
                 }
             }
 
             engine.gfxController.drawScore(scoreStr, this.score);
-            engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
+            engine.gfxController.drawHealth(healthStr, engine.playerMngr.getHP());
             engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
-        } else { // Make sure player gets to start position
-            this.player.moveToStartPos();
+        } else { 
+            // Make sure player gets to start position
+            engine.playerMngr.moveToStart();
         }
     }
 
@@ -355,7 +350,7 @@ class Game {
     death() {
         // update the HUD, so it doesn't vanish
         engine.gfxController.drawScore(scoreStr, this.score);
-        engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
+        engine.gfxController.drawHealth(healthStr, engine.playerMngr.getHP());
         engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
 
         // keep objects drawn and stop backgrounds
@@ -379,19 +374,19 @@ class Game {
         
         // Clear all game variables
         engine.enemyMngr.clear();
-        this.player.restoreAllHealth();
+        engine.playerMngr.restoreHP();
         this.score = 0;
         engine.flagController.setFlag("newHighScore", false);
         engine.flagController.setFlag("gameOverTimerDone", false);
 
         // Update HUD, player, and backgrounds
         engine.gfxController.drawScore(scoreStr, this.score);
-        engine.gfxController.drawHealth(healthStr, this.player.hitpoints);
-        this.player.changePosition(760, 340);
-        this.player.draw();
+        engine.gfxController.drawHealth(healthStr, engine.playerMngr.getHP());
+        engine.playerMngr.changePos(760, 340);
+        engine.playerMngr.draw();
         engine.gfxController.resumeLayerMovements();
-        this.player.resume();
-        this.player.resetInvincibility();
+        engine.playerMngr.resume();
+        engine.playerMngr.resetInvincibility();
 
         this.setMode("play");
     }
@@ -405,9 +400,9 @@ class Game {
             engine.gfxController.stopLayerMovements();
         } else {
             engine.enemyMngr.drawEnemies();
-            this.player.draw();
+            engine.playerMngr.draw();
             engine.gfxController.stopLayerMovements();
-            this.player.stop();
+            engine.playerMngr.stop();
             engine.enemyMngr.stopEnemies();
         }
     }
@@ -428,7 +423,7 @@ class Game {
             engine.gfxController.resumeLayerMovements();
             engine.gfxController.hideDeathLayer();
             engine.gfxController.clearTextLayer();
-            this.player.resume();
+            engine.playerMngr.resume();
             engine.enemyMngr.resumeEnemies();
         }
     }
@@ -472,14 +467,6 @@ class Game {
     initTitleCard(layer) {
         this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, engine.assetsFetcher.getTitleImageLocation());
         return this.titleCard;
-    }
-
-    /**
-     * 
-     */
-    initPlayer(layer) {
-        this.player = new Player({canvas: layer}, 760, 340, engine.assetsFetcher.getPlayerImageLocation());
-        return this.player;
     }
 
     /**
@@ -542,7 +529,6 @@ async function gameLoop() {
     // Initialize game layers
     // We are preloading them, so if the user changes aspect ratio it will not bug out
     game.initTitleCard(fgl2);
-    game.initPlayer(fgl2);
     game.initSliders("musicSlider", "sfxSlider");
     game.initResetButton("resetHighScoreButton");
     game.initSliderCallbacks();

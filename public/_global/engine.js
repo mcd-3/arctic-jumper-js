@@ -12,5 +12,6 @@ class Coldwind {
         this.audioController = new AudioController();
         this.flagController = new FlagController();
         this.enemyMngr = new EnemyManager();
+        this.playerMngr = new PlayerManager(this.assetsFetcher);
     }
 }

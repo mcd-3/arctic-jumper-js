@@ -8,7 +8,6 @@ class EnemyManager {
 
     constructor() {
         this.#enemyBuffer = [null, null, null];
-        this.#enemyLimit = 3;
         this.#framesUntilNewSpawn = 35;
         this.#enemySpeed = 10;
         this.#enemySpawnPointX = -128;
