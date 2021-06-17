@@ -30,9 +30,29 @@ class Penguin extends Obstacle {
             }
     
             if (this.isFrame1) {
-                this.ctx.drawImage(this.img, 0, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
+                engine.gfxController.drawSprite(
+                    this.img,
+                    0,
+                    0, 
+                    164,
+                    72,
+                    this.x,
+                    this.y,
+                    this.spriteWidth,
+                    this.spriteHeight
+                );
             } else {
-                this.ctx.drawImage(this.img, 164, 0, 164, 72, this.x, this.y, this.spriteWidth, this.spriteHeight);
+                engine.gfxController.drawSprite(
+                    this.img,
+                    164,
+                    0,
+                    164,
+                    72,
+                    this.x,
+                    this.y,
+                    this.spriteWidth,
+                    this.spriteHeight
+                );
             }
         }
     }

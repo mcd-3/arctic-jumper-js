@@ -13,7 +13,11 @@ class Snowman extends Obstacle {
      */
     draw() {
         if (this.imgloaded) {
-            this.ctx.drawImage(this.img, this.x, this.y);
+            engine.gfxController.drawSpriteAsset(
+                this.img,
+                this.x,
+                this.y
+            );
         }
     }
 
