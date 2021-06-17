@@ -85,7 +85,8 @@ class Player extends Entity {
                 this.currentInvincibility == 0
                     ? frameStr = `frame${this.currentFrame}`
                     : frameStr = `frame${this.currentFrame + 4}`;
-                this.ctx.drawImage(this.img,
+                engine.gfxController.drawSprite(
+                    this.img,
                     this.spriteCoordinates[frameStr][0],
                     this.spriteCoordinates[frameStr][1],
                     72,
@@ -113,7 +114,8 @@ class Player extends Entity {
                 if (this.currentInvincibility != 0) {
                     jumpStr += "Hit";
                 } 
-                this.ctx.drawImage(this.img,
+                engine.gfxController.drawSprite(
+                    this.img,
                     this.spriteCoordinates[jumpStr][0],
                     this.spriteCoordinates[jumpStr][1],
                     72,

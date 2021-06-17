@@ -97,6 +97,43 @@ class GraphicsController {
     }
 
     /**
+     * Draws a sprite onto the sprite canvas
+     * 
+     * @param {Image} img - Source image
+     * @param {int} spriteX - starting x coordinate on the sprite image
+     * @param {int} spriteY - starting y coordinate on the sprite image
+     * @param {int} spriteWidth - width of sprite on sprite image
+     * @param {int} spriteHeight - height of sprite on sprite image
+     * @param {int} canvasX - x position to draw on the canvas
+     * @param {int} canvasY - y position to draw on the canvas
+     * @param {int} canvasWidth - width of sprite to draw on canvas
+     * @param {int} canvasHeight - height of sprite to draw on canvas
+     */
+    drawSprite(
+        img,
+        spriteX,
+        spriteY,
+        spriteWidth,
+        spriteHeight,
+        canvasX,
+        canvasY,
+        canvasWidth,
+        canvasHeight
+    ) {
+        this.#fgl2.getContext("2d").drawImage(
+            img,
+            spriteX,
+            spriteY,
+            spriteWidth,
+            spriteHeight,
+            canvasX,
+            canvasY,
+            canvasWidth,
+            canvasHeight
+        );
+    }
+
+    /**
      * Draws the amount of hp left on the Health HUD
      * 
      * @param {int} hp 
