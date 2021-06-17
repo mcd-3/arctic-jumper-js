@@ -21,7 +21,7 @@ document.addEventListener('keydown', (e) => {
                 && !engine.flagController.getFlag("isOptions")
             ) {
                 // Play music, get rid of title card
-                game.titleCard.setCoordinates(330, 60, 330, -138, true);
+                engine.titleMngr.setCoordinates(330, 60, 330, -138, true);
                 engine.flagController.setFlag("gameStarting", true);
                 new Promise(resolve => {
                     engine.audioController.playSFX(
@@ -111,7 +111,6 @@ class Game {
         this.bootCanvasCtx.fillRect(0, 0, this.bootCanvas.width, this.bootCanvas.height);
 
         // game objects
-        this.titleCard = null;
         this.fgl2 = null;
         this.musicSlider = null;
         this.sfxSlider = null;
@@ -216,15 +215,15 @@ class Game {
         let author = authorStr;
 
         // Draw the title card moving downwards or stationary if it isn't finished yet
-        this.titleCard.draw();
-        engine.flagController.setFlag("titleDone", this.titleCard.isDoneDrawing);
+        engine.titleMngr.draw();
+        engine.flagController.setFlag("titleDone", engine.titleMngr.isDoneDrawing());
 
         // Start drawing in the player and moving card off-screen
         if (engine.flagController.getFlag("gameStarting")) {
             optionsStr = "";
             author = "";
             engine.playerMngr.moveToStart();
-            if (this.titleCard.isDoneDrawing) {
+            if (engine.titleMngr.isDoneDrawing()) {
                 this.cachedHighscore = engine.storage.getHighScore();
                 engine.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
@@ -396,7 +395,7 @@ class Game {
      */
     stopMovement() {
         if (this.modes.menu) {
-            this.titleCard.stop();
+            engine.titleMngr.stop();
             engine.gfxController.stopLayerMovements();
         } else {
             engine.enemyMngr.drawEnemies();
@@ -412,7 +411,7 @@ class Game {
      */
     resumeMovement() {
         if (this.modes.menu) {
-            this.titleCard.resume();
+            engine.titleMngr.resume();
             engine.gfxController.resumeLayerMovements();
             engine.gfxController.hideDeathLayer();
             engine.gfxController.clearTextLayer();
@@ -457,16 +456,6 @@ class Game {
      */
     initResetButton(btnId) {
         this.resetButton = new DeleteButton(btnId);
-    }
-
-    /**
-     * Loads the title card
-     * 
-     * @returns {TitleCard}
-     */
-    initTitleCard(layer) {
-        this.titleCard = new TitleCard({canvas: layer}, 0, 0, 256, 128, engine.assetsFetcher.getTitleImageLocation());
-        return this.titleCard;
     }
 
     /**
@@ -527,8 +516,7 @@ async function gameLoop() {
     game = new Game(bgl1, fgl2);
 
     // Initialize game layers
-    // We are preloading them, so if the user changes aspect ratio it will not bug out
-    game.initTitleCard(fgl2);
+    // We are preloading them, so if the user changes aspect ratio it will not bug ou
     game.initSliders("musicSlider", "sfxSlider");
     game.initResetButton("resetHighScoreButton");
     game.initSliderCallbacks();
@@ -547,7 +535,7 @@ async function gameLoop() {
     // Start the title sequence
     game.showLayers();
     engine.audioController.playTrack(engine.assetsFetcher.getTitleScreenSongLocation());
-    game.titleCard.setCoordinates(330, -138, 330, 60, false);
+    engine.titleMngr.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
 
     let prevTime = Date.now();

@@ -13,5 +13,6 @@ class Coldwind {
         this.flagController = new FlagController();
         this.enemyMngr = new EnemyManager();
         this.playerMngr = new PlayerManager(this.assetsFetcher);
+        this.titleMngr = new TitleCardManager(this.assetsFetcher);
     }
 }
