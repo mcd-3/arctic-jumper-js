@@ -130,14 +130,6 @@ class Game {
         this.score = 0;
         this.cachedHighscore = 0;
 
-        // enemy variables
-        this.enemyBuffer = [null, null, null];
-        this.enemyLimit = 3;
-        this.framesUntilNewSpawn = 35;
-        this.enemySpeed = 10;
-        this.enemySpawnPointX = -128;
-        this.enemySpawnPointY = 395;
-
         // game strings
         this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
     }
@@ -261,25 +253,23 @@ class Game {
     
                 this.framesUntilNewSpawn--;
     
-                for (let i = 0; i < this.enemyBuffer.length; i++) {
-                    if (this.enemyBuffer[i] != null) {
-                        this.enemyBuffer[i].slideTowardsPlayer();
+                for (let i = 0; i < engine.enemyMngr.getEnemyArray().length; i++) {
+                    if (engine.enemyMngr.getEnemyAtIndex(i) != null) {
+                        engine.enemyMngr.getEnemyAtIndex(i).slideTowardsPlayer();
     
-                        if (this.enemyBuffer[i].isOutOfBounds()) {
-                            this.despawnEnemy(i);
+                        if (engine.enemyMngr.getEnemyAtIndex(i).isOutOfBounds()) {
+                            engine.enemyMngr.despawnEnemy(i);
                         } else {
-                            this.enemyBuffer[i].draw();
+                            engine.enemyMngr.getEnemyAtIndex(i).draw();
                         }
                     }
                 }
     
-                if (this.framesUntilNewSpawn <= 0) {
-                    this.spawnEnemy();
-                }
+                engine.enemyMngr.spawnEnemy();
     
                 this.player.updatePos();
     
-                this.enemyBuffer.forEach(enemy => {
+                engine.enemyMngr.getEnemyArray().forEach(enemy => {
                     if (enemy != null) {
                         // Check if hitboxes overlap
                         if (this.player.hitbox.isOverlapping(enemy.hitbox)) {
@@ -307,7 +297,12 @@ class Game {
                         }
         
                         // Check if a point has been scored
-                        if (this.player.hitbox.r < (enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)) && !enemy.passedByPlayer) {
+                        if (
+                            this.player.hitbox.r < (
+                                enemy.hitbox.l + ((enemy.hitbox.r - enemy.hitbox.l)/2)
+                            )
+                            && !enemy.passedByPlayer
+                        ) {
                             this.score++;
                             enemy.passedByPlayer = true;
                             engine.audioController.playSFX(
@@ -323,7 +318,7 @@ class Game {
                 } else {
                     this.options();
                     this.player.draw();
-                    this.drawEnemies();
+                    engine.enemyMngr.drawEnemies();
                 }
             }
 
@@ -383,7 +378,7 @@ class Game {
         engine.gfxController.clearTextLayer();
         
         // Clear all game variables
-        this.enemyBuffer = [null, null, null];
+        engine.enemyMngr.clear();
         this.player.restoreAllHealth();
         this.score = 0;
         engine.flagController.setFlag("newHighScore", false);
@@ -409,15 +404,11 @@ class Game {
             this.titleCard.stop();
             engine.gfxController.stopLayerMovements();
         } else {
-            this.drawEnemies();
+            engine.enemyMngr.drawEnemies();
             this.player.draw();
             engine.gfxController.stopLayerMovements();
             this.player.stop();
-            this.enemyBuffer.forEach(enemy => {
-                if (enemy != null) {
-                    enemy.stop();
-                }
-            });
+            engine.enemyMngr.stopEnemies();
         }
     }
 
@@ -438,95 +429,8 @@ class Game {
             engine.gfxController.hideDeathLayer();
             engine.gfxController.clearTextLayer();
             this.player.resume();
-            this.enemyBuffer.forEach(enemy => {
-                if (enemy != null) {
-                    enemy.resume();
-                }
-            });
+            engine.enemyMngr.resumeEnemies();
         }
-    }
-
-
-    /**
-     * Spawns an enemy on the screen
-     */
-    spawnEnemy() {
-        let enemyTypes = 3;
-        let frameTimeTypes = 4;
-        let randomEnemy = Math.floor(Math.random() * Math.floor(enemyTypes)) + 1;
-        let randomFrameTime = Math.floor(Math.random() * Math.floor(frameTimeTypes)) + 1;
-
-        // Determine the enemy type;
-        let enemy = null;
-        switch(randomEnemy) {
-            case 1:
-                let spawnPenguinY = this.enemySpawnPointY;
-                enemy = new Penguin({canvas: game.spriteCanvas}, this.enemySpawnPointX, spawnPenguinY, this.enemySpeed);
-                enemy.setHitbox(new Hitbox(
-                    spawnPenguinY + 25,
-                    spawnPenguinY + 70,
-                    this.enemySpawnPointX + 20,
-                    this.enemySpawnPointX + (enemy.getWidth() - 20)
-                ));
-                break;
-            case 2:
-                let spawnRockY = this.enemySpawnPointY + 10;
-                enemy = new Rock({canvas: game.spriteCanvas}, this.enemySpawnPointX, spawnRockY, this.enemySpeed);
-                enemy.setHitbox(new Hitbox(
-                    spawnRockY + 10,
-                    spawnRockY + 62,
-                    this.enemySpawnPointX + 4,
-                    this.enemySpawnPointX + (enemy.getWidth() - 4)
-                ));
-                break;
-            case 3:
-            default:
-                let spawnSnowmanY = this.enemySpawnPointY - 55;
-                enemy = new Snowman({canvas: game.spriteCanvas}, this.enemySpawnPointX, spawnSnowmanY, this.enemySpeed);
-                enemy.setHitbox(new Hitbox(
-                    spawnSnowmanY + 10,
-                    spawnSnowmanY + 124,
-                    this.enemySpawnPointX + 12,
-                    this.enemySpawnPointX + (enemy.getWidth() - 12)
-                ));
-                break;
-        }
-
-        // Don't spawn an enemy if the buffer is full
-        for (let i = 0; i < this.enemyBuffer.length; i++) {
-            if (this.enemyBuffer[i] == null) {
-                this.enemyBuffer[i] = enemy;
-                break;
-            }
-        }
-
-        // Determine how many frame to wait until next spawn
-        switch(randomFrameTime) {
-            case 1:
-                this.framesUntilNewSpawn = 135;
-                break;
-            case 2:
-                this.framesUntilNewSpawn = 175;
-                break;
-            case 3:
-                this.framesUntilNewSpawn = 200;
-                break;
-            case 4:
-                this.framesUntilNewSpawn = 80;
-                break;
-            default:
-                this.framesUntilNewSpawn = 135;
-                break;
-        }
-    }
-
-    /**
-     * Despawns an enemy
-     * 
-     * @param {int} bufferIndex 
-     */
-    despawnEnemy(bufferIndex) {
-        this.enemyBuffer[bufferIndex] = null;
     }
 
     /**
@@ -536,17 +440,6 @@ class Game {
         engine.gfxController.showLayers();
         this.spriteCanvas.style.display = "block";
         engine.gfxController.showHUDs();
-    }
-
-    /**
-     * Draws all enemies
-     */
-    drawEnemies() {
-        this.enemyBuffer.forEach(enemy => {
-            if (enemy != null) {
-                enemy.draw();
-            }
-        });
     }
 
     /**
