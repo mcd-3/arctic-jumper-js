@@ -1,13 +1,12 @@
 # Arctic Jumper & Coldwind Engine
 
-### This document details the structure of the game. "Coldwind" refers to this game's engine, which is developed by me exclusively for this project. 
+This document details the structure of the game. "Coldwind" refers to this game's engine, which is developed by me exclusively for this project. 
+<br />
+This was made with as little libraries as possible, and as such everything is written in vanilla HTML/CSS/JS, with the exception of Electron and Electron packagers.
+<br />
 <br />
 
-### This was made with as little libraries as possible, and as such everything is written in vanilla HTML/CSS/JS, with the exception of Electron and Electron packagers.
-<br />
-<br />
-
-# Project Structure
+## Project Structure
 
 `_global:` initializes the Coldwind engine, the Game logic, and translations
 <br />
