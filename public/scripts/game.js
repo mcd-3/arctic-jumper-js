@@ -129,7 +129,7 @@ class Game {
         this.resetButton.addOnClickListener(() => {
             if (confirm(resetHighscorePrompt)) {
                 engine.storage.deleteHighScore();
-                this.cachedHighscore = 0;
+                engine.storage.setCachedHighscore(0);
                 alert(resetHighscoreConfirm);
             }
             this.resetButton.unfocus();
@@ -144,8 +144,6 @@ class Game {
             'play': false,
             'death': false
         };
-        this.score = 0;
-        this.cachedHighscore = 0;
     }
 
     /**
@@ -241,7 +239,7 @@ class Game {
             author = "";
             engine.playerMngr.moveToStart();
             if (engine.titleMngr.isDoneDrawing()) {
-                this.cachedHighscore = engine.storage.getHighScore();
+                engine.storage.setCachedHighscore(engine.storage.getHighScore());
                 engine.gfxController.changeHighscoreUISize(36);
                 this.setMode("play");
             }
@@ -297,9 +295,16 @@ class Game {
                                         engine.assetsFetcher.getHitSFXLocation()
                                     );
                                 } else {
-                                    if (this.score > this.cachedHighscore) {
-                                        engine.storage.addHighScore(this.score);
-                                        this.cachedHighscore = this.score;
+                                    if (
+                                        engine.storage.getCachedScore() > 
+                                        engine.storage.getCachedHighscore()
+                                    ) {
+                                        engine.storage.addHighScore(
+                                            engine.storage.getCachedScore()
+                                        );
+                                        engine.storage.setCachedHighscore(
+                                            engine.storage.getCachedScore()
+                                        );
                                         engine.flagController.setFlag("newHighScore", true);
                                     }
                                     engine.audioController.playSFX(
@@ -313,7 +318,7 @@ class Game {
         
                         // Check if a point has been scored
                         if (engine.playerMngr.isPassedEnemy(enemy)) {
-                            this.score++;
+                            engine.storage.incrementCachedScore();
                             enemy.passedByPlayer = true;
                             engine.audioController.playSFX(
                                 engine.assetsFetcher.getScoreSFXLocation()
@@ -332,9 +337,12 @@ class Game {
                 }
             }
 
-            engine.gfxController.drawScore(scoreStr, this.score);
+            engine.gfxController.drawScore(scoreStr, engine.storage.getCachedScore());
             engine.gfxController.drawHealth(healthStr, engine.playerMngr.getHP());
-            engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
+            engine.gfxController.drawHighscore(
+                highScoreStr,
+                engine.storage.getCachedHighscore()
+            );
         } else { 
             // Make sure player gets to start position
             engine.playerMngr.moveToStart();
@@ -365,9 +373,12 @@ class Game {
      */
     death() {
         // update the HUD, so it doesn't vanish
-        engine.gfxController.drawScore(scoreStr, this.score);
+        engine.gfxController.drawScore(scoreStr, engine.storage.getCachedScore());
         engine.gfxController.drawHealth(healthStr, engine.playerMngr.getHP());
-        engine.gfxController.drawHighscore(highScoreStr, this.cachedHighscore);
+        engine.gfxController.drawHighscore(
+            highScoreStr,
+            engine.storage.getCachedHighscore()
+        );
 
         // keep objects drawn and stop backgrounds
         this.stopMovement();
@@ -377,7 +388,7 @@ class Game {
         engine.gfxController.showGameOverScreen(
             engine.flagController.getFlag("gameOverTimerDone"),
             engine.flagController.getFlag("newHighScore"),
-            this.score
+            engine.storage.getCachedScore()
         );
     }
 
@@ -391,12 +402,12 @@ class Game {
         // Clear all game variables
         engine.enemyMngr.clear();
         engine.playerMngr.restoreHP();
-        this.score = 0;
+        engine.storage.setCachedScore(0);
         engine.flagController.setFlag("newHighScore", false);
         engine.flagController.setFlag("gameOverTimerDone", false);
 
         // Update HUD, player, and backgrounds
-        engine.gfxController.drawScore(scoreStr, this.score);
+        engine.gfxController.drawScore(scoreStr, engine.storage.getCachedScore());
         engine.gfxController.drawHealth(healthStr, engine.playerMngr.getHP());
         engine.playerMngr.changePos(760, 340);
         engine.playerMngr.draw();
