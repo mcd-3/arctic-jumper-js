@@ -63,6 +63,8 @@ class GraphicsController {
         this.#bgl1.show();
         this.#bgl2.show();
         this.#fgl1.show();
+        this.#fgl2.style.display = "block";
+        this.showHUDs();
     }
 
     /**
@@ -363,6 +365,13 @@ class GraphicsController {
      */
     clearTextLayer() {
         this.#hud5.clear();
+    }
+
+    /**
+     * Clears the sprite layer
+     */
+    clearSpriteLayer() {
+        this.#fgl2.getContext("2d").clearRect(0, 0, 920, 540);
     }
 
     /**

@@ -104,7 +104,7 @@ class Game {
         this.bootCanvas = bootCanvas;
         this.bootCanvasCtx = this.bootCanvas.getContext("2d");
         this.spriteCanvas = spriteCanvas;
-        this.spriteCanvasCtx = scaler.scale(this.spriteCanvas);
+        scaler.scale(this.spriteCanvas);
 
         // Emulate a dark intro screen seen in most games
         this.bootCanvasCtx.fillStyle = 'black';
@@ -428,15 +428,6 @@ class Game {
     }
 
     /**
-     * Makes all layers visible
-     */
-    showLayers() {
-        engine.gfxController.showLayers();
-        this.spriteCanvas.style.display = "block";
-        engine.gfxController.showHUDs();
-    }
-
-    /**
      * Initializes the sliders on the options screen
      * 
      * @param {string} musicId 
@@ -533,7 +524,7 @@ async function gameLoop() {
     });
 
     // Start the title sequence
-    game.showLayers();
+    engine.gfxController.showLayers();
     engine.audioController.playTrack(engine.assetsFetcher.getTitleScreenSongLocation());
     engine.titleMngr.setCoordinates(330, -138, 330, 60, false);
     game.setMode("menu");
@@ -546,7 +537,7 @@ async function gameLoop() {
 
         if ((currTime - prevTime) > game.framerate) {
             engine.gfxController.drawLayers();
-            game.spriteCanvas.getContext("2d").clearRect(0, 0, 920, 540);
+            engine.gfxController.clearSpriteLayer();
     
             if (game.modes.menu) { // Main Menu Mode
                 game.menu();
