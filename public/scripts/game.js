@@ -127,9 +127,6 @@ class Game {
         };
         this.score = 0;
         this.cachedHighscore = 0;
-
-        // game strings
-        this.startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
     }
 
     /**
@@ -213,6 +210,7 @@ class Game {
     menu() {
         let optionsStr = optionsMenuStr;
         let author = authorStr;
+        let startText = new UIText({canvas: this.spriteCanvas}, 334, 210, startStr, 24, 1.15);
 
         // Draw the title card moving downwards or stationary if it isn't finished yet
         engine.titleMngr.draw();
@@ -230,7 +228,7 @@ class Game {
             }
         } else {
             if (engine.flagController.getFlag("titleDone")) {
-                this.startText.draw();
+                startText.draw();
             }
         }
 
