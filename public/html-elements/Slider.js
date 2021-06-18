@@ -1,6 +1,7 @@
 class Slider {
-    constructor(id) {
+    constructor(id, val = 0) {
         this.slider = document.getElementById(id);
+        this.slider.value = val;
     }
 
     setValue(val) {

@@ -110,11 +110,30 @@ class Game {
         this.bootCanvasCtx.fillStyle = 'black';
         this.bootCanvasCtx.fillRect(0, 0, this.bootCanvas.width, this.bootCanvas.height);
 
-        // game objects
-        this.fgl2 = null;
-        this.musicSlider = null;
-        this.sfxSlider = null;
-        this.resetButton = null;
+        // Option menu components
+        this.musicSlider = new Slider(
+            "musicSlider",
+            engine.audioController.getMusicVolume()
+        )
+        this.sfxSlider = new Slider(
+            "sfxSlider",
+            engine.audioController.getSFXVolume()
+        );
+        this.musicSlider.addUpdateListeners(() => {
+            engine.audioController.updateMusicVolume(this.musicSlider.getValue());
+        });
+        this.sfxSlider.addUpdateListeners(() => {
+            engine.audioController.updateSFXVolume(this.sfxSlider.getValue());
+        });
+        this.resetButton = new DeleteButton("resetHighScoreButton");
+        this.resetButton.addOnClickListener(() => {
+            if (confirm(resetHighscorePrompt)) {
+                engine.storage.deleteHighScore();
+                this.cachedHighscore = 0;
+                alert(resetHighscoreConfirm);
+            }
+            this.resetButton.unfocus();
+        });
 
         // game variables
         this.bootTime = 7500;
@@ -426,54 +445,6 @@ class Game {
     }
 
     /**
-     * Initializes the sliders on the options screen
-     * 
-     * @param {string} musicId 
-     * @param {string} sfxId 
-     */
-    initSliders(musicId, sfxId) {
-        this.musicSlider = new Slider(musicId);
-        this.musicSlider.setValue(engine.audioController.getMusicVolume());
-        this.sfxSlider = new Slider(sfxId);
-        this.sfxSlider.setValue(engine.audioController.getSFXVolume());
-    }
-
-    /**
-     * Initializes the reset highscore button on the options screen
-     * 
-     * @param {string} btnId 
-     */
-    initResetButton(btnId) {
-        this.resetButton = new DeleteButton(btnId);
-    }
-
-    /**
-     * Initializes callbacks for volume sliders to update game audio
-     */
-    initSliderCallbacks() {
-        this.musicSlider.addUpdateListeners(() => {
-            engine.audioController.updateMusicVolume(this.musicSlider.getValue());
-        });
-        this.sfxSlider.addUpdateListeners(() => {
-            engine.audioController.updateSFXVolume(this.sfxSlider.getValue());
-        });
-    }
-
-    /**
-     * Initializes callbacks for reset highscore button to reset highscore
-     */
-    initResetButtonCallbacks() {
-        this.resetButton.addOnClickListener(() => {
-            if (confirm(resetHighscorePrompt)) {
-                engine.storage.deleteHighScore();
-                game.cachedHighscore = 0;
-                alert(resetHighscoreConfirm);
-            }
-            this.resetButton.unfocus();
-        });
-    }
-
-    /**
      * Gives a bit of buffer time when the player game overs, so that if 
      * they are holding down the jump button, it won't immediately start again
      */
@@ -503,13 +474,6 @@ async function gameLoop() {
     let bgl1 = document.getElementById("bgl1");
     let fgl2 = document.getElementById("fgl2");
     game = new Game(bgl1, fgl2);
-
-    // Initialize game layers
-    // We are preloading them, so if the user changes aspect ratio it will not bug ou
-    game.initSliders("musicSlider", "sfxSlider");
-    game.initResetButton("resetHighScoreButton");
-    game.initSliderCallbacks();
-    game.initResetButtonCallbacks();
 
     // Boot game
     game.setMode("boot");
