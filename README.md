@@ -1,6 +1,6 @@
 # Arctic Jumper
 
-Jump over obstacles in this arctic jumper!
+Jump over obstacles in this arctic jumper! How far can you go?
 
 ## Building
 When building for any platform, make sure you go to `main.js` and change `process.env.NODE_ENV = "debug"` to `process.env.NODE_ENV = "production"` if you wish to build a non-debug release.
